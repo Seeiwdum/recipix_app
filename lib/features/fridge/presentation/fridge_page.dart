@@ -7,6 +7,7 @@ import '../../../shared/widgets/pressable.dart';
 import '../domain/fridge_controller.dart';
 import '../domain/fridge_layout.dart';
 import '../domain/freshness.dart';
+import 'add_item_sheet.dart';
 import 'fridge_board.dart';
 import 'fridge_geometry.dart';
 import 'item_sheet.dart';
@@ -79,6 +80,7 @@ class FridgePage extends ConsumerWidget {
                   child: FridgeBoard(
                     geometry: FridgeGeometry.fit(constraints.biggest),
                     onOpenItem: (item) => showItemSheet(context, ref, item),
+                    onAddItem: () => showAddItemSheet(context),
                   ),
                 ),
               ),

@@ -53,6 +53,20 @@ void main() {
     );
   });
 
+  testWidgets('add-item sheet at 390', (tester) async {
+    setPhoneSize(tester, 390, height: 844);
+    await tester.pumpWidget(testApp(initialLocation: '/fridge'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('add-item')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('add-egg')));
+    await tester.pumpAndSettle();
+    await expectLater(
+      find.byType(RecipixApp),
+      matchesGoldenFile('goldens/add_item_sheet_390.png'),
+    );
+  });
+
   testWidgets('fridge mid-drag at 390', (tester) async {
     setPhoneSize(tester, 390, height: 844);
     await tester.pumpWidget(testApp(initialLocation: '/fridge'));

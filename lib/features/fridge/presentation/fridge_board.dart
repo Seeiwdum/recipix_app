@@ -8,6 +8,7 @@ import 'package:recipix_core/recipix_core.dart';
 import '../../../app/providers.dart';
 import '../../../app/strings.dart';
 import '../../../app/theme/recipix_tokens.dart';
+import '../../../shared/icons/recipix_icon.dart';
 import '../../../shared/motion/motion.dart';
 import '../domain/fridge_controller.dart';
 import '../domain/fridge_layout.dart';
@@ -24,10 +25,20 @@ class FridgeBoard extends ConsumerStatefulWidget {
     super.key,
     required this.geometry,
     required this.onOpenItem,
+    this.onAddItem,
   });
 
   final FridgeGeometry geometry;
   final ValueChanged<IngredientItem> onOpenItem;
+
+  /// Opens the add-item sheet (ADR-013); no button when null.
+  final VoidCallback? onAddItem;
+
+  /// Height of the basket tray's title line (padding + one label line).
+  static const headerLine = RecipixTokens.space4 + RecipixTokens.space1;
+
+  /// Room kept clear at the end of that line for the add button.
+  static const addButtonRoom = 104.0;
 
   /// ~1.5% overshoot (damping ratio 0.8), inside the 6% motion budget.
   static final spring = SpringDescription.withDampingRatio(
@@ -316,10 +327,12 @@ class _FridgeBoardState extends ConsumerState<FridgeBoard>
             rect: g.basket,
             child: AnimatedContainer(
               duration: RecipixTokens.fast,
-              padding: const EdgeInsets.fromLTRB(
+              padding: EdgeInsets.fromLTRB(
                 RecipixTokens.space2,
                 RecipixTokens.space1,
-                RecipixTokens.space2,
+                widget.onAddItem == null
+                    ? RecipixTokens.space2
+                    : FridgeBoard.addButtonRoom,
                 0,
               ),
               alignment: Alignment.topLeft,
@@ -350,6 +363,28 @@ class _FridgeBoardState extends ConsumerState<FridgeBoard>
               ),
             ),
           ),
+          if (widget.onAddItem != null)
+            // Full tap height, centred on the tray's header line.
+            Positioned(
+              right: g.size.width - g.basket.right,
+              top:
+                  g.basket.top +
+                  FridgeBoard.headerLine / 2 -
+                  RecipixTokens.tapTarget / 2,
+              height: RecipixTokens.tapTarget,
+              child: Center(
+                child: TextButton.icon(
+                  key: const ValueKey('add-item'),
+                  onPressed: widget.onAddItem,
+                  icon: RecipixIcon(
+                    RecipixIcons.plus,
+                    size: 16,
+                    color: t.accent,
+                  ),
+                  label: Text(S.addItem),
+                ),
+              ),
+            ),
           for (var i = 0; i < visibleBasket.length; i++)
             _basketItem(visibleBasket[i], i, today, move, dimmed),
           if (overflow > 0)

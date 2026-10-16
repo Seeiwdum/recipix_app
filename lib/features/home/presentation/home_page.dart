@@ -153,6 +153,17 @@ class _ReportSheet extends ConsumerWidget {
         if (empty) ...[
           Text(S.fridgeEmptyHeadline, style: t.title),
           Text(S.fridgeEmptyHint, style: t.bodyMuted),
+          // The way out of an empty fridge (5-second test: new users had
+          // none).
+          Align(
+            alignment: Alignment.centerLeft,
+            child: TextButton(
+              key: const ValueKey('go-add-items'),
+              style: TextButton.styleFrom(padding: EdgeInsets.zero),
+              onPressed: () => context.go('/fridge'),
+              child: Text(S.goAddItems),
+            ),
+          ),
         ] else ...[
           TweenAnimationBuilder<double>(
             key: const ValueKey('home-meals'),

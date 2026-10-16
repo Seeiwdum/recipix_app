@@ -2,16 +2,21 @@
 title: Handover Notes
 owner: แพรว
 last_updated: 2026-10-17
-version: 1.8
+version: 1.9
 status: active
 ---
 
 # Handover
 
 ## สถานะล่าสุด
-PHASE 1.5 (UI Refinement Sprint, ทิศ A "Kitchen Ledger", ADR-012) ทำขั้น A–E ครบ; ขั้น F เสร็จทั้งหมด **เหลือผู้ก่อตั้งรีวิว CP2**
-เทสต์: `flutter analyze` สะอาด, `flutter test` 128 ผ่าน (shot test 48 ตัวข้ามเมื่อไม่ใส่ `SHOTS`), core `dart test` 65 ผ่าน, golden 14 ภาพ regenerate แล้ว
-งาน sprint อยู่ใน working copy บน `dev` (ยังไม่ commit ตอนเขียนบันทึกนี้)
+PHASE 1.5 เสร็จและ commit บน `dev` แล้ว (`db9078f`); ผู้ก่อตั้งผ่าน CP2 และตัดสินใจตาม ADR-013 (หัวข้อเป็นมื้อ, แท็บ "สมุดค่ากิน", เพิ่มของเข้าตู้เอง) — ทำปุ่มเพิ่มของแล้ว
+เทสต์: `flutter analyze` สะอาด, `flutter test` 138 ผ่าน (shot test 48 ตัวข้ามเมื่อไม่ใส่ `SHOTS`), core `dart test` 65 ผ่าน, golden 15 ภาพ
+
+## ทำแล้วรอบล่าสุด (ADR-013)
+- `FridgeController.addFromCatalog` / `removeAdded` (เอาออกไม่บันทึกเป็นใช้/ทิ้ง จึงไม่กระทบเหรียญ)
+- ปุ่ม "เพิ่มของ" ที่หัวตะกร้า → `add_item_sheet.dart` (18 ชนิดจากแคตตาล็อก, แตะ = 1 ชิ้นลงตะกร้า, "เอาออก" ได้ทันที)
+- หน้าหลักตอนตู้ว่างมีลิงก์ "ไปเพิ่มของในตู้เย็น"; ข้อความตะกร้าตอนตู้ว่างชี้ไปที่ปุ่ม
+- เทสต์ `test/features/fridge/add_item_test.dart` + golden `add_item_sheet_390`
 
 ## ทำแล้วรอบล่าสุด (PHASE 1.5)
 - A ตรวจสภาพ: ภาพ before 48 ภาพ (16 สถานะ × 360/390/430) + `design/audit.md`
@@ -23,17 +28,16 @@ PHASE 1.5 (UI Refinement Sprint, ทิศ A "Kitchen Ledger", ADR-012) ทำ�
 - แก้บั๊ก: `menuSuggestionProvider` ไม่เสนอเมนูที่ไม่มีของในตู้เลย
 
 ## ค้างอยู่ / ปัญหา
-- 5-second test ยังไม่ผ่าน 5 จอ สาเหตุหลัก: ไม่มีทางเพิ่มของเข้าตู้เอง (สแกนยังไม่มี; เพิ่มเองเป็นฟีเจอร์ → L3) ทำให้ตู้ว่าง / สแกน / หน้าหลักตอนตู้ว่างเป็นทางตัน
+- 5-second test: ทางตันเรื่องเพิ่มของแก้แล้ว (ADR-013) ยังไม่ได้รันเทสต์ซ้ำ
 - sheet ผลสุ่มที่ของไม่ครบไม่มีการกระทำถัดไป
 - ชิปตัวกรองชิดขอบขวาไม่มีสัญญาณว่าเลื่อนได้
 - กรอบตู้ > ช่องแช่แข็ง > กระเบื้อง อ่านเหมือนกล่องซ้อน 3 ชั้น
 - วันที่ไม่ได้บันทึกรายจ่ายนับเป็น "อยู่ในงบ" (ADR-010) — รอ "ปิดวันตอนค่ำ"
 - ยังไม่ทดสอบบนมือถือจริง (ไม่มี Android SDK ในเครื่อง)
-- `test/golden/failures/*.png` ถูก track ใน git และมีการเปลี่ยน — เป็นไฟล์ผลเทสต์ล้ม ไม่ควร commit (เสนอเพิ่มใน `.gitignore`)
 
 ## ขั้นต่อไป (เสนอ)
-1. ผู้ก่อตั้งรีวิว CP2: ภาพ `design/shots/{before,after}/`, ทิศ A + สำรอง B, ตอบคำถาม L3 ด้านล่าง
-2. commit งาน sprint บน `dev` แล้ว merge เข้า `main` เมื่อ CP2 ผ่าน
+1. merge `dev` เข้า `main` (CP2 ผ่านแล้ว)
+2. รัน 5-second test ซ้ำหลังเพิ่มปุ่มเพิ่มของ
 3. แก้จุดที่ 5-second test ยังไม่ผ่าน ที่ไม่ต้องรอ L3 (การกระทำถัดไปใน sheet ผลสุ่มไม่ครบ, สัญญาณเลื่อนชิปตัวกรอง, ลดกล่องซ้อนในตู้)
 4. นอก sprint: แผนกินวนเมนูเดิมทุกวัน; เครื่องปรุงถูกนับแคลอรี่; ขาดวัตถุดิบหลักบ้านไทย; ภาพจานอาหาร
 5. แท็บสแกน (หลังมี Android + ADR เลือกแพ็กเกจกล้อง/ML Kit)
@@ -42,11 +46,8 @@ PHASE 1.5 (UI Refinement Sprint, ทิศ A "Kitchen Ledger", ADR-012) ทำ�
 - เมื่อ token ใกล้หมด: ส่ง build Android/iOS ให้ดาวน์โหลดผ่าน GitHub หรือ QR (เครื่องไม่มี Android SDK → ใช้ GitHub Actions)
 
 ## คำถาม L3
-- ใช้แล้ว รอยืนยัน (ย้อนได้ใน `strings.dart` / `home_page.dart` เท่านั้น):
-  1. หัวข้อหน้าหลักเป็น "ทำกินเองจากของในตู้ได้อีก x มื้อ" แทน "วัน" ตามสเปก 5.3
-  2. ชื่อแท็บ "แดชบอร์ด" → "สมุดค่ากิน"
-- ยังเปิดอยู่: สิทธิ์อ่าน Figma; ไฟล์ Unity เดิม (+ เดโม HTML / `ui_design_prompt.md`); ติดตั้ง Android Studio; ฟีเจอร์ที่เลื่อนไว้ (รายการซื้อของ, แจ้งเตือน, ปิดวันตอนค่ำ); เพิ่มของเข้าตู้เอง; เปิดครั้งแรกเริ่มจากตู้ว่างไหม
-- ตอบแล้ว: ADR-007, ADR-008
+- ยังเปิดอยู่: สิทธิ์อ่าน Figma; ไฟล์ Unity เดิม (+ เดโม HTML / `ui_design_prompt.md`); ติดตั้ง Android Studio; ฟีเจอร์ที่เลื่อนไว้ (รายการซื้อของ, แจ้งเตือน, ปิดวันตอนค่ำ); เปิดครั้งแรกเริ่มจากตู้ว่างไหม
+- ตอบแล้ว: ADR-007, ADR-008, ADR-013
 
 ## ไฟล์ที่แก้ล่าสุด
 `lib/app/{strings.dart,theme/**}`, `lib/features/{home,fridge,random,dashboard,scan,budget}/presentation/**`, `lib/features/home/domain/home_providers.dart`, `lib/shared/widgets/{ledger,ingredient_tile,recipix_page}.dart`, `lib/shared/utils/freshness_color.dart`, `lib/shared/icons/recipix_icon.dart`, `assets/icons/{home,dashboard,wallet,tag,bowl}.svg` (ลบ `coin.svg`), `tool/gen_icons.sh`, `test/**` (รวม `test/design/`, golden), `docs/**`, `handoff.md`

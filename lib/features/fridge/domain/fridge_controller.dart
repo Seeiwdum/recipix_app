@@ -250,6 +250,34 @@ class FridgeController extends Notifier<FridgeState> {
     return slot;
   }
 
+  /// Adds one fresh [key] from the catalog to the basket: bought today,
+  /// default amount, expiry from its shelf life (ADR-013). Returns the new
+  /// item, or null for a key the catalog does not know.
+  IngredientItem? addFromCatalog(String key) {
+    final entry = ref.read(catalogProvider)[key];
+    if (entry == null) return null;
+    // Time-based so an id never repeats one already in the history.
+    final base = '$key-t${DateTime.now().microsecondsSinceEpoch}';
+    var id = base;
+    for (var n = 1; state.byId(id) != null; n++) {
+      id = '$base-$n';
+    }
+    final item = entry.toItem(id, ref.read(todayProvider));
+    state = state.copyWith(items: [...state.items, item]);
+    return item;
+  }
+
+  /// Takes back an item added by mistake. Only while it is still in the
+  /// basket, and it is not recorded as used or thrown away.
+  void removeAdded(String itemId) {
+    if (state.byId(itemId) == null || state.arrangement.contains(itemId)) {
+      return;
+    }
+    state = state.copyWith(
+      items: state.items.where((i) => i.id != itemId).toList(),
+    );
+  }
+
   void moveToBasket(String itemId) {
     if (!state.arrangement.contains(itemId)) return;
     state = state.copyWith(arrangement: state.arrangement.remove(itemId));

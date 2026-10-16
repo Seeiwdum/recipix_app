@@ -217,7 +217,19 @@ abstract final class S {
   static const basketTitle = 'ตะกร้า';
   static const basketHint = 'ลากขึ้นไปวางบนชั้น';
   static const basketEmpty = 'จัดของเข้าตู้ครบแล้ว';
-  static const basketFridgeEmpty = 'ตู้ยังว่าง ของที่ซื้อมาจะมารอที่ตะกร้านี้';
+  static const basketFridgeEmpty = 'ตู้ยังว่าง กดเพิ่มของที่ซื้อมา';
+
+  // Add items by hand (ADR-013).
+  static const addItem = 'เพิ่มของ';
+  static const addItemTitle = 'เพิ่มของเข้าตะกร้า';
+  static const addItemHint = 'แตะของที่ซื้อมา วันหมดอายุนับจากวันนี้ตามชนิด';
+  static String keepsFor(int days) => 'เก็บได้ $days วัน';
+  static String addedLine(String name, int count) =>
+      'เพิ่ม$nameแล้ว · รอบนี้ $count ชิ้น';
+  static const removeAdded = 'เอาออก';
+  static const doneAdding = 'เสร็จ';
+  static String addSemantics(String name) => 'เพิ่ม$name';
+  static const goAddItems = 'ไปเพิ่มของในตู้เย็น';
   static const dropTooWide = 'ของชิ้นนี้กว้าง 2 ช่อง ใส่ชั้นประตูไม่ได้';
   static const dropTaken = 'ช่องนี้มีของอยู่แล้ว';
   static String basketMore(int n) => '+$n';

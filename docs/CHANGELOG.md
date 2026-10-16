@@ -8,6 +8,12 @@ status: active
 
 # Changelog
 
+## 0.10.0 — 2026-10-17 (add items by hand, ADR-013)
+- feat(fridge): "add" button on the basket opens a catalog sheet; each tap puts one fresh item in the basket, with take-back.
+- feat(home): empty-fridge state links to the fridge tab.
+- docs: ADR-013 records the founder approving the meals headline and the "สมุดค่ากิน" tab name.
+- test: add_item_test.dart and the add_item_sheet_390 golden.
+
 ## 0.9.0 — 2026-10-17 (PHASE 1.5 UI refinement, direction A "Kitchen Ledger")
 - feat(ui): new type scale 44/24/18/16/13 (+10 micro), `pageTitle` on every tab, tabular `number`, `unitScale`/`leaderDot`/`leaderGap` tokens (ADR-012)
 - feat(ui): shared `Amount`, `LedgerRow` and `DotLeader` (lib/shared/widgets/ledger.dart) replace template cards; one big number per screen
