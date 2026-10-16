@@ -2,7 +2,7 @@
 title: Docs Index
 owner: แพรว
 last_updated: 2026-10-16
-version: 1.6
+version: 1.7
 status: active
 ---
 
@@ -27,6 +27,7 @@ status: active
 | [decisions/ADR-008_spending-log-and-meal-plan.md](decisions/ADR-008_spending-log-and-meal-plan.md) | บันทึกค่ากิน + แผนกินถึงวันเงินเข้า | accepted |
 | [decisions/ADR-009_on-device-persistence.md](decisions/ADR-009_on-device-persistence.md) | บันทึกข้อมูลในเครื่อง (shared_preferences + JSON) | accepted |
 | [decisions/ADR-010_dashboard-and-badges.md](decisions/ADR-010_dashboard-and-badges.md) | แดชบอร์ด, แก้งบ, เหรียญจากประวัติ | accepted |
+| [decisions/ADR-011_random-menu.md](decisions/ADR-011_random-menu.md) | แท็บสุ่มเมนู (สล็อต 3 แกน + สั่งข้างนอก) | accepted |
 | [engineering/architecture.md](engineering/architecture.md) | ชั้นสถาปัตยกรรม | active |
 | [engineering/coding_standards.md](engineering/coding_standards.md) | มาตรฐานโค้ด | active |
 | [engineering/tooling_setup.md](engineering/tooling_setup.md) | สภาพเครื่อง เวอร์ชัน ปัญหาที่เจอ | active |

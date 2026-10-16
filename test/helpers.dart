@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
@@ -8,6 +9,8 @@ import 'package:recipix_app/app/app.dart';
 import 'package:recipix_app/app/providers.dart';
 import 'package:recipix_app/features/fridge/data/ingredient_catalog.dart';
 import 'package:recipix_app/shared/data/recipe_book.dart';
+import 'package:recipix_app/features/random/data/eat_out_menu.dart';
+import 'package:recipix_app/features/random/domain/random_controller.dart';
 import 'package:recipix_core/recipix_core.dart';
 
 /// Fixed day so freshness labels and goldens never drift.
@@ -19,6 +22,10 @@ final testCatalog = IngredientCatalog.fromJsonString(
 
 final testRecipes = RecipeBook.fromJsonString(
   File(RecipeBook.assetPath).readAsStringSync(),
+);
+
+final testEatOut = EatOutMenu.fromJsonString(
+  File(EatOutMenu.assetPath).readAsStringSync(),
 );
 
 /// Loads the bundled Thai font so goldens show real glyphs instead of the
@@ -45,6 +52,8 @@ Widget testApp({String initialLocation = '/home'}) => ProviderScope(
   overrides: [
     catalogProvider.overrideWithValue(testCatalog),
     recipeBookProvider.overrideWithValue(testRecipes),
+    eatOutMenuProvider.overrideWithValue(testEatOut),
+    randomSourceProvider.overrideWithValue(Random(7)),
     todayProvider.overrideWithValue(testToday),
   ],
   child: RecipixApp(initialLocation: initialLocation),

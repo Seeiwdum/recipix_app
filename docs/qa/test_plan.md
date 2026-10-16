@@ -55,3 +55,7 @@ status: active
 - core: วันที่ไม่ได้ติดตาม (discardedCount = null) ไม่นับ zero-waste แต่ยังนับงบ
 - persistence: activity / urgentItemsUsed / trackingSince ผ่านการเปิดใหม่
 - golden: `dashboard_{360,390,430}`
+
+## สุ่มเมนู (ADR-011) — app 128, core 65
+- `test/features/random/random_test.dart`: pickEatOut (ในงบ / ไม่พอ→ถูกสุด / ไม่ซ้ำ), สุ่ม 3 แกนไม่ซ้ำ+ผลตัดสินก่อน, ล็อกค้าง 5 รอบ, ของที่ล็อกถูกใช้→ล็อกหลุด, สั่งข้างนอกตามงบที่เหลือ, หมุน→sheet หลังหยุดครบ+ปุ่มปิดระหว่างหมุน+ชื่อซ่อน, ล็อกด้วยการแตะ, ครบ→ทำ+เลิกทำ, ไม่ครบ→บอกของที่ขาดไม่มีปุ่มทำ, สั่งข้างนอก→บันทึกค่ากิน, reduce-motion, ไม่ล้น 360/430
+- core: อันดับถ่วงจำนวนแกน

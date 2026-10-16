@@ -75,6 +75,22 @@ void main() {
     await tester.pumpAndSettle();
   });
 
+  testWidgets('random tab before and after a spin at 390', (tester) async {
+    setPhoneSize(tester, 390, height: 844);
+    await tester.pumpWidget(testApp(initialLocation: '/random'));
+    await tester.pumpAndSettle();
+    await expectLater(
+      find.byType(RecipixApp),
+      matchesGoldenFile('goldens/random_390.png'),
+    );
+    await tester.tap(find.byKey(const ValueKey('spin')));
+    await tester.pumpAndSettle();
+    await expectLater(
+      find.byType(RecipixApp),
+      matchesGoldenFile('goldens/random_result_390.png'),
+    );
+  });
+
   for (final width in [360.0, 390.0, 430.0]) {
     testWidgets('dashboard at ${width.toInt()}', (tester) async {
       setPhoneSize(tester, width, height: 1500);

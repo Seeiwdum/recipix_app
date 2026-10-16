@@ -73,6 +73,20 @@ void main() {
     });
   });
 
+  test('slot ranking prefers a dish that uses more of the reels', () {
+    final ranked = const RecipeMatcher().rank(
+      [
+        recipe('one-reel-full', ['chili', 'lime']),
+        recipe('three-reels', ['pork', 'rice', 'chili', 'garlic']),
+      ],
+      {'pork', 'rice', 'chili', 'lime'},
+      focusKeys: {'pork', 'rice', 'chili'},
+      weighFocus: true,
+    );
+    // 75% x 3/3 = 0.75 beats 100% x 1/3 = 0.33.
+    expect(ranked.first.recipe.id, 'three-reels');
+  });
+
   group('ExpiringFirstRollStrategy', () {
     test('weights fall off with days left', () {
       expect(ExpiringFirstRollStrategy.weightFor(0), 1);

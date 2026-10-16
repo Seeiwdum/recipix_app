@@ -2,11 +2,20 @@
 title: Changelog
 owner: แพรว
 last_updated: 2026-10-16
-version: 0.7.0
+version: 0.8.0
 status: active
 ---
 
 # Changelog
+
+## 0.8.0 — 2026-10-16 (random menu tab)
+- feat(random): 3-reel ingredient slot (result decided first, reels stop one by one with a 6% settle, labels hidden until each reel stops), tap to lock, expiring-first toggle, result sheet with match/have/missing/other dishes, cook a full match with undo
+- feat(random): eat-out mode — one dish reel priced within what is left today, sheet logs it as spending
+- feat(core): slot ranking weighs how many reels a dish uses (RecipeMatcher.rank weighFocus)
+- feat(data): assets/data/eat_out.json (12 dishes)
+- chore: .vscode/launch.json (Chrome / Android / core tests)
+- test: core 65, app 128 (+ random goldens)
+- docs: ADR-011, UI critique
 
 ## 0.7.0 — 2026-10-16 (dashboard)
 - feat(dashboard): editable period budget, payday and meal price with steppers (hold to repeat and speed up); deficit line; pay-period timeline; what the money left buys; badge grid (3 columns, concept kept) with rule sheet; most-cooked dishes

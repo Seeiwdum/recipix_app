@@ -63,3 +63,8 @@ status: active
 ## Windows Developer Mode (เพิ่ม 2026-10-16)
 - `flutter pub add` แพ็กเกจที่มีปลั๊กอิน (เช่น shared_preferences) บน Windows ขึ้นข้อความให้เปิด Developer Mode เพื่อสร้าง symlink — จำเป็นเฉพาะ build Windows/Linux desktop; เว็บและ Android ใช้ได้ (ตรวจแล้ว: `pub get` ผ่าน, web build ผ่าน)
 - ถ้าจะ build บน Windows desktop หรือเครื่องมืออื่นต้องการ: ผู้ก่อตั้งเปิดเองที่ `start ms-settings:developers` (เป็นการตั้งค่าระบบ ทีมไม่แตะ)
+
+## ใช้ใน VS Code ของผู้ก่อตั้ง (เพิ่ม 2026-10-16)
+- เปิดโฟลเดอร์ `D:\Recipix\recipix_app\recipix_app` (File → Open Folder)
+- `.vscode/launch.json` มี 3 แบบ: **Recipix (Chrome)** (F5 แล้วเปิด Chrome พร้อม hot reload), **Recipix (Android)** (เมื่อมี emulator/มือถือ), **Core tests**
+- ทำต่อด้วย Claude Code ใน VS Code ได้เลย: `CLAUDE.md` + `docs/handover_notes.md` บอกสถานะทั้งหมด เซสชันใหม่อ่านแล้วทำต่อได้ทันที

@@ -55,21 +55,33 @@ final class RecipeMatcher {
     );
   }
 
-  /// Ranks recipes by match ratio, then by focus hits, then by fewest
-  /// missing items, then by name for a stable order.
+  /// Ranks recipes by score (the match ratio, or the weighted score below),
+  /// then match ratio, focus hits, fewest missing items, and name for a
+  /// stable order.
   ///
   /// When [focusKeys] is non-empty, recipes that use none of them are
   /// dropped, so a spin always yields a dish built around what was rolled.
+  ///
+  /// With [weighFocus] (the slot machine), the first key is
+  /// `matchRatio x share of focus keys used`: a dish that uses all three
+  /// reels at 80% beats a complete dish that uses only one of them.
   List<RecipeMatch> rank(
     Iterable<Recipe> recipes,
     Set<String> availableKeys, {
     Set<String> focusKeys = const {},
+    bool weighFocus = false,
   }) {
     final matches = [
       for (final r in recipes) match(r, availableKeys, focusKeys: focusKeys),
     ].where((m) => focusKeys.isEmpty || m.focusHits > 0).toList();
 
+    double score(RecipeMatch m) => weighFocus && focusKeys.isNotEmpty
+        ? m.matchRatio * m.focusHits / focusKeys.length
+        : m.matchRatio;
+
     matches.sort((a, b) {
+      final byScore = score(b).compareTo(score(a));
+      if (byScore != 0) return byScore;
       final byRatio = b.matchRatio.compareTo(a.matchRatio);
       if (byRatio != 0) return byRatio;
       final byFocus = b.focusHits.compareTo(a.focusHits);

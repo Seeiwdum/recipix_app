@@ -20,11 +20,7 @@ abstract final class S {
   static const dashboardTitle = 'แดชบอร์ด';
 
   // Placeholders until each tab is built (Phase 2)
-  static const fridgeComingSoon =
-      'หน้าตัดตู้เย็น ลากของจากตะกร้าไปวางบนชั้นได้';
   static const scanComingSoon = 'กล้องสำหรับวัตถุดิบ บาร์โค้ด และใบเสร็จ';
-  static const randomComingSoon = 'วงล้อ 3 แกน หมุนหาเมนูจากของที่มี';
-  static const dashboardComingSoon = 'งบอาหาร เหรียญรางวัล และเมนูที่กินบ่อย';
   static const underConstruction = 'กำลังทำ';
 
   // Badges (ids from recipix_core BadgeIds)
@@ -159,6 +155,30 @@ abstract final class S {
   static const repeatsTitle = 'เมนูที่ทำบ่อย';
   static const repeatsEmpty = 'ยังไม่ได้ทำกินจากแอป ลองทำจากแผนกินดู';
   static String times(int n) => '$n ครั้ง';
+
+  // Random menu tab
+  static const modeCook = 'ทำเอง';
+  static const modeEatOut = 'สั่งข้างนอก';
+  static const spin = 'หมุน';
+  static const spinHintCook = 'สุ่มวัตถุดิบ 3 อย่างจากตู้ แล้วหาเมนูที่ใช้ได้';
+  static const spinHintEatOut = 'สุ่มเมนูที่ราคาไม่เกินงบที่เหลือวันนี้';
+  static const lockHint = 'แตะแกนเพื่อล็อกวัตถุดิบไว้';
+  static const preferExpiring = 'เน้นของใกล้หมดอายุ';
+  static const locked = 'ล็อกแล้ว';
+  static String reelLabel(int i, String name) => 'แกน ${i + 1}: $name';
+  static const emptyReel = 'ยังไม่ได้หมุน';
+  static const reelSpinning = 'กำลังหมุน';
+  static const noMatch = 'ยังไม่มีเมนูที่ใช้ของชุดนี้ ลองหมุนใหม่หรือปลดล็อก';
+  static const haveTitle = 'ของที่มี';
+  static const missingTitle = 'ของที่ขาด';
+  static const cookThis = 'ทำเมนูนี้';
+  static const otherMatches = 'เมนูอื่นที่ใช้ของชุดนี้';
+  static String priceBaht(String p) => '$p บาท';
+  static String leftAfter(String baht) => 'เหลืองบวันนี้ $baht บาทหลังมื้อนี้';
+  static String overAfter(String baht) => 'เกินงบวันนี้ $baht บาท';
+  static const nothingFits =
+      'ไม่มีเมนูในงบที่เหลือวันนี้ นี่คือเมนูที่ถูกที่สุด';
+  static String eatThis(String baht) => 'กินมื้อนี้ · บันทึก $baht บาท';
 
   // Fridge tab
   static String fridgeCapacity(int used, int total) =>

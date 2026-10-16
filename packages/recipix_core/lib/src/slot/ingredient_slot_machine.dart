@@ -76,7 +76,7 @@ final class IngredientSlotMachine {
     final available = {for (final i in pool) i.key!};
     final ranked = focus.isEmpty
         ? const <RecipeMatch>[]
-        : matcher.rank(recipes, available, focusKeys: focus);
+        : matcher.rank(recipes, available, focusKeys: focus, weighFocus: true);
 
     return SlotSpinResult(
       reels: reels,

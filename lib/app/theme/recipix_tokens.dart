@@ -81,6 +81,14 @@ class RecipixTokens extends ThemeExtension<RecipixTokens> {
   static const Duration medium = Duration(milliseconds: 220);
   static const Duration slow = Duration(milliseconds: 360);
   static const Duration countUp = Duration(milliseconds: 400);
+
+  /// Slot reels: first reel stops after [spinBase], each next one
+  /// [spinStagger] later ("reels stop one by one", spec 5.4).
+  static const Duration spinBase = Duration(milliseconds: 900);
+  static const Duration spinStagger = Duration(milliseconds: 260);
+
+  /// Settle overshoot as a share of one tile (spring budget is 6%).
+  static const double spinOvershoot = 0.06;
   static const Duration staggerStep = Duration(milliseconds: 30);
   static const int staggerMaxItems = 6;
   static const double riseOffset = 8;

@@ -27,7 +27,7 @@ void main() {
 
     await tester.tap(find.bySemanticsLabel(S.tabRandom));
     await tester.pumpAndSettle();
-    expect(find.text(S.randomComingSoon), findsOneWidget);
+    expect(find.byKey(const ValueKey('spin')), findsOneWidget);
     expect(find.byKey(const ValueKey('survival-days')), findsNothing);
 
     await tester.tap(find.bySemanticsLabel(S.tabDashboard));

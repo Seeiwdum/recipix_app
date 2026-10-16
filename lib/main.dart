@@ -6,6 +6,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'app/app.dart';
 import 'app/providers.dart';
 import 'features/fridge/data/ingredient_catalog.dart';
+import 'features/random/data/eat_out_menu.dart';
+import 'features/random/domain/random_controller.dart';
 import 'shared/data/recipe_book.dart';
 import 'shared/persistence/app_store.dart';
 import 'shared/widgets/ingredient_tile.dart';
@@ -17,6 +19,9 @@ Future<void> main() async {
   );
   final recipes = RecipeBook.fromJsonString(
     await rootBundle.loadString(RecipeBook.assetPath),
+  );
+  final eatOut = EatOutMenu.fromJsonString(
+    await rootBundle.loadString(EatOutMenu.assetPath),
   );
   // Everything the user has entered lives on this device only (ADR-007,
   // ADR-009); read it before the first frame so nothing flickers.
@@ -34,6 +39,7 @@ Future<void> main() async {
       overrides: [
         catalogProvider.overrideWithValue(catalog),
         recipeBookProvider.overrideWithValue(recipes),
+        eatOutMenuProvider.overrideWithValue(eatOut),
         appStoreProvider.overrideWithValue(store),
         savedDataProvider.overrideWithValue(saved),
       ],
