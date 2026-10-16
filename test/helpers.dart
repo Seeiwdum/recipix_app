@@ -11,6 +11,8 @@ import 'package:recipix_app/features/fridge/data/ingredient_catalog.dart';
 import 'package:recipix_app/shared/data/recipe_book.dart';
 import 'package:recipix_app/features/random/data/eat_out_menu.dart';
 import 'package:recipix_app/features/random/domain/random_controller.dart';
+import 'package:recipix_app/features/scan/data/product_lookup.dart';
+import 'package:recipix_app/features/scan/presentation/scan_camera.dart';
 import 'package:recipix_core/recipix_core.dart';
 
 /// Fixed day so freshness labels and goldens never drift.
@@ -47,17 +49,60 @@ void setPhoneSize(WidgetTester tester, double width, {double height = 800}) {
   addTearDown(tester.view.reset);
 }
 
-/// The whole app with test data and a fixed day.
-Widget testApp({String initialLocation = '/home'}) => ProviderScope(
+/// The whole app with test data and a fixed day. No real camera and no
+/// network: the scan tab gets [camera] and [lookup] (fresh fakes by
+/// default).
+Widget testApp({
+  String initialLocation = '/home',
+  FakeCamera? camera,
+  ProductLookup? lookup,
+}) => ProviderScope(
   overrides: [
     catalogProvider.overrideWithValue(testCatalog),
     recipeBookProvider.overrideWithValue(testRecipes),
     eatOutMenuProvider.overrideWithValue(testEatOut),
     randomSourceProvider.overrideWithValue(Random(7)),
     todayProvider.overrideWithValue(testToday),
+    scanCameraProvider.overrideWithValue((camera ?? FakeCamera()).build),
+    productLookupProvider.overrideWithValue(lookup ?? FakeLookup()),
   ],
   child: RecipixApp(initialLocation: initialLocation),
 );
+
+/// Stands in for the camera: tests call [see] to "show" it a barcode.
+final class FakeCamera {
+  ValueChanged<String>? _onCode;
+
+  /// Whether the page currently wants the camera running.
+  bool active = false;
+
+  Widget build(
+    BuildContext context, {
+    required bool active,
+    required ValueChanged<String> onCode,
+  }) {
+    this.active = active;
+    _onCode = onCode;
+    return const SizedBox.expand(key: ValueKey('fake-camera'));
+  }
+
+  void see(String barcode) => _onCode!(barcode);
+}
+
+/// Answers lookups from [results] (unknown barcodes: not found) and counts
+/// the calls.
+final class FakeLookup implements ProductLookup {
+  FakeLookup([this.results = const {}]);
+
+  final Map<String, LookupResult> results;
+  int calls = 0;
+
+  @override
+  Future<LookupResult> find(String barcode) async {
+    calls++;
+    return results[barcode] ?? const ProductNotFound();
+  }
+}
 
 /// The random tab waits a beat with all reels in view before the result
 /// sheet opens. That pause is a plain timer, which pumpAndSettle does not

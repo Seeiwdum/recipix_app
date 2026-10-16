@@ -4,12 +4,14 @@ import 'package:recipix_core/recipix_core.dart';
 import '../../../app/providers.dart';
 import '../../budget/domain/budget_controller.dart';
 import '../../fridge/domain/fridge_controller.dart';
+import '../../scan/domain/barcode_memory.dart';
 
 /// Badge progress, rebuilt by replaying saved history through the core
 /// `AchievementManager` (ADR-010). Deterministic: the same history always
 /// gives the same badges, so nothing about badges needs its own storage.
 ///
-/// Per day: items used/discarded and dishes cooked, then — for days that
+/// Per day: items used/discarded, the first barcode scan (ADR-014) and
+/// dishes cooked, then — for days that
 /// are over — a `DayClosed` with that day's spending against the allowance
 /// it had that morning.
 final badgeProgressProvider = Provider<List<BadgeProgress>>((ref) {
@@ -27,6 +29,8 @@ final badgeProgressProvider = Provider<List<BadgeProgress>>((ref) {
           : ItemDiscarded(a.date, itemId: a.itemId),
     );
   }
+  final firstScan = ref.watch(barcodeMemoryProvider).firstScanOn;
+  if (firstScan != null) add(ItemsScanned(firstScan, count: 1));
   for (final c in fridge.cooked) {
     add(
       RecipeCooked(

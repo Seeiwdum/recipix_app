@@ -68,7 +68,7 @@ void main() {
     await tester.pump(const Duration(milliseconds: 30));
     // Fridge is now the outgoing tab and must still be fading, not gone.
     expect(find.byType(FridgeBoard), findsOneWidget);
-    expect(find.text(S.scanComingSoon), findsOneWidget);
+    expect(find.text(S.scanHint), findsOneWidget);
 
     await tester.pumpAndSettle();
     expect(find.byType(FridgeBoard), findsNothing);
@@ -88,10 +88,7 @@ void main() {
 
     final transform = tester.widget<Transform>(
       find
-          .ancestor(
-            of: find.text(S.scanComingSoon),
-            matching: find.byType(Transform),
-          )
+          .ancestor(of: find.text(S.scanHint), matching: find.byType(Transform))
           .first,
     );
     expect(transform.transform.getTranslation().y, 0);

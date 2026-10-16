@@ -7,6 +7,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:recipix_app/app/app.dart';
 import 'package:recipix_app/features/fridge/presentation/fridge_board.dart';
+import 'package:recipix_app/features/scan/data/product_lookup.dart';
 
 import '../helpers.dart';
 
@@ -50,6 +51,34 @@ void main() {
     await expectLater(
       find.byType(RecipixApp),
       matchesGoldenFile('goldens/fridge_sheet_390.png'),
+    );
+  });
+
+  testWidgets('scan tab and result sheet at 390', (tester) async {
+    setPhoneSize(tester, 390, height: 844);
+    final camera = FakeCamera();
+    await tester.pumpWidget(
+      testApp(
+        initialLocation: '/scan',
+        camera: camera,
+        lookup: FakeLookup({
+          '8850329100011': const ProductFound(
+            name: 'นมสดรสจืด',
+            brand: 'Meiji',
+          ),
+        }),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await expectLater(
+      find.byType(RecipixApp),
+      matchesGoldenFile('goldens/scan_390.png'),
+    );
+    camera.see('8850329100011');
+    await tester.pumpAndSettle();
+    await expectLater(
+      find.byType(RecipixApp),
+      matchesGoldenFile('goldens/scan_result_390.png'),
     );
   });
 

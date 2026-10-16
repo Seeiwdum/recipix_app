@@ -238,3 +238,28 @@ void _checkVersion(Map<String, Object?> j) {
     throw FormatException('Unsupported schema version: $v');
   }
 }
+
+/// Barcodes the user has told us about: barcode -> catalog key, and the
+/// day of the first scan (ADR-014).
+final class SavedBarcodes {
+  SavedBarcodes(Map<String, String> keys, {this.firstScanOn})
+    : keys = Map.unmodifiable(keys);
+
+  final Map<String, String> keys;
+  final LocalDate? firstScanOn;
+
+  Map<String, Object?> toJson() => {
+    'v': Codecs.schemaVersion,
+    'keys': keys,
+    'firstScanOn': firstScanOn?.toString(),
+  };
+
+  factory SavedBarcodes.fromJson(Map<String, Object?> j) {
+    _checkVersion(j);
+    final first = j['firstScanOn'] as String?;
+    return SavedBarcodes(
+      (j['keys']! as Map<String, Object?>).cast<String, String>(),
+      firstScanOn: first == null ? null : LocalDate.parse(first),
+    );
+  }
+}
