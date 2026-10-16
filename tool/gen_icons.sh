@@ -37,6 +37,9 @@ icon barcode   '<path d="M4 6v12M7.5 6v12M10 6v12M13.5 6v12M16 6v12M20 6v12"/>'
 icon receipt   '<path d="M6 3.5h12v17l-2-1.25-2 1.25-2-1.25-2 1.25-2-1.25-2 1.25z"/><path d="M9 8h6M9 11.5h6M9 15h3.5"/>'
 icon leaf      '<path d="M5 19c0-8 5-13 14-14 0 9-5 14-13 14zM5 19l7-7"/>'
 icon clock     '<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>'
+# Badges
+icon pan       '<circle cx="10" cy="13" r="6.5"/><path d="M16.5 13H21.5M7.5 12.5a2.5 2.5 0 0 1 2.5-2.5"/>'
+icon coin      '<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/>'
 icon basket    '<path d="M3.5 10h17l-1.6 8.2a2 2 0 0 1-2 1.8H7.1a2 2 0 0 1-2-1.8zM8 10l3-5.5M16 10l-3-5.5M9.5 13.5v3M14.5 13.5v3"/>'
 
 echo "icons: $(ls *.svg | wc -l)"

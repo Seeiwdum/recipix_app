@@ -2,11 +2,19 @@
 title: Changelog
 owner: แพรว
 last_updated: 2026-10-16
-version: 0.6.0
+version: 0.7.0
 status: active
 ---
 
 # Changelog
+
+## 0.7.0 — 2026-10-16 (dashboard)
+- feat(dashboard): editable period budget, payday and meal price with steppers (hold to repeat and speed up); deficit line; pay-period timeline; what the money left buys; badge grid (3 columns, concept kept) with rule sheet; most-cooked dishes
+- feat(badges): progress rebuilt by replaying saved history (used/discarded, cooked, spending) through the core AchievementManager; undo moves badges back
+- feat(core): badge events carry item ids; DayClosed.discardedCount nullable so waste badges skip untracked days
+- feat(persistence): activity log, urgent-items-used per dish and tracking start date saved (older saves still load)
+- test: core 64, app 112 (incl. dashboard goldens at 360/390/430)
+- docs: ADR-010, UI critique
 
 ## 0.6.0 — 2026-10-16 (on-device saving)
 - feat(persistence): fridge contents, shelf positions, cooked meals and the budget/spending log are saved on the device (shared_preferences 2.5.6; localStorage on web) and restored before the first frame

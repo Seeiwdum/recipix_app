@@ -87,7 +87,10 @@ final List<BadgeRule> defaultBadgeRules = List.unmodifiable(<BadgeRule>[
   StreakRule(
     badgeId: BadgeIds.zeroWasteWeek,
     target: 7,
-    outcome: (e) => e is DayClosed ? e.discardedCount == 0 : null,
+    outcome: (e) => switch (e) {
+      DayClosed(discardedCount: final n?) => n == 0,
+      _ => null,
+    },
   ),
   CountingRule(
     badgeId: BadgeIds.firstScan,

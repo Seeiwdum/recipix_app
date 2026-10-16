@@ -14,13 +14,13 @@ void main() {
 
   test('clear-expiring counts urgent uses only', () {
     final m = AchievementManager();
-    m.handle(ItemUsed(today, item: item('a'), daysLeft: 5));
-    m.handle(ItemUsed(today, item: item('b'), daysLeft: 2));
+    m.handle(ItemUsed(today, itemId: 'a', daysLeft: 5));
+    m.handle(ItemUsed(today, itemId: 'b', daysLeft: 2));
     m.handle(
       RecipeCooked(today, recipe: recipe('r', ['x']), urgentItemsUsed: 3),
     );
     expect(m.progressOf(BadgeIds.clearExpiring).current, 4);
-    final unlocked = m.handle(ItemUsed(today, item: item('c'), daysLeft: 0));
+    final unlocked = m.handle(ItemUsed(today, itemId: 'c', daysLeft: 0));
     expect(unlocked.map((u) => u.badgeId), contains(BadgeIds.clearExpiring));
     expect(m.progressOf(BadgeIds.clearExpiring).isUnlocked, isTrue);
   });
@@ -35,6 +35,22 @@ void main() {
     for (var i = 7; i < 14; i++) {
       m.handle(day(i));
     }
+    expect(m.progressOf(BadgeIds.budgetSaver).isUnlocked, isTrue);
+  });
+
+  test('days without waste tracking do not count toward zero-waste', () {
+    final m = AchievementManager();
+    for (var i = 0; i < 10; i++) {
+      m.handle(
+        DayClosed(
+          today.addDays(i),
+          spent: Money.zero,
+          allowance: Money.baht(100),
+          discardedCount: null,
+        ),
+      );
+    }
+    expect(m.progressOf(BadgeIds.zeroWasteWeek).current, 0);
     expect(m.progressOf(BadgeIds.budgetSaver).isUnlocked, isTrue);
   });
 
@@ -80,7 +96,7 @@ void main() {
         ),
       ],
     );
-    m.handle(ItemDiscarded(today, item: item('a')));
+    m.handle(ItemDiscarded(today, itemId: 'a'));
     expect(m.progress.single.fraction, 0.5);
   });
 }

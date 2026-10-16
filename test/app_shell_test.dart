@@ -32,7 +32,7 @@ void main() {
 
     await tester.tap(find.bySemanticsLabel(S.tabDashboard));
     await tester.pumpAndSettle();
-    expect(find.text(S.dashboardComingSoon), findsOneWidget);
+    expect(find.byKey(const ValueKey('budget-stepper')), findsOneWidget);
     expect(find.byType(RecipixTabBar), findsOneWidget);
   });
 

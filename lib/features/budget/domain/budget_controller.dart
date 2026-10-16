@@ -34,10 +34,16 @@ final class BudgetState {
     List<SpendingEntry>? entries,
     SpendingEntry? lastAdded,
     bool clearLastAdded = false,
+    Money? periodBudget,
+    int? paydayDayOfMonth,
+    bool clearPayday = false,
+    PriceSettings? prices,
   }) => BudgetState(
-    periodBudget: periodBudget,
-    paydayDayOfMonth: paydayDayOfMonth,
-    prices: prices,
+    periodBudget: periodBudget ?? this.periodBudget,
+    paydayDayOfMonth: clearPayday
+        ? null
+        : (paydayDayOfMonth ?? this.paydayDayOfMonth),
+    prices: prices ?? this.prices,
     quickAmounts: quickAmounts,
     entries: entries ?? this.entries,
     lastAdded: clearLastAdded ? null : (lastAdded ?? this.lastAdded),
@@ -112,6 +118,25 @@ class BudgetController extends Notifier<BudgetState> {
     );
     return entry;
   }
+
+  /// Limits keep the steppers sane; not business rules.
+  static final maxPeriodBudget = Money.baht(200000);
+  static final maxMealPrice = Money.baht(2000);
+
+  void setPeriodBudget(Money value) => state = state.copyWith(
+    periodBudget: Money.min(maxPeriodBudget, Money.max(Money.zero, value)),
+  );
+
+  /// Null = budget runs to the end of the month.
+  void setPayday(int? day) => state = day == null
+      ? state.copyWith(clearPayday: true)
+      : state.copyWith(paydayDayOfMonth: day.clamp(1, 31));
+
+  void setMealOutPrice(Money value) => state = state.copyWith(
+    prices: state.prices.copyWith(
+      mealOutPrice: Money.min(maxMealPrice, Money.max(Money.baht(1), value)),
+    ),
+  );
 
   void remove(String id) => state = state.copyWith(
     entries: state.entries.where((e) => e.id != id).toList(),

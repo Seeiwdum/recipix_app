@@ -12,18 +12,18 @@ sealed class RecipixEvent {
 
 /// An item was eaten or used (not via a recipe).
 final class ItemUsed extends RecipixEvent {
-  const ItemUsed(super.date, {required this.item, required this.daysLeft});
+  const ItemUsed(super.date, {required this.itemId, required this.daysLeft});
 
-  final IngredientItem item;
+  final String itemId;
   final int daysLeft;
 
   bool get wasUrgent => daysLeft >= 0 && daysLeft <= urgentWindowDays;
 }
 
 final class ItemDiscarded extends RecipixEvent {
-  const ItemDiscarded(super.date, {required this.item});
+  const ItemDiscarded(super.date, {required this.itemId});
 
-  final IngredientItem item;
+  final String itemId;
 }
 
 final class RecipeCooked extends RecipixEvent {
@@ -54,7 +54,10 @@ final class DayClosed extends RecipixEvent {
 
   final Money spent;
   final Money allowance;
-  final int discardedCount;
+
+  /// Null when discards were not being tracked that day (before the app
+  /// started keeping history); rules about waste then skip the day.
+  final int? discardedCount;
 
   bool get withinAllowance => spent <= allowance;
 }

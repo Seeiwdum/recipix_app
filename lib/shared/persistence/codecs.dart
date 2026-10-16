@@ -1,5 +1,6 @@
 import 'package:recipix_core/recipix_core.dart';
 
+import '../../features/fridge/domain/fridge_controller.dart';
 import '../../features/fridge/domain/fridge_layout.dart';
 
 /// JSON shapes for saved data (ADR-009). Money is whole satang, dates are
@@ -109,18 +110,41 @@ final class SavedFridge {
     required this.items,
     required this.arrangement,
     required this.cooked,
+    this.activity = const [],
+    this.trackingSince,
   });
+
+  /// Missing in saves made before this field existed.
+  final LocalDate? trackingSince;
 
   final List<IngredientItem> items;
   final FridgeArrangement arrangement;
-  final List<({String recipeId, LocalDate date})> cooked;
+  final List<({String recipeId, LocalDate date, int urgentItemsUsed})> cooked;
+
+  /// Items used or thrown away (for badges). Missing in older saves.
+  final List<ActivityEntry> activity;
 
   Map<String, Object?> toJson() => {
     'v': Codecs.schemaVersion,
     'items': [for (final i in items) Codecs.item(i)],
     'placements': Codecs.arrangement(arrangement),
     'cooked': [
-      for (final c in cooked) {'recipe': c.recipeId, 'date': c.date.toString()},
+      for (final c in cooked)
+        {
+          'recipe': c.recipeId,
+          'date': c.date.toString(),
+          'urgent': c.urgentItemsUsed,
+        },
+    ],
+    'since': trackingSince?.toString(),
+    'activity': [
+      for (final a in activity)
+        {
+          'kind': a.kind.name,
+          'date': a.date.toString(),
+          'item': a.itemId,
+          'daysLeft': a.daysLeft,
+        },
     ],
   };
 
@@ -144,6 +168,21 @@ final class SavedFridge {
           (
             recipeId: c['recipe']! as String,
             date: LocalDate.parse(c['date']! as String),
+            urgentItemsUsed: c['urgent'] as int? ?? 0,
+          ),
+      ],
+      trackingSince: j['since'] == null
+          ? null
+          : LocalDate.parse(j['since']! as String),
+      activity: [
+        for (final a
+            in (j['activity'] as List<Object?>? ?? const [])
+                .cast<Map<String, Object?>>())
+          ActivityEntry(
+            kind: RemovalKind.values.byName(a['kind']! as String),
+            date: LocalDate.parse(a['date']! as String),
+            itemId: a['item']! as String,
+            daysLeft: a['daysLeft']! as int,
           ),
       ],
     );

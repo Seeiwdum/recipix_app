@@ -33,16 +33,37 @@ final class Removal {
 
 /// A dish cooked from the fridge, kept for undo and for the plan's
 /// "meals already eaten today".
+/// One item used or thrown away, kept as history for badges.
+final class ActivityEntry {
+  const ActivityEntry({
+    required this.kind,
+    required this.date,
+    required this.itemId,
+    required this.daysLeft,
+  });
+
+  final RemovalKind kind;
+  final LocalDate date;
+  final String itemId;
+
+  /// Days to expiry when it happened (negative = already expired).
+  final int daysLeft;
+}
+
 final class CookRecord {
   const CookRecord({
     required this.recipe,
     required this.date,
+    this.urgentItemsUsed = 0,
     this.before,
     this.after,
   });
 
   final Recipe recipe;
   final LocalDate date;
+
+  /// Items within 0-2 days of expiry that went into the dish.
+  final int urgentItemsUsed;
 
   /// Undo snapshots; null for history restored from storage.
   final FridgeState? before;
@@ -56,8 +77,11 @@ final class FridgeState {
     this.filter = FridgeFilter.all,
     this.lastRemoval,
     List<CookRecord> cooked = const [],
+    List<ActivityEntry> activity = const [],
+    this.trackingSince,
   }) : items = List.unmodifiable(items),
-       cooked = List.unmodifiable(cooked);
+       cooked = List.unmodifiable(cooked),
+       activity = List.unmodifiable(activity);
 
   final List<IngredientItem> items;
   final FridgeArrangement arrangement;
@@ -66,6 +90,13 @@ final class FridgeState {
 
   /// Dishes cooked, oldest first.
   final List<CookRecord> cooked;
+
+  /// Items used or thrown away, oldest first.
+  final List<ActivityEntry> activity;
+
+  /// First day this history covers (first launch). Waste-based badges
+  /// ignore earlier days because nothing was being tracked then.
+  final LocalDate? trackingSince;
 
   int cookedOn(LocalDate day) => cooked.where((c) => c.date == day).length;
 
@@ -90,12 +121,15 @@ final class FridgeState {
     Removal? lastRemoval,
     bool clearRemoval = false,
     List<CookRecord>? cooked,
+    List<ActivityEntry>? activity,
   }) => FridgeState(
     items: items ?? this.items,
     arrangement: arrangement ?? this.arrangement,
     filter: filter ?? this.filter,
     lastRemoval: clearRemoval ? null : (lastRemoval ?? this.lastRemoval),
     cooked: cooked ?? this.cooked,
+    activity: activity ?? this.activity,
+    trackingSince: trackingSince,
   );
 }
 
@@ -125,8 +159,14 @@ class FridgeController extends Notifier<FridgeState> {
         cooked: [
           for (final c in saved.cooked)
             if (recipes[c.recipeId] case final recipe?)
-              CookRecord(recipe: recipe, date: c.date),
+              CookRecord(
+                recipe: recipe,
+                date: c.date,
+                urgentItemsUsed: c.urgentItemsUsed,
+              ),
         ],
+        activity: saved.activity,
+        trackingSince: saved.trackingSince ?? _earliest(saved),
       );
     }
     final seed = sampleFridge(
@@ -137,6 +177,7 @@ class FridgeController extends Notifier<FridgeState> {
     final initial = FridgeState(
       items: seed.items,
       arrangement: seed.arrangement,
+      trackingSince: ref.watch(todayProvider),
     );
     // Save the seed right away so its dates stay fixed on the next launch.
     store?.saveFridge(_toSaved(initial));
@@ -146,8 +187,28 @@ class FridgeController extends Notifier<FridgeState> {
   static SavedFridge _toSaved(FridgeState s) => SavedFridge(
     items: s.items,
     arrangement: s.arrangement,
-    cooked: [for (final c in s.cooked) (recipeId: c.recipe.id, date: c.date)],
+    cooked: [
+      for (final c in s.cooked)
+        (
+          recipeId: c.recipe.id,
+          date: c.date,
+          urgentItemsUsed: c.urgentItemsUsed,
+        ),
+    ],
+    activity: s.activity,
+    trackingSince: s.trackingSince,
   );
+
+  /// Saves from before `trackingSince` existed: start at the oldest
+  /// recorded event, or today when there is none.
+  LocalDate _earliest(SavedFridge s) {
+    final dates = [
+      for (final a in s.activity) a.date,
+      for (final c in s.cooked) c.date,
+    ];
+    if (dates.isEmpty) return ref.read(todayProvider);
+    return dates.reduce((a, b) => a.isBefore(b) ? a : b);
+  }
 
   int widthOf(IngredientItem item) => ref.read(catalogProvider).widthOf(item);
 
@@ -214,6 +275,15 @@ class FridgeController extends Notifier<FridgeState> {
         before: state.arrangement,
         after: next,
       ),
+      activity: [
+        ...state.activity,
+        ActivityEntry(
+          kind: kind,
+          date: ref.read(todayProvider),
+          itemId: itemId,
+          daysLeft: item.daysUntilExpiry(ref.read(todayProvider)),
+        ),
+      ],
     );
   }
 
@@ -230,10 +300,15 @@ class FridgeController extends Notifier<FridgeState> {
     } else if (p != null && next.canPlace(item.id, p.width, p.slot)) {
       next = next.place(item.id, p.width, p.slot);
     }
+    final activity = [...state.activity];
+    if (activity.isNotEmpty && activity.last.itemId == item.id) {
+      activity.removeLast();
+    }
     state = state.copyWith(
       items: [...state.items, item],
       arrangement: next,
       clearRemoval: true,
+      activity: activity,
     );
   }
 
@@ -262,7 +337,13 @@ class FridgeController extends Notifier<FridgeState> {
     state = after.copyWith(
       cooked: [
         ...after.cooked,
-        CookRecord(recipe: recipe, date: today, before: before, after: after),
+        CookRecord(
+          recipe: recipe,
+          date: today,
+          urgentItemsUsed: result.urgentItemsUsed,
+          before: before,
+          after: after,
+        ),
       ],
     );
     return result;

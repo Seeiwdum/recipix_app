@@ -76,6 +76,16 @@ void main() {
   });
 
   for (final width in [360.0, 390.0, 430.0]) {
+    testWidgets('dashboard at ${width.toInt()}', (tester) async {
+      setPhoneSize(tester, width, height: 1500);
+      await tester.pumpWidget(testApp(initialLocation: '/dashboard'));
+      await tester.pumpAndSettle();
+      await expectLater(
+        find.byType(RecipixApp),
+        matchesGoldenFile('goldens/dashboard_${width.toInt()}.png'),
+      );
+    });
+
     testWidgets('home shell at ${width.toInt()}', (tester) async {
       setPhoneSize(tester, width, height: 844);
       await tester.pumpWidget(testApp());

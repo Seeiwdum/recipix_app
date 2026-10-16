@@ -48,7 +48,7 @@ void main() {
     final saved = SavedFridge(
       items: fridge.items,
       arrangement: fridge.arrangement,
-      cooked: [(recipeId: 'khai_jiao', date: testToday)],
+      cooked: [(recipeId: 'khai_jiao', date: testToday, urgentItemsUsed: 2)],
     );
     final back = SavedFridge.fromJson(
       jsonDecode(jsonEncode(saved.toJson())) as Map<String, Object?>,
@@ -150,6 +150,10 @@ void main() {
     expect(s.items.firstWhere((i) => i.key == 'tofu').quantity.amount, 1);
     expect(s.cooked.single.recipe.id, 'kaeng_jued_tofu');
     expect(s.cooked.single.date, testToday);
+    expect(s.cooked.single.urgentItemsUsed, greaterThan(0));
+    expect(s.activity.single.kind, RemovalKind.used);
+    expect(s.activity.single.itemId, basil.id);
+    expect(s.trackingSince, testToday);
     final spent = c
         .read(budgetProvider)
         .entries

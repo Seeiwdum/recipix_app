@@ -122,6 +122,44 @@ abstract final class S {
   static const cookMissing = 'ของในตู้ไม่พอแล้ว';
   static String toastCooked(String name) => 'ทำ$nameแล้ว';
 
+  // Dashboard
+  static const budgetSection = 'งบอาหาร';
+  static const periodBudgetLabel = 'งบรอบนี้';
+  static String budgetUsed(String spent, String left) =>
+      'ใช้ไปแล้ว $spent บาท · เหลือ $left บาท';
+  static String budgetOverspent(String over) => 'ใช้เกินงบรอบนี้ $over บาท';
+  static const settingsSection = 'ตั้งค่า';
+  static const paydaySetting = 'วันเงินเข้า';
+  static const paydayEndOfMonth = 'ใช้ถึงสิ้นเดือน';
+  static String paydayDay(int day) => 'ทุกวันที่ $day';
+  static const mealPriceSetting = 'ซื้อกินมื้อละ';
+  static String decrease(String what) => 'ลด$what';
+  static String increase(String what) => 'เพิ่ม$what';
+  static const timelineTitle = 'รอบนี้';
+  static const markWithin = 'อยู่ในงบ';
+  static const markOver = 'เกินงบ';
+  static const markNoRecord = 'ไม่ได้บันทึก';
+  static const buysTitle = 'เงินที่เหลือซื้ออะไรได้';
+  static String buysMeals(String price) => 'ซื้อกินมื้อละ $price บาท';
+  static String buysDays(int meals) => 'ซื้อกินวันละ $meals มื้อ';
+  static const buysAllowance = 'งบต่อวันถึงเงินเข้า';
+  static String countMeals(int n) => '$n มื้อ';
+  static String countDays(String n) => '$n วัน';
+  static const badgesTitle = 'เหรียญ';
+  static String badgeProgress(int c, int t) => '$c/$t';
+  static String badgeUnlockedOn(String date) => 'ได้เมื่อ $date';
+  static const badgeLocked = 'ยังไม่ได้';
+  static const badgeRules = {
+    'clear_expiring': 'ใช้ของที่เหลือ 0-2 วันให้ทันก่อนเสีย ครบ 5 ชิ้น',
+    'budget_saver': 'ใช้เงินไม่เกินงบของวันนั้น 7 วันติดกัน',
+    'home_cook': 'ทำกินเองจากของในตู้ 10 มื้อ',
+    'zero_waste_week': 'ไม่ทิ้งของเลย 7 วันติดกัน',
+    'first_scan': 'สแกนของเข้าตู้ครั้งแรก',
+  };
+  static const repeatsTitle = 'เมนูที่ทำบ่อย';
+  static const repeatsEmpty = 'ยังไม่ได้ทำกินจากแอป ลองทำจากแผนกินดู';
+  static String times(int n) => '$n ครั้ง';
+
   // Fridge tab
   static String fridgeCapacity(int used, int total) =>
       'ใช้ไป $used จาก $total ช่อง';
