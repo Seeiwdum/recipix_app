@@ -11,7 +11,9 @@ import 'package:recipix_app/features/fridge/data/ingredient_catalog.dart';
 import 'package:recipix_app/shared/data/recipe_book.dart';
 import 'package:recipix_app/features/random/data/eat_out_menu.dart';
 import 'package:recipix_app/features/random/domain/random_controller.dart';
+import 'package:recipix_app/features/scan/data/object_finder.dart';
 import 'package:recipix_app/features/scan/data/product_lookup.dart';
+import 'package:recipix_app/features/scan/presentation/photo_camera.dart';
 import 'package:recipix_app/features/scan/presentation/scan_camera.dart';
 import 'package:recipix_core/recipix_core.dart';
 
@@ -56,6 +58,7 @@ Widget testApp({
   String initialLocation = '/home',
   FakeCamera? camera,
   ProductLookup? lookup,
+  FakeFinder? finder,
 }) => ProviderScope(
   overrides: [
     catalogProvider.overrideWithValue(testCatalog),
@@ -65,6 +68,11 @@ Widget testApp({
     todayProvider.overrideWithValue(testToday),
     scanCameraProvider.overrideWithValue((camera ?? FakeCamera()).build),
     productLookupProvider.overrideWithValue(lookup ?? FakeLookup()),
+    photoCameraProvider.overrideWithValue(fakePhotoCamera),
+    photoImageProvider.overrideWithValue(
+      (path) => SizedBox.expand(key: ValueKey('photo-$path')),
+    ),
+    objectFinderProvider.overrideWithValue(finder ?? FakeFinder()),
   ],
   child: RecipixApp(initialLocation: initialLocation),
 );
@@ -87,6 +95,34 @@ final class FakeCamera {
   }
 
   void see(String barcode) => _onCode!(barcode);
+}
+
+/// Photo camera stand-in: the real shutter widget, which "takes"
+/// `fake.jpg` straight away. Shows whether it is active in its key.
+Widget fakePhotoCamera(
+  BuildContext context, {
+  required bool active,
+  required ValueChanged<String> onCaptured,
+}) => Stack(
+  key: ValueKey('fake-photo-camera-$active'),
+  children: [
+    Align(
+      alignment: Alignment.bottomCenter,
+      child: ShutterButton(onTap: () => onCaptured('fake.jpg')),
+    ),
+  ],
+);
+
+/// Finds [boxes] in any photo (null = this device cannot look).
+final class FakeFinder implements ObjectFinder {
+  FakeFinder([this.boxes = const [Rect.fromLTRB(0.1, 0.1, 0.4, 0.5)]]);
+
+  final List<Rect>? boxes;
+
+  @override
+  Future<PhotoFindings?> find(String imagePath) async => boxes == null
+      ? null
+      : PhotoFindings(imageSize: const Size(300, 400), boxes: boxes!);
 }
 
 /// Answers lookups from [results] (unknown barcodes: not found) and counts

@@ -38,6 +38,12 @@ class BarcodeMemory extends Notifier<BarcodeBook> {
     );
   }
 
+  /// Records the first scan day without a barcode (photo mode, ADR-016).
+  void markScanned() {
+    if (state.firstScanOn != null) return;
+    state = BarcodeBook(keys: state.keys, firstScanOn: ref.read(todayProvider));
+  }
+
   /// Records that [barcode] is a [catalogKey] (a scan that put something
   /// in the basket).
   void remember(String barcode, String catalogKey) {

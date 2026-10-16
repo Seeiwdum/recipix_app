@@ -41,6 +41,22 @@ abstract final class S {
   static const scanCameraUnavailable = 'เครื่องนี้เปิดกล้องไม่ได้';
   static const scanCameraUnavailableHint = 'เพิ่มของเองได้จากปุ่มด้านล่าง';
 
+  // Photo mode (ADR-016)
+  static const scanModeBarcode = 'บาร์โค้ด';
+  static const scanModePhoto = 'ถ่ายของ';
+  static const photoHint = 'ถ่ายของที่ซื้อมา แอปจะตีกรอบให้ทีละชิ้น';
+  static const photoFinding = 'กำลังหาของในภาพ';
+  static const photoTapBox = 'แตะกรอบเพื่อบอกว่าเป็นอะไร';
+  static String photoAdded(int n) => 'เพิ่มจากภาพนี้แล้ว $n ชิ้น';
+  static const photoNone = 'ไม่เจอของในภาพ ลองถ่ายใกล้ขึ้น หรือเพิ่มของเอง';
+  static const photoFailed =
+      'เครื่องนี้หาของในภาพไม่ได้ ใช้โหมดบาร์โค้ดหรือเพิ่มของเองได้';
+  static const photoRetake = 'ถ่ายใหม่';
+  static const shutter = 'ถ่ายภาพ';
+  static String photoBox(int n) => 'กรอบที่ $n';
+  static const photoPickTitle = 'ชิ้นนี้คืออะไร';
+  static const addByHand = 'เพิ่มของเอง';
+
   // Badges (ids from recipix_core BadgeIds)
   static const badgeNames = {
     // Short enough for one line on the stamp (the longer name broke

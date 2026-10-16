@@ -8,6 +8,12 @@ status: active
 
 # Changelog
 
+## 0.13.0 — 2026-10-17 (photo mode, ADR-016)
+- feat(scan): scan tab has two modes (barcode | photo). Photo mode: camera preview with a round shutter (`camera` 0.12.1), ML Kit object detection on the still photo (`google_mlkit_object_detection` 0.17.1, on device), a box around each thing found; tap a box to pick what it is and it goes into the basket.
+- feat(scan): nothing found / device cannot look (web) explain themselves; retake; add by hand always there; only the chosen mode's camera runs, only while the tab is on screen.
+- refactor: `ModePicker` shared by the random and scan tabs.
+- test: photo_mode_test.dart and golden photo_boxes_390.
+
 ## 0.12.0 — 2026-10-17 (menu suggestions and recipe page, ADR-015)
 - feat(home): "เมนูแนะนำ" under the report — up to 3 dishes: fridge dishes using urgent items first, then any fridge dish, then easy dishes; each says where it comes from.
 - feat(home): recipe page `/home/recipe/:id` — ingredients with have/missing/optional, numbered steps, difficulty, badges this cook would move, and one "cook this" button when everything is on hand (with undo).
