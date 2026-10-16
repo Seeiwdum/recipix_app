@@ -95,7 +95,32 @@ abstract final class S {
     0 => 'ควรใช้วันนี้',
     _ => 'เหลือ $days วัน',
   };
-  static const menuTitle = 'เมนูที่ใช้ของใกล้หมด';
+  static const menuTitle = 'เมนูแนะนำ';
+  static const menuHint = 'แตะดูวัตถุดิบและวิธีทำ';
+  static const suggestFromFridge = 'จากของในตู้';
+  static const suggestEasy = 'ทำง่าย';
+
+  // Recipe page (ADR-015)
+  static const difficultyNames = {
+    'easy': 'ง่าย',
+    'medium': 'ปานกลาง',
+    'hard': 'ยาก',
+  };
+  static String difficulty(String name) => 'ระดับ${difficultyNames[name]}';
+  static const recipeIngredients = 'วัตถุดิบ';
+  static const recipeSteps = 'วิธีทำ';
+  static const recipeBadges = 'ทำเมนูนี้แล้วได้อะไร';
+  static const recipeHave = 'มีแล้ว';
+  static const recipeMissing = 'ขาด';
+  static const recipeOptional = 'ไม่ใส่ก็ได้';
+  static String recipeNeed(int n) => 'ขาดอีก $n อย่าง ทำได้เมื่อมีครบ';
+  static const recipeNoSteps = 'ยังไม่มีวิธีทำของเมนูนี้';
+  static const recipeNotFound = 'ไม่พบเมนูนี้';
+  static String badgeGain(int n, int current, int target) =>
+      '+$n · ${current + n > target ? target : current + n}/$target';
+  static String badgeGainDone(int n) => '+$n · ได้แล้ว';
+  static String badgeUnlocksNow(int n) => '+$n · ได้เหรียญนี้';
+  static String stepNumber(int n) => '$n.';
   static const menuFull = 'ครบทุกอย่าง';
   static String menuMissing(String names) => 'ขาด $names';
   static String matchPercent(int p) => 'เข้ากัน $p%';

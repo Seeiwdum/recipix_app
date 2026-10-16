@@ -23,6 +23,10 @@ final class RecipeBook {
     name: json['name']! as String,
     kcalPerServing: (json['kcal']! as num).toDouble(),
     cookMinutes: json['minutes'] as int? ?? 0,
+    difficulty: RecipeDifficulty.values.byName(
+      json['difficulty'] as String? ?? RecipeDifficulty.easy.name,
+    ),
+    steps: (json['steps'] as List<Object?>? ?? const []).cast<String>(),
     ingredients: [
       for (final i
           in (json['ingredients']! as List<Object?>)

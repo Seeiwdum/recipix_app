@@ -21,13 +21,35 @@ final useFirstProvider = Provider<List<IngredientItem>>((ref) {
   return [...report.expiredItems, ...report.urgentItems];
 });
 
-/// One dish to suggest: the best match that uses something urgent, or the
-/// best match overall when nothing is urgent. Null when nothing matches.
-/// Shown only when the plan has no home meal to offer.
-final menuSuggestionProvider = Provider<RecipeMatch?>((ref) {
+/// Why a dish is on the home suggestion list (ADR-015).
+enum SuggestionSource {
+  /// Uses something from the fridge (urgent items first).
+  fridge,
+
+  /// An easy everyday dish, to fill the list when the fridge has little.
+  easy,
+}
+
+final class MenuSuggestion {
+  const MenuSuggestion(this.match, this.source);
+
+  final RecipeMatch match;
+  final SuggestionSource source;
+}
+
+/// Up to [maxMenuSuggestions] dishes for the home page. First dishes that
+/// use what is in the fridge — those using something urgent before the
+/// rest — then easy dishes, fewest missing first. A dish with nothing on
+/// hand is never listed as "from the fridge" (it showed "0%" on an empty
+/// fridge — critique: ฎา, ธนากร). The plan's next home meal is left out,
+/// it already has its own line.
+const maxMenuSuggestions = 3;
+
+final menuSuggestionsProvider = Provider<List<MenuSuggestion>>((ref) {
   final items = ref.watch(fridgeProvider).items;
   final today = ref.watch(todayProvider);
   final recipes = ref.watch(recipeBookProvider).recipes;
+  final skip = ref.watch(mealPlanProvider).nextHomeMeal?.recipe?.id;
   final pool = IngredientSlotMachine.usablePool(items, today);
   final available = {for (final i in pool) i.key!};
   final urgent = {
@@ -35,14 +57,81 @@ final menuSuggestionProvider = Provider<RecipeMatch?>((ref) {
       if (i.isUrgent(today)) i.key!,
   };
   const matcher = RecipeMatcher();
-  final ranked = matcher.rank(recipes, available, focusKeys: urgent);
-  // Never suggest a dish with nothing on hand (it showed "0%" on an empty
-  // fridge — critique: ฎา, ธนากร).
-  if (ranked.isNotEmpty && ranked.first.haveKeys.isNotEmpty) {
-    return ranked.first;
+
+  final out = <MenuSuggestion>[];
+  final seen = <String>{?skip};
+  void take(Iterable<RecipeMatch> matches, SuggestionSource source) {
+    for (final m in matches) {
+      if (out.length == maxMenuSuggestions) return;
+      if (seen.add(m.recipe.id)) out.add(MenuSuggestion(m, source));
+    }
   }
-  final any = matcher.rank(recipes, available);
-  return any.isEmpty || any.first.haveKeys.isEmpty ? null : any.first;
+
+  bool onHand(RecipeMatch m) => m.haveKeys.isNotEmpty;
+  if (urgent.isNotEmpty) {
+    take(
+      matcher.rank(recipes, available, focusKeys: urgent).where(onHand),
+      SuggestionSource.fridge,
+    );
+  }
+  take(matcher.rank(recipes, available).where(onHand), SuggestionSource.fridge);
+  final easy =
+      [
+        for (final r in recipes)
+          if (r.difficulty == RecipeDifficulty.easy)
+            matcher.match(r, available),
+      ]..sort((a, b) {
+        final byMissing = a.missingKeys.length.compareTo(b.missingKeys.length);
+        return byMissing != 0
+            ? byMissing
+            : a.recipe.cookMinutes.compareTo(b.recipe.cookMinutes);
+      });
+  take(easy, SuggestionSource.easy);
+  return out;
+});
+
+/// Everything the recipe page shows for one dish (ADR-015).
+final class RecipeDetail {
+  const RecipeDetail({
+    required this.match,
+    required this.urgentItemsUsed,
+    required this.badgeGains,
+  });
+
+  final RecipeMatch match;
+  Recipe get recipe => match.recipe;
+
+  /// Items within 0-2 days of expiry that cooking it now would use up.
+  final int urgentItemsUsed;
+
+  /// Badge id -> how far cooking it now moves that badge.
+  final Map<String, int> badgeGains;
+}
+
+final recipeDetailProvider = Provider.family<RecipeDetail?, String>((
+  ref,
+  recipeId,
+) {
+  Recipe? recipe;
+  for (final r in ref.watch(recipeBookProvider).recipes) {
+    if (r.id == recipeId) recipe = r;
+  }
+  if (recipe == null) return null;
+  final items = ref.watch(fridgeProvider).items;
+  final today = ref.watch(todayProvider);
+  final available = {
+    for (final i in IngredientSlotMachine.usablePool(items, today)) i.key!,
+  };
+  final urgent = const InventoryService()
+      .cook(items, recipe, today: today)
+      .urgentItemsUsed;
+  return RecipeDetail(
+    match: const RecipeMatcher().match(recipe, available),
+    urgentItemsUsed: urgent,
+    badgeGains: badgeGains(
+      RecipeCooked(today, recipe: recipe, urgentItemsUsed: urgent),
+    ),
+  );
 });
 
 /// Every meal from now to payday (ADR-008). Meals already covered today —

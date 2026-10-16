@@ -1,60 +1,112 @@
 {
   "version": 1,
-  "note": "Everyday Thai dishes, one batch = one serving. Amounts and kcal are first-pass estimates to be verified by Nutrition & Data. Pantry staples (oil, salt, sugar) are not listed.",
+  "note": "Everyday Thai dishes, one batch = one serving. Amounts and kcal are first-pass estimates to be verified by Nutrition & Data. Pantry staples (oil, salt, sugar) are not listed. Steps and difficulty are a first draft (ADR-015), also to be checked by Nutrition & Data.",
   "recipes": [
-    {"id": "kaprao_moo", "name": "ผัดกะเพราหมูสับ", "kcal": 650, "minutes": 15, "ingredients": [
+    {"id": "kaprao_moo", "name": "ผัดกะเพราหมูสับ", "kcal": 650, "minutes": 15, "difficulty": "easy", "ingredients": [
       {"key": "pork", "amount": 150, "unit": "gram"},
       {"key": "holy_basil", "amount": 20, "unit": "gram"},
       {"key": "chili", "amount": 10, "unit": "gram"},
       {"key": "garlic", "amount": 10, "unit": "gram"},
       {"key": "rice", "amount": 200, "unit": "gram"},
       {"key": "egg", "amount": 1, "unit": "piece", "optional": true}
+    ], "steps": [
+      "โขลกกระเทียมกับพริกพอแหลก",
+      "ตั้งกระทะใส่น้ำมันเล็กน้อย ผัดกระเทียมพริกจนหอม",
+      "ใส่หมูสับ ผัดจนสุกทั่ว ปรุงด้วยน้ำปลา ซอสหอยนางรม น้ำตาลเล็กน้อย",
+      "ใส่ใบกะเพรา ผัดเร็วๆ แล้วปิดไฟ",
+      "ตักราดข้าว ถ้ามีไข่ ทอดไข่ดาววางด้านบน"
     ]},
-    {"id": "khai_jiao", "name": "ไข่เจียว", "kcal": 350, "minutes": 10, "ingredients": [
+    {"id": "khai_jiao", "name": "ไข่เจียว", "kcal": 350, "minutes": 10, "difficulty": "easy", "ingredients": [
       {"key": "egg", "amount": 2, "unit": "piece"},
       {"key": "fish_sauce", "amount": 10, "unit": "milliliter", "optional": true}
+    ], "steps": [
+      "ตอกไข่ใส่ชาม ใส่น้ำปลาเล็กน้อย ตีให้ขึ้นฟู",
+      "ตั้งน้ำมันในกระทะให้ร้อนจัด",
+      "เทไข่ลงกลางกระทะ รอให้ขอบพองแล้วกลับด้าน",
+      "ทอดจนเหลืองทั้งสองด้าน ตักพักให้สะเด็ดน้ำมัน"
     ]},
-    {"id": "khao_pad", "name": "ข้าวผัดไข่", "kcal": 600, "minutes": 15, "ingredients": [
+    {"id": "khao_pad", "name": "ข้าวผัดไข่", "kcal": 600, "minutes": 15, "difficulty": "easy", "ingredients": [
       {"key": "rice", "amount": 250, "unit": "gram"},
       {"key": "egg", "amount": 2, "unit": "piece"},
       {"key": "garlic", "amount": 10, "unit": "gram"},
       {"key": "tomato", "amount": 80, "unit": "gram", "optional": true},
       {"key": "cucumber", "amount": 60, "unit": "gram", "optional": true}
+    ], "steps": [
+      "สับกระเทียม หั่นมะเขือเทศเป็นชิ้นพอดีคำ",
+      "ผัดกระเทียมกับน้ำมันจนหอม ตอกไข่ลงไป ยีให้แตกพอสุก",
+      "ใส่ข้าวสวย ผัดให้เข้ากันกับไข่",
+      "ใส่มะเขือเทศ ปรุงด้วยน้ำปลาหรือซีอิ๊วขาว ผัดให้ทั่ว",
+      "ตักใส่จาน กินกับแตงกวา"
     ]},
-    {"id": "pad_pak_boong", "name": "ผัดผักบุ้งไฟแดง", "kcal": 150, "minutes": 10, "ingredients": [
+    {"id": "pad_pak_boong", "name": "ผัดผักบุ้งไฟแดง", "kcal": 150, "minutes": 10, "difficulty": "easy", "ingredients": [
       {"key": "morning_glory", "amount": 200, "unit": "gram"},
       {"key": "garlic", "amount": 10, "unit": "gram"},
       {"key": "chili", "amount": 5, "unit": "gram"}
+    ], "steps": [
+      "ล้างผักบุ้ง หั่นเป็นท่อนยาวประมาณหนึ่งคืบ",
+      "บุบกระเทียมกับพริกพอแตก",
+      "ใส่ผักบุ้ง กระเทียม พริก ซอสหอยนางรม เต้าเจี้ยวลงในจาน",
+      "ตั้งกระทะใส่น้ำมันให้ร้อนจัด เทผักลงผัดเร็วๆ ไม่เกินหนึ่งนาทีแล้วตักขึ้น"
     ]},
-    {"id": "tom_yum_goong", "name": "ต้มยำกุ้ง", "kcal": 250, "minutes": 20, "ingredients": [
+    {"id": "tom_yum_goong", "name": "ต้มยำกุ้ง", "kcal": 250, "minutes": 20, "difficulty": "medium", "ingredients": [
       {"key": "shrimp", "amount": 150, "unit": "gram"},
       {"key": "lime", "amount": 1, "unit": "piece"},
       {"key": "chili", "amount": 5, "unit": "gram"},
       {"key": "tomato", "amount": 100, "unit": "gram", "optional": true}
+    ], "steps": [
+      "แกะเปลือกกุ้ง ผ่าหลังดึงเส้นดำออก",
+      "ต้มน้ำให้เดือด ใส่ข่า ตะไคร้ ใบมะกรูด ถ้ามี",
+      "ใส่มะเขือเทศ แล้วใส่กุ้ง ต้มพอกุ้งเปลี่ยนสี อย่าต้มนานเนื้อจะแข็ง",
+      "ปิดไฟ ปรุงด้วยน้ำปลา บีบมะนาว ใส่พริกบุบ ชิมให้เปรี้ยวเผ็ดเค็มพอดี"
     ]},
-    {"id": "gai_pad_gratiem", "name": "ไก่ผัดกระเทียม", "kcal": 420, "minutes": 15, "ingredients": [
+    {"id": "gai_pad_gratiem", "name": "ไก่ผัดกระเทียม", "kcal": 420, "minutes": 15, "difficulty": "easy", "ingredients": [
       {"key": "chicken_breast", "amount": 200, "unit": "gram"},
       {"key": "garlic", "amount": 20, "unit": "gram"}
+    ], "steps": [
+      "หั่นอกไก่เป็นชิ้นบาง หมักด้วยซีอิ๊วขาวและพริกไทยสักครู่",
+      "สับกระเทียม เจียวในน้ำมันไฟกลางจนเหลืองหอม",
+      "ใส่ไก่ ผัดจนสุกทั่ว",
+      "ปรุงด้วยซอสหอยนางรม น้ำตาลเล็กน้อย ผัดให้เข้ากันแล้วตักขึ้น"
     ]},
-    {"id": "yam_khai_dao", "name": "ยำไข่ดาว", "kcal": 320, "minutes": 15, "ingredients": [
+    {"id": "yam_khai_dao", "name": "ยำไข่ดาว", "kcal": 320, "minutes": 15, "difficulty": "easy", "ingredients": [
       {"key": "egg", "amount": 2, "unit": "piece"},
       {"key": "tomato", "amount": 100, "unit": "gram"},
       {"key": "chili", "amount": 5, "unit": "gram"},
       {"key": "lime", "amount": 1, "unit": "piece"}
+    ], "steps": [
+      "ทอดไข่ดาวให้ขอบกรอบ ไข่แดงไม่ต้องสุกมาก หั่นเป็นชิ้น",
+      "หั่นมะเขือเทศ ซอยพริก",
+      "ผสมน้ำยำ: มะนาว น้ำปลา น้ำตาลเล็กน้อย พริก",
+      "คลุกไข่ มะเขือเทศ กับน้ำยำเบาๆ ให้เข้ากัน ตักใส่จาน"
     ]},
-    {"id": "kaeng_jued_tofu", "name": "แกงจืดเต้าหู้หมูสับ", "kcal": 300, "minutes": 20, "ingredients": [
+    {"id": "kaeng_jued_tofu", "name": "แกงจืดเต้าหู้หมูสับ", "kcal": 300, "minutes": 20, "difficulty": "easy", "ingredients": [
       {"key": "tofu", "amount": 1, "unit": "piece"},
       {"key": "pork", "amount": 100, "unit": "gram"},
       {"key": "cabbage", "amount": 100, "unit": "gram", "optional": true}
+    ], "steps": [
+      "หมักหมูสับด้วยซีอิ๊วขาวและพริกไทย ปั้นเป็นก้อนเล็ก",
+      "ต้มน้ำให้เดือด ใส่หมูสับทีละก้อน รอจนลอย",
+      "ใส่กะหล่ำปลีกับเต้าหู้หั่นชิ้น ต้มต่ออีกสองสามนาที",
+      "ปรุงด้วยซีอิ๊วขาวหรือน้ำปลา โรยต้นหอมผักชีถ้ามี"
     ]},
-    {"id": "pad_galam", "name": "ผัดกะหล่ำน้ำปลา", "kcal": 180, "minutes": 10, "ingredients": [
+    {"id": "pad_galam", "name": "ผัดกะหล่ำน้ำปลา", "kcal": 180, "minutes": 10, "difficulty": "easy", "ingredients": [
       {"key": "cabbage", "amount": 300, "unit": "gram"},
       {"key": "garlic", "amount": 10, "unit": "gram"},
       {"key": "fish_sauce", "amount": 15, "unit": "milliliter", "optional": true}
+    ], "steps": [
+      "ฉีกกะหล่ำปลีเป็นชิ้นพอดีคำ ล้างให้สะเด็ดน้ำ",
+      "เจียวกระเทียมในน้ำมันจนเหลืองหอม",
+      "ใส่กะหล่ำปลี ผัดไฟแรงจนขอบเริ่มเกรียม",
+      "ปรุงด้วยน้ำปลาและน้ำตาลเล็กน้อย ผัดให้ทั่วแล้วตักขึ้น"
     ]},
-    {"id": "kiew_nam", "name": "เกี๊ยวน้ำ", "kcal": 360, "minutes": 10, "ingredients": [
+    {"id": "kiew_nam", "name": "เกี๊ยวน้ำ", "kcal": 360, "minutes": 10, "difficulty": "easy", "ingredients": [
       {"key": "frozen_dumpling", "amount": 8, "unit": "piece"},
       {"key": "cabbage", "amount": 50, "unit": "gram", "optional": true}
+    ], "steps": [
+      "ต้มน้ำให้เดือด ปรุงด้วยซีอิ๊วขาวหรือซุปก้อน",
+      "ใส่เกี๊ยวแช่แข็งลงไปโดยไม่ต้องละลาย ต้มจนเกี๊ยวลอยขึ้น",
+      "ใส่กะหล่ำปลี ต้มต่ออีกหนึ่งนาที",
+      "ตักใส่ชาม โรยกระเทียมเจียวและพริกไทยถ้ามี"
     ]}
   ]
 }

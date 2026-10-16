@@ -54,6 +54,18 @@ void main() {
     );
   });
 
+  testWidgets('recipe page at 390', (tester) async {
+    setPhoneSize(tester, 390, height: 1100);
+    await tester.pumpWidget(
+      testApp(initialLocation: '/home/recipe/kaprao_moo'),
+    );
+    await tester.pumpAndSettle();
+    await expectLater(
+      find.byType(RecipixApp),
+      matchesGoldenFile('goldens/recipe_390.png'),
+    );
+  });
+
   testWidgets('scan tab and result sheet at 390', (tester) async {
     setPhoneSize(tester, 390, height: 844);
     final camera = FakeCamera();

@@ -66,11 +66,26 @@ void main() {
       expect(list.every((i) => i.daysUntilExpiry(testToday) <= 2), isTrue);
     });
 
-    test('menu suggestion uses something urgent and prefers a full match', () {
-      final m = make().read(menuSuggestionProvider)!;
-      // Tofu soup with minced pork: pork expires tomorrow, tofu is in.
-      expect(m.recipe.id, 'kaeng_jued_tofu');
-      expect(m.isJackpot, isTrue);
+    test('menu suggestions: fridge dishes first, no repeats, max 3', () {
+      final c = make();
+      final list = c.read(menuSuggestionsProvider);
+      final next = c.read(mealPlanProvider).nextHomeMeal?.recipe?.id;
+      expect(list, hasLength(maxMenuSuggestions));
+      expect(list.first.source, SuggestionSource.fridge);
+      expect(list.first.match.haveKeys, isNotEmpty);
+      final ids = list.map((s) => s.match.recipe.id).toList();
+      expect(ids.toSet(), hasLength(ids.length));
+      expect(ids, isNot(contains(next)));
+      // Fridge dishes never come after easy fillers.
+      final firstEasy = list.indexWhere(
+        (s) => s.source == SuggestionSource.easy,
+      );
+      if (firstEasy >= 0) {
+        expect(
+          list.skip(firstEasy).every((s) => s.source == SuggestionSource.easy),
+          isTrue,
+        );
+      }
     });
 
     test('report counts basket shopping and keeps mystery separate', () {

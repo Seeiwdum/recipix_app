@@ -5,6 +5,7 @@ import '../features/dashboard/presentation/dashboard_page.dart';
 import '../features/fridge/presentation/fridge_page.dart';
 import '../features/home/presentation/home_page.dart';
 import '../features/home/presentation/meal_plan_page.dart';
+import '../features/home/presentation/recipe_page.dart';
 import '../features/random/presentation/random_page.dart';
 import '../features/scan/presentation/scan_page.dart';
 import '../shared/motion/motion.dart';
@@ -71,6 +72,14 @@ GoRouter buildRouter({String initialLocation = '/home'}) {
                         path: 'plan',
                         pageBuilder: (context, state) =>
                             _detailPage(state, const MealPlanPage()),
+                      ),
+                    if (appTabs[i].path == '/home')
+                      GoRoute(
+                        path: 'recipe/:id',
+                        pageBuilder: (context, state) => _detailPage(
+                          state,
+                          RecipePage(recipeId: state.pathParameters['id']!),
+                        ),
                       ),
                   ],
                 ),

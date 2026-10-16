@@ -10,6 +10,9 @@ final class RecipeIngredient {
   final bool optional;
 }
 
+/// How hard a dish is for an everyday home cook.
+enum RecipeDifficulty { easy, medium, hard }
+
 final class Recipe {
   Recipe({
     required this.id,
@@ -18,7 +21,10 @@ final class Recipe {
     required this.kcalPerServing,
     this.servings = 1,
     this.cookMinutes = 0,
+    this.difficulty = RecipeDifficulty.easy,
+    List<String> steps = const [],
   }) : ingredients = List.unmodifiable(ingredients),
+       steps = List.unmodifiable(steps),
        requiredKeys = Set.unmodifiable({
          for (final i in ingredients)
            if (!i.optional) i.key,
@@ -32,6 +38,10 @@ final class Recipe {
   final int servings;
   final double kcalPerServing;
   final int cookMinutes;
+  final RecipeDifficulty difficulty;
+
+  /// Method, one instruction per step, in order.
+  final List<String> steps;
 
   /// Keys that must be present for a 100% match.
   final Set<String> requiredKeys;
