@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "note": "Typical street/food-court prices in baht, first-pass estimates for suggestions only. Editable later from settings.",
+  "dishes": [
+    {"id": "khao_kaprao", "name": "ข้าวกะเพราหมูสับไข่ดาว", "price": 60},
+    {"id": "khao_pad", "name": "ข้าวผัดหมู", "price": 55},
+    {"id": "khao_man_gai", "name": "ข้าวมันไก่", "price": 50},
+    {"id": "kuay_teow", "name": "ก๋วยเตี๋ยวหมู", "price": 50},
+    {"id": "som_tam", "name": "ส้มตำไทย + ข้าวเหนียว", "price": 55},
+    {"id": "khao_kha_moo", "name": "ข้าวขาหมู", "price": 60},
+    {"id": "pad_see_ew", "name": "ผัดซีอิ๊ว", "price": 60},
+    {"id": "jok", "name": "โจ๊กหมู", "price": 40},
+    {"id": "khao_moo_daeng", "name": "ข้าวหมูแดง", "price": 55},
+    {"id": "khao_rad_gaeng", "name": "ข้าวราดแกง 2 อย่าง", "price": 50},
+    {"id": "kanom_jeen", "name": "ขนมจีนน้ำยา", "price": 45},
+    {"id": "khao_tom", "name": "ข้าวต้มปลา", "price": 70}
+  ]
+}

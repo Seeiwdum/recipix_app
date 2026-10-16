@@ -1,0 +1,60 @@
+{
+  "version": 1,
+  "note": "Everyday Thai dishes, one batch = one serving. Amounts and kcal are first-pass estimates to be verified by Nutrition & Data. Pantry staples (oil, salt, sugar) are not listed.",
+  "recipes": [
+    {"id": "kaprao_moo", "name": "ผัดกะเพราหมูสับ", "kcal": 650, "minutes": 15, "ingredients": [
+      {"key": "pork", "amount": 150, "unit": "gram"},
+      {"key": "holy_basil", "amount": 20, "unit": "gram"},
+      {"key": "chili", "amount": 10, "unit": "gram"},
+      {"key": "garlic", "amount": 10, "unit": "gram"},
+      {"key": "rice", "amount": 200, "unit": "gram"},
+      {"key": "egg", "amount": 1, "unit": "piece", "optional": true}
+    ]},
+    {"id": "khai_jiao", "name": "ไข่เจียว", "kcal": 350, "minutes": 10, "ingredients": [
+      {"key": "egg", "amount": 2, "unit": "piece"},
+      {"key": "fish_sauce", "amount": 10, "unit": "milliliter", "optional": true}
+    ]},
+    {"id": "khao_pad", "name": "ข้าวผัดไข่", "kcal": 600, "minutes": 15, "ingredients": [
+      {"key": "rice", "amount": 250, "unit": "gram"},
+      {"key": "egg", "amount": 2, "unit": "piece"},
+      {"key": "garlic", "amount": 10, "unit": "gram"},
+      {"key": "tomato", "amount": 80, "unit": "gram", "optional": true},
+      {"key": "cucumber", "amount": 60, "unit": "gram", "optional": true}
+    ]},
+    {"id": "pad_pak_boong", "name": "ผัดผักบุ้งไฟแดง", "kcal": 150, "minutes": 10, "ingredients": [
+      {"key": "morning_glory", "amount": 200, "unit": "gram"},
+      {"key": "garlic", "amount": 10, "unit": "gram"},
+      {"key": "chili", "amount": 5, "unit": "gram"}
+    ]},
+    {"id": "tom_yum_goong", "name": "ต้มยำกุ้ง", "kcal": 250, "minutes": 20, "ingredients": [
+      {"key": "shrimp", "amount": 150, "unit": "gram"},
+      {"key": "lime", "amount": 1, "unit": "piece"},
+      {"key": "chili", "amount": 5, "unit": "gram"},
+      {"key": "tomato", "amount": 100, "unit": "gram", "optional": true}
+    ]},
+    {"id": "gai_pad_gratiem", "name": "ไก่ผัดกระเทียม", "kcal": 420, "minutes": 15, "ingredients": [
+      {"key": "chicken_breast", "amount": 200, "unit": "gram"},
+      {"key": "garlic", "amount": 20, "unit": "gram"}
+    ]},
+    {"id": "yam_khai_dao", "name": "ยำไข่ดาว", "kcal": 320, "minutes": 15, "ingredients": [
+      {"key": "egg", "amount": 2, "unit": "piece"},
+      {"key": "tomato", "amount": 100, "unit": "gram"},
+      {"key": "chili", "amount": 5, "unit": "gram"},
+      {"key": "lime", "amount": 1, "unit": "piece"}
+    ]},
+    {"id": "kaeng_jued_tofu", "name": "แกงจืดเต้าหู้หมูสับ", "kcal": 300, "minutes": 20, "ingredients": [
+      {"key": "tofu", "amount": 1, "unit": "piece"},
+      {"key": "pork", "amount": 100, "unit": "gram"},
+      {"key": "cabbage", "amount": 100, "unit": "gram", "optional": true}
+    ]},
+    {"id": "pad_galam", "name": "ผัดกะหล่ำน้ำปลา", "kcal": 180, "minutes": 10, "ingredients": [
+      {"key": "cabbage", "amount": 300, "unit": "gram"},
+      {"key": "garlic", "amount": 10, "unit": "gram"},
+      {"key": "fish_sauce", "amount": 15, "unit": "milliliter", "optional": true}
+    ]},
+    {"id": "kiew_nam", "name": "เกี๊ยวน้ำ", "kcal": 360, "minutes": 10, "ingredients": [
+      {"key": "frozen_dumpling", "amount": 8, "unit": "piece"},
+      {"key": "cabbage", "amount": 50, "unit": "gram", "optional": true}
+    ]}
+  ]
+}
