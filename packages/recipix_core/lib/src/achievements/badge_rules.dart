@@ -98,3 +98,20 @@ final List<BadgeRule> defaultBadgeRules = List.unmodifiable(<BadgeRule>[
     increment: (e) => e is ItemsScanned && e.count > 0 ? 1 : 0,
   ),
 ]);
+
+/// How far each counting badge would move if [event] happened, by badge
+/// id. Badges it does not touch are left out. Streak badges depend on the
+/// days around the event, so they are never previewed.
+Map<String, int> badgeGains(
+  RecipixEvent event, {
+  List<BadgeRule> rules = const [],
+}) {
+  final gains = <String, int>{};
+  for (final rule in rules.isEmpty ? defaultBadgeRules : rules) {
+    if (rule is CountingRule) {
+      final n = rule.increment(event);
+      if (n > 0) gains[rule.badgeId] = n;
+    }
+  }
+  return gains;
+}

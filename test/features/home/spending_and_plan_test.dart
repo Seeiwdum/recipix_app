@@ -172,6 +172,11 @@ void main() {
     await tester.pumpWidget(testApp());
     await tester.pumpAndSettle();
 
+    await tester.scrollUntilVisible(
+      find.byKey(const ValueKey('open-plan')),
+      300,
+      scrollable: find.byType(Scrollable).first,
+    );
     await tester.tap(find.byKey(const ValueKey('open-plan')));
     await tester.pumpAndSettle();
     expect(find.byType(MealPlanPage), findsOneWidget);

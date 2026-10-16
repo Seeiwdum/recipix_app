@@ -35,7 +35,7 @@ class HomePage extends ConsumerWidget {
     final t = context.tokens;
     final today = ref.watch(todayProvider);
     final useFirst = ref.watch(useFirstProvider);
-    final menu = ref.watch(menuSuggestionProvider);
+    final menus = ref.watch(menuSuggestionsProvider);
     final plan = ref.watch(mealPlanProvider);
     final next = plan.nextHomeMeal;
 
@@ -60,6 +60,15 @@ class HomePage extends ConsumerWidget {
                 const SizedBox(height: RecipixTokens.space3),
                 const _ReportSheet(),
                 const SizedBox(height: RecipixTokens.space4),
+                if (menus.isNotEmpty) ...[
+                  const _SectionHeader(
+                    title: S.menuTitle,
+                    trailing: S.menuHint,
+                  ),
+                  for (final (i, m) in menus.indexed)
+                    _MenuRow(suggestion: m, first: i == 0),
+                  const SizedBox(height: RecipixTokens.space4),
+                ],
                 _SectionHeader(
                   title: S.useFirstTitle,
                   trailing: useFirst.isEmpty ? null : S.useFirstHint,
@@ -97,9 +106,7 @@ class HomePage extends ConsumerWidget {
                 if (next != null) ...[
                   const _SectionHeader(title: S.nextMealTitle),
                   _NextMealRow(meal: next),
-                ] else if (menu != null) ...[
-                  const _SectionHeader(title: S.menuTitle),
-                  _MenuRow(match: menu),
+                  const SizedBox(height: RecipixTokens.space4),
                 ],
                 const SizedBox(height: RecipixTokens.space2),
                 _QuietLink(
@@ -479,74 +486,93 @@ class _SwipeAction extends StatelessWidget {
 }
 
 /// One suggested dish. Shows the match plainly: "ครบทุกอย่าง" at 100%,
-/// otherwise the percentage and what is missing. No fanfare.
+/// otherwise the percentage and what is missing. No fanfare. Tap opens
+/// the recipe page (ADR-015).
 class _MenuRow extends ConsumerWidget {
-  const _MenuRow({required this.match});
+  const _MenuRow({required this.suggestion, this.first = false});
 
-  final RecipeMatch match;
+  final MenuSuggestion suggestion;
+
+  /// Rows share rules: only the first draws a top line.
+  final bool first;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final t = context.tokens;
     final catalog = ref.watch(catalogProvider);
+    final match = suggestion.match;
     final r = match.recipe;
     final missing = [for (final k in match.missingKeys) catalog[k]?.name ?? k]
         .join(', ');
+    final source = suggestion.source == SuggestionSource.fridge
+        ? S.suggestFromFridge
+        : S.suggestEasy;
 
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: RecipixTokens.space3),
-      // A dish is a line in the day, not a card (ADR-012).
-      decoration: BoxDecoration(
-        border: Border(
-          top: BorderSide(color: t.line),
-          bottom: BorderSide(color: t.line),
+    return Pressable(
+      key: ValueKey('menu-${r.id}'),
+      semanticLabel: r.name,
+      onTap: () => context.go('/home/recipe/${r.id}'),
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: RecipixTokens.space3),
+        // A dish is a line in the day, not a card (ADR-012).
+        decoration: BoxDecoration(
+          border: Border(
+            top: first ? BorderSide(color: t.line) : BorderSide.none,
+            bottom: BorderSide(color: t.line),
+          ),
         ),
+        child: _menuLine(t, r, match, missing, source),
       ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  r.name,
-                  style: t.body.copyWith(fontWeight: FontWeight.w600),
-                ),
-                Text(
-                  '${S.minutes(r.cookMinutes)} · ${S.kcal(r.kcalPerServing.round())}',
-                  style: t.caption,
-                ),
-                if (!match.isJackpot)
-                  Text(S.menuMissing(missing), style: t.caption),
-              ],
-            ),
-          ),
-          const SizedBox(width: RecipixTokens.space2),
-          Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: RecipixTokens.space2,
-            ),
-            decoration: BoxDecoration(
-              border: Border.all(color: match.isJackpot ? t.accent : t.line),
-              borderRadius: BorderRadius.circular(RecipixTokens.radiusSm),
-            ),
-            child: Text(
-              match.isJackpot
-                  ? S.menuFull
-                  : S.matchPlain(
-                      match.haveKeys.length,
-                      match.haveKeys.length + match.missingKeys.length,
-                      match.matchPercentage,
-                    ),
-              style: t.label.copyWith(
-                color: match.isJackpot ? t.accent : t.ink2,
-                fontFeatures: RecipixTokens.tabularFigures,
+    );
+  }
+
+  Widget _menuLine(
+    RecipixTokens t,
+    Recipe r,
+    RecipeMatch match,
+    String missing,
+    String source,
+  ) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(r.name, style: t.body.copyWith(fontWeight: FontWeight.w600)),
+              Text(
+                '$source · ${S.minutes(r.cookMinutes)} · '
+                '${S.difficulty(r.difficulty.name)}',
+                style: t.caption,
               ),
+              if (!match.isJackpot)
+                Text(S.menuMissing(missing), style: t.caption),
+            ],
+          ),
+        ),
+        const SizedBox(width: RecipixTokens.space2),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: RecipixTokens.space2),
+          decoration: BoxDecoration(
+            border: Border.all(color: match.isJackpot ? t.accent : t.line),
+            borderRadius: BorderRadius.circular(RecipixTokens.radiusSm),
+          ),
+          child: Text(
+            match.isJackpot
+                ? S.menuFull
+                : S.matchPlain(
+                    match.haveKeys.length,
+                    match.haveKeys.length + match.missingKeys.length,
+                    match.matchPercentage,
+                  ),
+            style: t.label.copyWith(
+              color: match.isJackpot ? t.accent : t.ink2,
+              fontFeatures: RecipixTokens.tabularFigures,
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

@@ -8,6 +8,13 @@ status: active
 
 # Changelog
 
+## 0.12.0 — 2026-10-17 (menu suggestions and recipe page, ADR-015)
+- feat(home): "เมนูแนะนำ" under the report — up to 3 dishes: fridge dishes using urgent items first, then any fridge dish, then easy dishes; each says where it comes from.
+- feat(home): recipe page `/home/recipe/:id` — ingredients with have/missing/optional, numbered steps, difficulty, badges this cook would move, and one "cook this" button when everything is on hand (with undo).
+- feat(core): `Recipe.difficulty` / `Recipe.steps`; `badgeGains(event)` previews counting badges with the real rules.
+- data: steps and difficulty for all 10 recipes (first draft, to be checked by Nutrition & Data).
+- test: recipe_page_test.dart, core badge_gains_test.dart, golden recipe_390.
+
 ## 0.11.0 — 2026-10-17 (barcode scan, ADR-014)
 - feat(scan): camera tab reads retail barcodes (mobile_scanner 7.4.2), looks the product up on Open Food Facts v3 (barcode number only), and lets the user pick the ingredient; the choice is remembered on the device (`recipix.barcodes.v1`), so repeat scans need no network.
 - feat(scan): camera runs only while the tab is visible and nothing is being handled; denied permission / no camera explain themselves; "add by hand" is always one tap away.
