@@ -24,3 +24,9 @@ status: active
 
 ## Regression ที่ต้องมีเสมอ (บั๊กเดโมเดิม)
 คะแนนโอกาสรอดมั่ว / ของปริศนานับแคลอรี่ / ตัดสต็อกทั้งชิ้น / วันหมดอายุคงที่ / badge ฮาร์ดโค้ด / ราคาฮาร์ดโค้ด — ทั้งหมดมีเทสต์ใน core แล้ว
+
+## ความครอบคลุมแอป (Phase 1) — 34 เทสต์ผ่าน
+- `test/app_shell_test.dart`: 5 แท็บ, สลับหน้า, เวลาทรานซิชัน 220ms, กดซ้อนเร็ว, reduce-motion, ไม่ overflow ที่ 360
+- `test/tokens_test.dart`: คอนทราสต์ทุกคู่ข้อความ >= 4.5:1, รัศมี 10/16/24, เวลา motion, line height ไทย >= 1.5
+- `test/governance_test.dart`: emoji, สีนอก theme, รัศมีตัวเลข, gradient/blur/repeat, สเปกไอคอน, core ไม่ import Flutter
+- `test/golden/`: home + fridge ที่ 360/390/430 (โหลดฟอนต์ไทยจริงใน test)

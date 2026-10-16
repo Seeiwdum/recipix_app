@@ -2,7 +2,7 @@
 title: Tooling Setup
 owner: นุ่น (Tooling)
 last_updated: 2026-10-16
-version: 1.0
+version: 1.1
 status: active
 ---
 
@@ -39,3 +39,13 @@ status: active
 
 ## Git
 - `main` = commit แรก (scaffold); `dev` = งานปัจจุบัน
+
+## Preview บนเว็บ (เพิ่ม 2026-10-16)
+- `.claude/launch.json` → `flutter run -d web-server --release --web-port 8080` ใช้กับ browser pane ของ Claude
+- โหมด debug ของ `web-server` ค้างหน้าขาว (รอ Dart Debug extension) → ใช้ `--release` สำหรับ preview; build ครั้งแรกประมาณ 30 วินาที
+- ถ้าเปิดหน้าก่อน build เสร็จ จะค้างหน้าเก่า → โหลดใหม่หลังเห็น "Built build\web"
+- ผู้ก่อตั้งรันเองใน VS Code: `flutter run -d chrome` (มี hot reload)
+
+## เครื่องมือในรีโป
+- `tool/gen_icons.sh`, `tool/gen_ingredients.sh` สร้าง SVG ใน `assets/` (รันด้วย Git Bash)
+- goldens: `flutter test --update-goldens test/golden` เฉพาะเมื่อจงใจเปลี่ยนหน้าตา

@@ -2,7 +2,7 @@
 title: Docs Index
 owner: แพรว
 last_updated: 2026-10-16
-version: 1.0
+version: 1.1
 status: active
 ---
 
@@ -20,6 +20,7 @@ status: active
 | [decisions/ADR-001_move-to-flutter.md](decisions/ADR-001_move-to-flutter.md) | ย้ายไป Flutter (L3, ปิดแล้ว) | accepted |
 | [decisions/ADR-002_budget-deficit.md](decisions/ADR-002_budget-deficit.md) | สูตร BudgetDeficit + วันเงินเข้า | accepted |
 | [decisions/ADR-003_core-domain-model.md](decisions/ADR-003_core-domain-model.md) | โมเดลโดเมน: วันที่/เงิน/ปริมาณ/badge | accepted |
+| [decisions/ADR-004_app-stack.md](decisions/ADR-004_app-stack.md) | แพ็กเกจแอป: Riverpod, go_router, flutter_svg, ฟอนต์ | accepted |
 | [engineering/architecture.md](engineering/architecture.md) | ชั้นสถาปัตยกรรม | active |
 | [engineering/coding_standards.md](engineering/coding_standards.md) | มาตรฐานโค้ด | active |
 | [engineering/tooling_setup.md](engineering/tooling_setup.md) | สภาพเครื่อง เวอร์ชัน ปัญหาที่เจอ | active |

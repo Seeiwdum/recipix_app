@@ -9,7 +9,7 @@ Founder feedback: earlier UI looked like "AI slop" and "an ad", and used emoji. 
 If `docs/ui_design_prompt.md` exists, it is the primary spec and wins over this file.
 
 ## Tokens (all UI values come from `RecipixTokens`; never inline)
-Colors: bg `#F7F3EC` · surface `#FFFDF9` · surface-sunken `#EFE9DF` · line `#E3DBCE` · ink `#1F1B16` · ink-2 `#6B6358` · accent `#2F6B4F` (the only accent) · warn `#C98A1B` · urgent `#C4452F`. Freshness: fresh=accent, soon=warn, urgent=urgent.
+Colors: bg `#F7F3EC` · surface `#FFFDF9` · surface-sunken `#EFE9DF` · line `#E3DBCE` · ink `#1F1B16` · ink-2 `#6B6358` · accent `#2F6B4F` (the only accent) · warn `#C98A1B` (borders/dots/bars only) · warnText `#8A5A0B` (text in the warn hue; warn itself is under 3:1) · urgent `#C4452F`. Freshness: fresh=accent, soon=warn, urgent=urgent.
 Radii: 10 / 16 / 24 only. Spacing: 8px grid (4 allowed for hairline gaps). Tap targets >= 44-48px. Lines 1px.
 Type: one family, IBM Plex Sans Thai (fallback Noto Sans Thai), bundled. Tabular figures for numbers. Thai line height >= 1.5.
 Motion: durations 120 / 220 / 360 ms; enter curve `Cubic(.2,.8,.2,1)`; exit `Cubic(.4,0,1,1)`; spring overshoot <= 6%. Transform + opacity only. Reduce-motion -> 120ms fade only.
@@ -40,3 +40,7 @@ Feedback instead of pop-ups: press scale .97, bottom toast with "เลิกท
 
 Emoji grep (repo root, Git Bash):
 `LC_ALL=C.UTF-8 grep -rnIP --exclude-dir=.dart_tool "[\x{1F300}-\x{1FAFF}\x{2600}-\x{27BF}\x{1F000}-\x{1F2FF}]" lib assets packages`
+
+## Where things live
+Tokens `lib/app/theme/recipix_tokens.dart` (`context.tokens`) · theme `recipix_theme.dart` · strings `lib/app/strings.dart` · icons `RecipixIcon(RecipixIcons.x)` (sources in `tool/gen_icons.sh`) · ingredient art `IngredientTile` (sources in `tool/gen_ingredients.sh`) · press feedback `Pressable` · dashed frame `DashedRRectPainter` · reduce motion `reduceMotionOf(context)`.
+`test/governance_test.dart` enforces the emoji, color, radius and gradient rules automatically.
