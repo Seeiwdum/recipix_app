@@ -58,6 +58,12 @@ void main() {
     setPhoneSize(tester, 390, height: 844);
     await tester.pumpWidget(testApp(onboarded: false));
     await tester.pumpAndSettle();
+    FocusManager.instance.primaryFocus?.unfocus();
+    await tester.pumpAndSettle();
+    await expectLater(
+      find.byType(RecipixApp),
+      matchesGoldenFile('goldens/onboarding_welcome_390.png'),
+    );
     await tester.enterText(find.byKey(const ValueKey('onboard-name')), 'มายด์');
     await tester.pump();
     await tester.tap(find.byKey(const ValueKey('onboard-next')));

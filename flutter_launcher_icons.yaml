@@ -1,0 +1,21 @@
+# App icons for every platform from one 1024 px image.
+# The image is drawn by lib/shared/widgets/recipix_logo.dart:
+#   flutter test --dart-define=RENDER_ICON=true test/tool
+#   dart run flutter_launcher_icons
+# To use your own logo instead, replace the two PNGs in assets/brand/
+# (1024 x 1024; the foreground one transparent, mark in the middle ~60%)
+# and run only the second command. Guide: docs/design/app_icon.md
+flutter_launcher_icons:
+  image_path: "assets/brand/app_icon.png"
+  android: true
+  min_sdk_android: 24
+  adaptive_icon_background: "#2F6B4F"
+  adaptive_icon_foreground: "assets/brand/app_icon_foreground.png"
+  ios: true
+  remove_alpha_ios: true
+  background_color_ios: "#2F6B4F"
+  web:
+    generate: true
+    image_path: "assets/brand/app_icon.png"
+    background_color: "#F7F3EC"
+    theme_color: "#2F6B4F"
