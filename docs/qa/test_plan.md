@@ -30,3 +30,9 @@ status: active
 - `test/tokens_test.dart`: คอนทราสต์ทุกคู่ข้อความ >= 4.5:1, รัศมี 10/16/24, เวลา motion, line height ไทย >= 1.5
 - `test/governance_test.dart`: emoji, สีนอก theme, รัศมีตัวเลข, gradient/blur/repeat, สเปกไอคอน, core ไม่ import Flutter
 - `test/golden/`: home + fridge ที่ 360/390/430 (โหลดฟอนต์ไทยจริงใน test)
+
+## แท็บตู้เย็น (Phase 2) — app รวม 61 เทสต์ผ่าน
+- `test/features/fridge/fridge_layout_test.dart`: ขอบเขต/ชนกัน, ของกว้าง 2 กับชั้นประตู, closeGap, firstFree
+- `test/features/fridge/fridge_controller_test.dart`: catalog (ไฟล์ + asset bundle), วาง/ปฏิเสธ, ใช้แล้ว+undo คืนเพื่อนบ้าน, undo หลังย้าย → ตะกร้า, ตัวกรอง/ความสด
+- `test/features/fridge/fridge_page_test.dart`: ลากจากตะกร้าเข้าชั้น, เด้งกลับ (ประตู/ช่องเต็ม), ลากกลับตะกร้า, sheet → ใช้แล้ว → toast → เลิกทำ, จัดเข้าตู้ให้, ตัวกรองหรี่, ลิ้นชัก, ไม่ล้นที่ 360/430
+- golden: `fridge_{360,390,430}`, `fridge_sheet_390`, `fridge_drag_390`

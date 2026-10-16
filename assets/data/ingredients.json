@@ -1,0 +1,24 @@
+{
+  "version": 1,
+  "note": "First-pass values. kcal per unit are approximate (USDA FoodData Central style figures for raw food) and shelf life is typical home-fridge storage. To be verified by Nutrition & Data before release.",
+  "ingredients": [
+    {"key": "egg", "name": "ไข่ไก่", "category": "eggDairy", "unit": "piece", "defaultAmount": 10, "kcalPerUnit": 72, "shelfLifeDays": 21, "zone": "door", "width": 1},
+    {"key": "milk", "name": "นมจืด", "category": "drink", "unit": "milliliter", "defaultAmount": 1000, "kcalPerUnit": 0.64, "shelfLifeDays": 7, "zone": "door", "width": 1},
+    {"key": "tomato", "name": "มะเขือเทศ", "category": "vegetable", "unit": "gram", "defaultAmount": 300, "kcalPerUnit": 0.18, "shelfLifeDays": 7, "zone": "crisper", "width": 1},
+    {"key": "chili", "name": "พริกขี้หนู", "category": "vegetable", "unit": "gram", "defaultAmount": 50, "kcalPerUnit": 0.4, "shelfLifeDays": 10, "zone": "crisper", "width": 1},
+    {"key": "holy_basil", "name": "กะเพรา", "category": "vegetable", "unit": "gram", "defaultAmount": 50, "kcalPerUnit": 0.23, "shelfLifeDays": 4, "zone": "crisper", "width": 1},
+    {"key": "cabbage", "name": "กะหล่ำปลี", "category": "vegetable", "unit": "gram", "defaultAmount": 800, "kcalPerUnit": 0.25, "shelfLifeDays": 14, "zone": "crisper", "width": 2},
+    {"key": "lime", "name": "มะนาว", "category": "fruit", "unit": "piece", "defaultAmount": 5, "kcalPerUnit": 20, "shelfLifeDays": 21, "zone": "crisper", "width": 1},
+    {"key": "morning_glory", "name": "ผักบุ้ง", "category": "vegetable", "unit": "gram", "defaultAmount": 250, "kcalPerUnit": 0.19, "shelfLifeDays": 3, "zone": "crisper", "width": 2},
+    {"key": "cucumber", "name": "แตงกวา", "category": "vegetable", "unit": "gram", "defaultAmount": 300, "kcalPerUnit": 0.15, "shelfLifeDays": 7, "zone": "crisper", "width": 1},
+    {"key": "garlic", "name": "กระเทียม", "category": "vegetable", "unit": "gram", "defaultAmount": 100, "kcalPerUnit": 1.49, "shelfLifeDays": 30, "zone": "door", "width": 1},
+    {"key": "pork", "name": "หมูสับ", "category": "meat", "unit": "gram", "defaultAmount": 300, "kcalPerUnit": 2.63, "shelfLifeDays": 2, "zone": "shelf", "width": 2},
+    {"key": "chicken_breast", "name": "อกไก่", "category": "meat", "unit": "gram", "defaultAmount": 400, "kcalPerUnit": 1.2, "shelfLifeDays": 2, "zone": "shelf", "width": 2},
+    {"key": "shrimp", "name": "กุ้ง", "category": "seafood", "unit": "gram", "defaultAmount": 300, "kcalPerUnit": 0.85, "shelfLifeDays": 90, "zone": "freezer", "width": 2},
+    {"key": "tofu", "name": "เต้าหู้ไข่", "category": "eggDairy", "unit": "piece", "defaultAmount": 2, "kcalPerUnit": 110, "shelfLifeDays": 10, "zone": "shelf", "width": 1},
+    {"key": "yogurt", "name": "โยเกิร์ต", "category": "eggDairy", "unit": "piece", "defaultAmount": 4, "kcalPerUnit": 100, "shelfLifeDays": 14, "zone": "shelf", "width": 1},
+    {"key": "rice", "name": "ข้าวสวยเหลือ", "category": "grain", "unit": "gram", "defaultAmount": 400, "kcalPerUnit": 1.3, "shelfLifeDays": 3, "zone": "shelf", "width": 1},
+    {"key": "fish_sauce", "name": "น้ำปลา", "category": "condiment", "unit": "milliliter", "defaultAmount": 700, "kcalPerUnit": 0.35, "shelfLifeDays": 365, "zone": "door", "width": 1},
+    {"key": "frozen_dumpling", "name": "เกี๊ยวแช่แข็ง", "category": "readyMeal", "unit": "piece", "defaultAmount": 20, "kcalPerUnit": 45, "shelfLifeDays": 120, "zone": "freezer", "width": 1}
+  ]
+}

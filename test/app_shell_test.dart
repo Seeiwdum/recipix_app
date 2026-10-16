@@ -1,15 +1,17 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:recipix_app/app/app.dart';
 import 'package:recipix_app/app/shell/app_shell.dart';
 import 'package:recipix_app/app/strings.dart';
+import 'package:recipix_app/features/fridge/presentation/fridge_board.dart';
 
 import 'helpers.dart';
 
 void main() {
+  setUpAll(loadAppFonts);
+
   testWidgets('shows five tabs and starts on home', (tester) async {
     setPhoneSize(tester, 390);
-    await tester.pumpWidget(const RecipixApp());
+    await tester.pumpWidget(testApp());
     await tester.pumpAndSettle();
 
     for (final tab in appTabs) {
@@ -20,7 +22,7 @@ void main() {
 
   testWidgets('tapping a tab switches page and keeps the bar', (tester) async {
     setPhoneSize(tester, 390);
-    await tester.pumpWidget(const RecipixApp());
+    await tester.pumpWidget(testApp());
     await tester.pumpAndSettle();
 
     await tester.tap(find.bySemanticsLabel(S.tabRandom));
@@ -36,7 +38,7 @@ void main() {
 
   testWidgets('tab change animates and finishes within 220ms', (tester) async {
     setPhoneSize(tester, 390);
-    await tester.pumpWidget(const RecipixApp());
+    await tester.pumpWidget(testApp());
     await tester.pumpAndSettle();
 
     await tester.tap(find.bySemanticsLabel(S.tabFridge));
@@ -44,7 +46,7 @@ void main() {
     await tester.pump(const Duration(milliseconds: 60));
     // Mid-transition: both old and new tab are on stage.
     expect(find.text(S.homeComingSoon), findsOneWidget);
-    expect(find.text(S.fridgeComingSoon), findsOneWidget);
+    expect(find.byType(FridgeBoard), findsOneWidget);
 
     await tester.pump(const Duration(milliseconds: 200));
     expect(find.text(S.homeComingSoon), findsNothing);
@@ -55,7 +57,7 @@ void main() {
     tester,
   ) async {
     setPhoneSize(tester, 390);
-    await tester.pumpWidget(const RecipixApp());
+    await tester.pumpWidget(testApp());
     await tester.pumpAndSettle();
 
     await tester.tap(find.bySemanticsLabel(S.tabFridge));
@@ -65,11 +67,11 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 30));
     // Fridge is now the outgoing tab and must still be fading, not gone.
-    expect(find.text(S.fridgeComingSoon), findsOneWidget);
+    expect(find.byType(FridgeBoard), findsOneWidget);
     expect(find.text(S.scanComingSoon), findsOneWidget);
 
     await tester.pumpAndSettle();
-    expect(find.text(S.fridgeComingSoon), findsNothing);
+    expect(find.byType(FridgeBoard), findsNothing);
   });
 
   testWidgets('reduced motion: plain fade, no rise', (tester) async {
@@ -78,7 +80,7 @@ void main() {
         const FakeAccessibilityFeatures(disableAnimations: true);
     addTearDown(tester.platformDispatcher.clearAccessibilityFeaturesTestValue);
 
-    await tester.pumpWidget(const RecipixApp());
+    await tester.pumpWidget(testApp());
     await tester.pumpAndSettle();
     await tester.tap(find.bySemanticsLabel(S.tabScan));
     await tester.pump();
@@ -100,7 +102,7 @@ void main() {
 
   testWidgets('Thai labels fit at 360 without overflow', (tester) async {
     setPhoneSize(tester, 360);
-    await tester.pumpWidget(const RecipixApp());
+    await tester.pumpWidget(testApp());
     await tester.pumpAndSettle();
     expect(tester.takeException(), isNull);
   });

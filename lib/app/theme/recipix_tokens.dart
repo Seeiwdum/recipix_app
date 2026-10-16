@@ -70,6 +70,9 @@ class RecipixTokens extends ThemeExtension<RecipixTokens> {
   static const double space6 = 48;
 
   static const double lineWidth = 1;
+
+  /// Coloured freshness edges are a touch heavier than hairlines.
+  static const double statusLineWidth = 1.5;
   static const double tapTarget = 48;
   static const double iconSize = 24;
 
@@ -135,6 +138,13 @@ class RecipixTokens extends ThemeExtension<RecipixTokens> {
     fontWeight: FontWeight.w500,
     height: thaiLineHeight,
     color: ink2,
+  );
+
+  /// Tiny labels on items (day counts). Use sparingly.
+  TextStyle get micro => caption.copyWith(
+    fontSize: 10,
+    fontWeight: FontWeight.w600,
+    fontFeatures: tabularFigures,
   );
 
   /// Numbers inside running text and tables.

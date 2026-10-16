@@ -16,6 +16,15 @@ const Set<String> ingredientArtKeys = {
   'lime',
   'milk',
   'cabbage',
+  'morning_glory',
+  'cucumber',
+  'garlic',
+  'chicken_breast',
+  'shrimp',
+  'tofu',
+  'yogurt',
+  'fish_sauce',
+  'frozen_dumpling',
 };
 
 /// The shared rounded frame every ingredient picture sits in.
@@ -28,12 +37,18 @@ class IngredientTile extends StatelessWidget {
     required this.ingredientKey,
     required this.name,
     this.size = 48,
+    this.width,
     this.faded = false,
   });
 
   final String? ingredientKey;
   final String name;
+
+  /// Height, and width unless [width] is given.
   final double size;
+
+  /// For items two cells wide.
+  final double? width;
 
   /// Items close to or past expiry are drawn slightly washed out so
   /// freshness reads at a glance.
@@ -43,18 +58,23 @@ class IngredientTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final t = context.tokens;
     final key = ingredientKey;
+    final w = width ?? size;
+    final glyph = t.title.copyWith(
+      color: t.ink2,
+      height: 1,
+      fontSize: (size * 0.4).clamp(12, 22),
+    );
 
     if (key == null) {
-      return SizedBox.square(
-        dimension: size,
+      return SizedBox(
+        width: w,
+        height: size,
         child: CustomPaint(
           painter: DashedRRectPainter(
             color: t.ink2,
             radius: RecipixTokens.radiusSm,
           ),
-          child: Center(
-            child: Text('?', style: t.title.copyWith(color: t.ink2, height: 1)),
-          ),
+          child: Center(child: Text('?', style: glyph)),
         ),
       );
     }
@@ -67,7 +87,7 @@ class IngredientTile extends StatelessWidget {
         : Center(
             child: Text(
               name.characters.isEmpty ? '' : name.characters.first,
-              style: t.title.copyWith(color: t.ink2, height: 1),
+              style: glyph,
             ),
           );
 
@@ -77,7 +97,7 @@ class IngredientTile extends StatelessWidget {
       child: Opacity(
         opacity: faded ? 0.55 : 1,
         child: Container(
-          width: size,
+          width: w,
           height: size,
           decoration: BoxDecoration(
             color: t.surfaceSunken,

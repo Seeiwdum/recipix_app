@@ -2,43 +2,39 @@
 title: Handover Notes
 owner: แพรว
 last_updated: 2026-10-16
-version: 1.1
+version: 1.2
 status: active
 ---
 
 # Handover
 
 ## สถานะล่าสุด
-จบ Phase 1 บน branch `dev`: ระบบดีไซน์ + app shell 5 แท็บรันได้จริงบน Chrome; แต่ละแท็บยังเป็นหน้า "กำลังทำ" (ตู้เย็นแสดงชุดภาพวัตถุดิบไว้ให้ตรวจ)
-เทสต์: แอป 34 ผ่าน (รวม golden 6 ภาพ, governance, contrast), core 47 ผ่าน, analyze สะอาด
+แท็บตู้เย็น (minigame จัดตู้เย็น) เสร็จบน branch `dev` และรันจริงบน Chrome แล้ว อีก 4 แท็บยังเป็น placeholder
+เทสต์: แอป 61 ผ่าน (รวม golden 11 ภาพ), core 47 ผ่าน, analyze สะอาด
 
-## ทำแล้ว (Phase 1)
-- แพ็กเกจ: flutter_riverpod 3.4.3, go_router 18.1.0, flutter_svg 2.3.0 → ADR-004
-- ฟอนต์ IBM Plex Sans Thai 400/500/600 + OFL ใน `assets/fonts/`
-- `RecipixTokens` (สี/รัศมี/ระยะ/ตัวอักษร/motion) + `buildRecipixTheme()` ปิด ripple; เพิ่ม `warnText` เพราะ warn เดิมคอนทราสต์ไม่พอสำหรับข้อความ
-- `lib/app/strings.dart` ข้อความไทยรวมที่เดียว (รวมชื่อเหรียญ)
-- ไอคอน SVG 19 ตัว (`tool/gen_icons.sh`) + `RecipixIcon`; ภาพวัตถุดิบ 9 ชิ้น (`tool/gen_ingredients.sh`) + `IngredientTile` (ตัวอักษรย่อเมื่อไม่มีภาพ, กรอบประสำหรับของปริศนา, ซีดเมื่อใกล้หมดอายุ)
-- Shell: `StatefulShellRoute` + `TabSwitcher` (จางออก 120ms / จางเข้า+เลื่อนขึ้น 8px 220ms, reduce-motion = fade 120ms) + `RecipixTabBar` แถบบ่งชี้เลื่อนตาม + `Pressable` (scale .97)
-- `test/governance_test.dart` บังคับกฎ: ไม่มี emoji, สีเฉพาะใน theme, ไม่มีรัศมีตัวเลขตรงๆ, ไม่มี gradient/blur/repeat, ไอคอนตามสเปก, core ไม่ import Flutter
-- `.claude/launch.json` สำหรับ preview บนเว็บ (release mode)
+## ทำแล้ว (Phase 2 — ตู้เย็น)
+- ผังตู้ 25 ช่อง: ช่องแช่แข็ง / ชั้นบน-กลาง-ล่าง / ลิ้นชักผัก (มีหน้าลิ้นชักเลื่อนเปิด, เปิดเองเมื่อลากผ่าน) / ชั้นประตู 4 ช่อง
+- ลาก-วางเขียนเอง (ADR-005): จับของจากตะกร้าหรือชั้น → กรอบเขียวบอกช่องที่วางได้ / แดงถ้าวางไม่ได้ → spring snap หรือเด้งกลับ; ลากลงตะกร้าได้
+- ความสด 3 ทาง: ป้ายวัน, กรอบสี, ภาพซีด; ตัวกรอง 5 แบบหรี่ของที่ไม่ตรง; แถบความจุ
+- Sheet รายละเอียด: วันหมดอายุไทย, พลังงาน (ของปริศนาแสดง "ประมาณ"), ที่เก็บ; ใช้แล้ว / ทิ้ง / ย้ายไปตะกร้า / จัดเข้าตู้ให้; toast "เลิกทำ" 5 วินาที คืนตำแหน่งเพื่อนบ้านได้ด้วย
+- `assets/data/ingredients.json` 18 รายการ + ภาพวัตถุดิบครบ 18 ชิ้น; precache SVG ตอนเปิดแอป
+- `todayProvider`, `catalogProvider` (inject ใน `main()` และใน test)
 
 ## ค้างอยู่ / ปัญหา
-- ไฟล์ต้นฉบับยังไม่มี: `docs/ui_design_prompt.md`, `legacy_unity/`, เดโม HTML — ใช้ MASTER_PROMPT เป็นสเปก (ผู้ก่อตั้งอนุมัติ)
-- บน web ครั้งแรกที่เปิดแท็บตู้เย็น ทรานซิชันสะดุดระหว่าง decode SVG → precache ตอนเปิดแอป (Phase 2)
-- ไม่มี Android SDK → ยังทดสอบบนมือถือจริงไม่ได้ (haptics/safe area จริง)
+- ค่าแคลอรี่/อายุใน catalog เป็นประมาณการ → วุฒิต้องตรวจแหล่งอ้างอิง (`product/ingredient_data_spec.md`)
+- ข้อมูลยังอยู่ในหน่วยความจำ ปิดแอปแล้วหาย (persistence = Phase 3)
+- ยังไม่ได้ทดสอบบนมือถือจริง: แฮปติก, ลากด้วยนิ้ว, 60 FPS; ด้ามลิ้นชักตอนเปิดสูงแค่ 18px
+- ไฟล์ต้นฉบับ (ui_design_prompt / Unity / เดโม HTML) ยังไม่มี
 - `.mcp.json` (Dart MCP) ยังไม่ได้ยืนยัน Connected
 
-## ขั้นต่อไป (Phase 2 — แท็บตู้เย็นก่อน)
-1. ข้อมูลตัวอย่าง `assets/data/ingredients.json`, `recipes.json` (วุฒิ) + loader ใน `features/*/data`
-2. Riverpod providers: `todayProvider` (ฉีดวันที่), fridge state (Notifier) ห่อ `recipix_core`
-3. Precache SVG ตอนเปิดแอป
-4. แท็บตู้เย็น: หน้าตัด 3 ชั้น + ลิ้นชักผัก + ช่องแช่แข็ง + ชั้นประตู, กริด 1x1/2x1, ลากจากตะกร้า snap spring, ดีดกลับเมื่อเต็ม, bottom sheet รายละเอียด, ตัวกรองไฮไลต์, แถบความจุ → ADR การวางกริด (app layer)
-5. widget + golden test ตู้เย็น, เช็กลิสต์ 5.5 → `ui_critique.md`
-6. ต่อด้วย หน้าหลัก → สแกน → สุ่มเมนู → แดชบอร์ด
+## ขั้นต่อไป
+1. แท็บหน้าหลัก "ใบรายงานประจำวัน": `SurvivalEngine` จากของในตู้ (provider ร่วมกับ fridgeProvider), ตัวเลขหลัก "อยู่ได้อีก x วัน" นับขึ้น 400ms, รายการต้องใช้ก่อนปัดเพื่อ ใช้แล้ว/ทิ้ง, ข้อเสนอเมนู 1 แถว (ต้องมีข้อมูลสูตร `assets/data/recipes.json`)
+2. ต่อด้วย สแกน → สุ่มเมนู → แดชบอร์ด
+3. ย้าย fridge state ไปเป็น "คลังกลาง" ที่ทุกแท็บใช้ร่วม (ตอนนี้อยู่ใน feature fridge)
 
 ## คำถาม L3 ที่รอคำตอบ
-1. ไฟล์ต้นฉบับที่หายไป (ui_design_prompt / Unity / เดโม HTML): ถ้ามีให้วางไว้ตามหมวด 0 ของ MASTER_PROMPT จะได้เทียบชื่อเหรียญและสูตรเดิม
-2. Android Studio: ติดตั้งเมื่อไรเพื่อทดสอบบนมือถือ/emulator
+1. ไฟล์ต้นฉบับที่หายไป (ui_design_prompt / Unity / เดโม HTML)
+2. Android Studio: ติดตั้งเมื่อไรเพื่อทดสอบบนมือถือจริง
 
 ## ไฟล์ที่แก้ล่าสุด
-`lib/**`, `test/**`, `assets/**`, `tool/gen_*.sh`, `pubspec.yaml`, `.claude/launch.json`, `.claude/skills/recipix-design-system/SKILL.md`, `docs/**`
+`lib/features/fridge/**`, `lib/app/{providers,strings}.dart`, `lib/app/theme/recipix_tokens.dart`, `lib/main.dart`, `lib/shared/widgets/ingredient_tile.dart`, `assets/data/ingredients.json`, `assets/ingredients/*`, `tool/gen_ingredients.sh`, `test/**`, `pubspec.yaml`, `.claude/launch.json`, `docs/**`

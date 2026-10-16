@@ -2,11 +2,19 @@
 title: Changelog
 owner: แพรว
 last_updated: 2026-10-16
-version: 0.2.0
+version: 0.3.0
 status: active
 ---
 
 # Changelog
+
+## 0.3.0 — 2026-10-16 (Phase 2: fridge tab)
+- feat(fridge): cross-section fridge mini-game: freezer, 3 shelves, crisper drawer, door bins; 1x1/2x1 items; drag from basket with spring snap, refused drops spring back, drawer auto-opens on hover
+- feat(fridge): freshness via day label, edge colour and fade; filters that dim non-matching items; capacity bar; item sheet with used/discard/move/auto-place; undo toast (5s)
+- feat(data): ingredient catalog (18 items) in assets/data, loaded at startup; 9 more ingredient illustrations
+- fix(app): SVG ingredient art precached at startup (first-visit transition stall)
+- test: fridge grid + controller unit tests, drag/drop widget tests, asset-bundle check, goldens for board/sheet/mid-drag
+- docs: ADR-005, ingredient data spec, UI critique for the fridge
 
 ## 0.2.0 — 2026-10-16 (Phase 1: design system + shell)
 - feat(app): RecipixTokens + theme, IBM Plex Sans Thai, Thai strings file
