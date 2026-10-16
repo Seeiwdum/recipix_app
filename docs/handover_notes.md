@@ -31,9 +31,9 @@ status: active
 2. สุ่มเมนู → แดชบอร์ด
 3. ย้าย fridge state ไปเป็นคลังกลาง (`lib/shared/` หรือ `lib/app/`) เพราะตอนนี้ home import จาก feature fridge
 
-## คำถาม L3 ที่รอคำตอบ
-1. ไฟล์ต้นฉบับที่หายไป (ui_design_prompt / Unity / เดโม HTML)
-2. Android Studio: ติดตั้งเมื่อไรเพื่อทดสอบบนมือถือจริง (สำคัญขึ้นสำหรับแท็บสแกน)
+## คำถาม L3
+ตอบแล้วใน ADR-007: ติดตั้ง Android Studio, เก็บข้อมูลในเครื่องเท่านั้น, ML Kit ในเครื่อง, ผู้ก่อตั้งจะวางไฟล์เดิมให้
+รอคำตอบ: ไอเดียฟีเจอร์ใหม่ (บันทึกค่ากิน, วางแผนกินถึงวันเงินเข้า, รายการซื้อของ, แจ้งเตือนเช้า, ปิดวันตอนค่ำ) — เพิ่มฟีเจอร์หลัก = L3
 
 ## ไฟล์ที่แก้ล่าสุด
 `lib/features/home/**`, `lib/shared/{data/recipe_book.dart,utils/format.dart,motion/entrance.dart}`, `lib/app/{providers,strings}.dart`, `lib/main.dart`, `assets/data/recipes.json`, `packages/recipix_core/lib/src/common/local_date.dart`, `test/**`, `.claude/launch.json`, `docs/**`

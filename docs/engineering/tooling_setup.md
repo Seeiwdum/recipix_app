@@ -49,3 +49,12 @@ status: active
 ## เครื่องมือในรีโป
 - `tool/gen_icons.sh`, `tool/gen_ingredients.sh` สร้าง SVG ใน `assets/` (รันด้วย Git Bash)
 - goldens: `flutter test --update-goldens test/golden` เฉพาะเมื่อจงใจเปลี่ยนหน้าตา
+
+## ติดตั้ง Android (ADR-007) — ตรวจกับ docs.flutter.dev/platform-integration/android/setup (Flutter 3.47) เมื่อ 2026-10-16
+ส่วนที่ผู้ก่อตั้งทำเอง (ต้องกดยอมรับ license และอาจขอสิทธิ์ผู้ดูแลระบบ):
+1. ติดตั้ง Android Studio รุ่น stable ล่าสุดจาก developer.android.com/studio
+2. เปิด Android Studio → More Actions → SDK Manager
+   - แท็บ SDK Platforms: เลือกรายการแรกที่เป็น API Level 36 → Apply
+   - แท็บ SDK Tools: เลือก Android SDK Build-Tools, Android SDK Command-line Tools, Android Emulator, Android SDK Platform-Tools, CMake, NDK (Side by side) → Apply
+3. ในเทอร์มินัล: `flutter doctor --android-licenses` แล้วอ่านและยอมรับ
+ส่วนที่ทีมทำต่อได้: สร้าง emulator (Device Manager), เปิด hardware graphics, รัน `flutter doctor`, `flutter emulators`, `flutter devices`
