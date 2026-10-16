@@ -54,6 +54,38 @@ void main() {
     );
   });
 
+  testWidgets('first-launch questions at 390', (tester) async {
+    setPhoneSize(tester, 390, height: 844);
+    await tester.pumpWidget(testApp(onboarded: false));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byKey(const ValueKey('onboard-name')), 'มายด์');
+    await tester.pump();
+    await tester.tap(find.byKey(const ValueKey('onboard-next')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('fav-kaprao_moo')));
+    await tester.tap(find.byKey(const ValueKey('fav-khai_jiao')));
+    await tester.pumpAndSettle();
+    await expectLater(
+      find.byType(RecipixApp),
+      matchesGoldenFile('goldens/onboarding_food_390.png'),
+    );
+    await tester.tap(find.byKey(const ValueKey('onboard-next')));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byKey(const ValueKey('onboard-left')), '2500');
+    await tester.enterText(
+      find.byKey(const ValueKey('onboard-monthly')),
+      '6000',
+    );
+    await tester.pumpAndSettle();
+    // Keyboard focus is not part of the look.
+    FocusManager.instance.primaryFocus?.unfocus();
+    await tester.pumpAndSettle();
+    await expectLater(
+      find.byType(RecipixApp),
+      matchesGoldenFile('goldens/onboarding_money_390.png'),
+    );
+  });
+
   testWidgets('photo mode with boxes at 390', (tester) async {
     setPhoneSize(tester, 390, height: 844);
     await tester.pumpWidget(

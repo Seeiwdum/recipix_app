@@ -8,6 +8,14 @@ status: active
 
 # Changelog
 
+## 0.14.0 — 2026-10-17 (first-launch questions and web app, ADR-017)
+- feat(profile): first launch asks name, favourite dishes and money (left until payday, usual monthly food spend, payday); the router keeps a new user on `/welcome` until done.
+- feat(profile): answers set the budget so "left" matches, payday, and a meal price from the monthly spend; a brand-new install starts with an empty fridge and no spending (existing data is kept).
+- feat(home): greeting with the name; favourite dishes in the suggestions ("เมนูโปรด").
+- ci: `web.yml` builds the web app and publishes it to the public repo Seeiwdum/recipix_web (GitHub Pages); web manifest/index branded Recipix.
+- docs: how_we_built_recipix.md (start-to-finish build steps).
+- test: profile_onboarding_test.dart, goldens onboarding_food_390 / onboarding_money_390.
+
 ## 0.13.0 — 2026-10-17 (photo mode, ADR-016)
 - feat(scan): scan tab has two modes (barcode | photo). Photo mode: camera preview with a round shutter (`camera` 0.12.1), ML Kit object detection on the still photo (`google_mlkit_object_detection` 0.17.1, on device), a box around each thing found; tap a box to pick what it is and it goes into the basket.
 - feat(scan): nothing found / device cannot look (web) explain themselves; retake; add by hand always there; only the chosen mode's camera runs, only while the tab is on screen.

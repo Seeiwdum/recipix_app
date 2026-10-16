@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 
@@ -6,6 +7,7 @@ import '../features/fridge/presentation/fridge_page.dart';
 import '../features/home/presentation/home_page.dart';
 import '../features/home/presentation/meal_plan_page.dart';
 import '../features/home/presentation/recipe_page.dart';
+import '../features/profile/presentation/onboarding_page.dart';
 import '../features/random/presentation/random_page.dart';
 import '../features/scan/presentation/scan_page.dart';
 import '../shared/motion/motion.dart';
@@ -41,7 +43,13 @@ Page<void> _detailPage(GoRouterState state, Widget child) =>
       },
     );
 
-GoRouter buildRouter({String initialLocation = '/home'}) {
+/// [onboarded] gates the app (ADR-017): until the first-launch questions
+/// are done every location goes to `/welcome`, and afterwards `/welcome`
+/// goes home.
+GoRouter buildRouter({
+  String initialLocation = '/home',
+  ValueListenable<bool>? onboarded,
+}) {
   const pages = <Widget>[
     HomePage(),
     FridgePage(),
@@ -53,7 +61,20 @@ GoRouter buildRouter({String initialLocation = '/home'}) {
 
   return GoRouter(
     initialLocation: initialLocation,
+    refreshListenable: onboarded,
+    redirect: (context, state) {
+      final done = onboarded?.value ?? true;
+      final atWelcome = state.matchedLocation == '/welcome';
+      if (!done && !atWelcome) return '/welcome';
+      if (done && atWelcome) return '/home';
+      return null;
+    },
     routes: [
+      GoRoute(
+        path: '/welcome',
+        pageBuilder: (context, state) =>
+            _detailPage(state, const OnboardingPage()),
+      ),
       StatefulShellRoute(
         builder: (context, state, shell) => shell,
         navigatorContainerBuilder: (context, shell, children) =>

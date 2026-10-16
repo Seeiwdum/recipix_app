@@ -15,6 +15,8 @@ import 'package:recipix_app/features/scan/data/object_finder.dart';
 import 'package:recipix_app/features/scan/data/product_lookup.dart';
 import 'package:recipix_app/features/scan/presentation/photo_camera.dart';
 import 'package:recipix_app/features/scan/presentation/scan_camera.dart';
+import 'package:recipix_app/shared/persistence/app_store.dart';
+import 'package:recipix_app/shared/persistence/codecs.dart';
 import 'package:recipix_core/recipix_core.dart';
 
 /// Fixed day so freshness labels and goldens never drift.
@@ -59,8 +61,21 @@ Widget testApp({
   FakeCamera? camera,
   ProductLookup? lookup,
   FakeFinder? finder,
+  bool onboarded = true,
 }) => ProviderScope(
   overrides: [
+    // Already through the first-launch questions unless a test is about
+    // them (ADR-017).
+    if (onboarded)
+      savedDataProvider.overrideWithValue(
+        SavedData(
+          profile: SavedProfile(
+            name: 'เอ',
+            favoriteRecipeIds: const [],
+            completedOn: testToday,
+          ),
+        ),
+      ),
     catalogProvider.overrideWithValue(testCatalog),
     recipeBookProvider.overrideWithValue(testRecipes),
     eatOutMenuProvider.overrideWithValue(testEatOut),

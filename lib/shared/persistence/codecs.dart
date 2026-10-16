@@ -263,3 +263,39 @@ final class SavedBarcodes {
     );
   }
 }
+
+/// Who the user is and what they told us at first launch (ADR-017).
+/// Stays on the device (ADR-007).
+final class SavedProfile {
+  SavedProfile({
+    required this.name,
+    required this.favoriteRecipeIds,
+    this.monthlyFoodSpend,
+    this.completedOn,
+  });
+
+  final String name;
+  final List<String> favoriteRecipeIds;
+  final Money? monthlyFoodSpend;
+  final LocalDate? completedOn;
+
+  Map<String, Object?> toJson() => {
+    'v': Codecs.schemaVersion,
+    'name': name,
+    'favorites': favoriteRecipeIds,
+    'monthlyFoodSpend': monthlyFoodSpend?.satang,
+    'completedOn': completedOn?.toString(),
+  };
+
+  factory SavedProfile.fromJson(Map<String, Object?> j) {
+    _checkVersion(j);
+    final spend = j['monthlyFoodSpend'] as int?;
+    final done = j['completedOn'] as String?;
+    return SavedProfile(
+      name: j['name']! as String,
+      favoriteRecipeIds: (j['favorites']! as List<Object?>).cast<String>(),
+      monthlyFoodSpend: spend == null ? null : Money.satang(spend),
+      completedOn: done == null ? null : LocalDate.parse(done),
+    );
+  }
+}

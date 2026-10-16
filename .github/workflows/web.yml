@@ -1,0 +1,45 @@
+# Builds the web version and publishes only the built files to the public
+# repo Seeiwdum/recipix_web (GitHub Pages), so the source here stays
+# private. For people without Android (iPhone: Share -> Add to Home Screen).
+# Needs the secret WEB_DEPLOY_TOKEN: a fine-grained token with
+# Contents: read and write on recipix_web only.
+name: Web app
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  web:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 3.47.7
+          channel: stable
+          cache: true
+
+      - name: Get packages
+        run: |
+          flutter pub get
+          cd packages/recipix_core && dart pub get
+
+      # Served from https://seeiwdum.github.io/recipix_web/
+      - name: Build web
+        run: flutter build web --release --base-href /recipix_web/
+
+      - name: Publish to recipix_web
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          personal_token: ${{ secrets.WEB_DEPLOY_TOKEN }}
+          external_repository: Seeiwdum/recipix_web
+          publish_branch: gh-pages
+          publish_dir: ./build/web
+          commit_message: Web build from ${{ github.sha }}

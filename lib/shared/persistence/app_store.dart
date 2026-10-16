@@ -41,11 +41,15 @@ class MemoryStore implements KeyValueStore {
 /// Data found on the device at startup. Null sections mean "nothing saved
 /// yet" (or unreadable — see [AppStore.load]).
 final class SavedData {
-  const SavedData({this.fridge, this.budget, this.barcodes});
+  const SavedData({this.fridge, this.budget, this.barcodes, this.profile});
 
   final SavedFridge? fridge;
   final SavedBudget? budget;
   final SavedBarcodes? barcodes;
+  final SavedProfile? profile;
+
+  /// Nothing of the user's on the device yet: a brand-new install.
+  bool get isFreshInstall => fridge == null && budget == null;
 }
 
 /// Loads saved sections once at startup and writes them back on change,
@@ -57,6 +61,7 @@ final class AppStore {
   static const fridgeKey = 'recipix.fridge.v1';
   static const budgetKey = 'recipix.budget.v1';
   static const barcodesKey = 'recipix.barcodes.v1';
+  static const profileKey = 'recipix.profile.v1';
 
   final KeyValueStore _kv;
   final DateTime Function() _clock;
@@ -67,6 +72,7 @@ final class AppStore {
     fridge: await _section(fridgeKey, SavedFridge.fromJson),
     budget: await _section(budgetKey, SavedBudget.fromJson),
     barcodes: await _section(barcodesKey, SavedBarcodes.fromJson),
+    profile: await _section(profileKey, SavedProfile.fromJson),
   );
 
   /// Unreadable data is never silently overwritten: the raw text is copied
@@ -90,6 +96,8 @@ final class AppStore {
   void saveBudget(SavedBudget data) => _queue(budgetKey, data.toJson());
 
   void saveBarcodes(SavedBarcodes data) => _queue(barcodesKey, data.toJson());
+
+  void saveProfile(SavedProfile data) => _queue(profileKey, data.toJson());
 
   void _queue(String key, Map<String, Object?> json) {
     _pending[key] = jsonEncode(json);
