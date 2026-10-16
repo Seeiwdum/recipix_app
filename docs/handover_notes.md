@@ -44,6 +44,7 @@ PHASE 1.5 เสร็จและ commit บน `dev` แล้ว (`db9078f`);
 
 ## กติกาถาวรจากผู้ก่อตั้ง
 - เมื่อ token ใกล้หมด: ส่ง build Android/iOS ให้ดาวน์โหลดผ่าน GitHub หรือ QR (เครื่องไม่มี Android SDK → ใช้ GitHub Actions)
+- ตั้งแล้ว: `.github/workflows/android-apk.yml` (repo Private `Seeiwdum/recipix_app`) build APK เมื่อ push `main` หรือกด Run workflow → Release `build-N` มี `recipix.apk` + `recipix-qr.png`; ผ่านครั้งแรก run #4 (2026-10-17). ปุ่ม "Re-run jobs" ใช้ commit เดิม ให้กด "Run workflow" แทน. APK เซ็นด้วยคีย์ debug ของ runner (ต่างกันทุกรอบ ต้องลบแอปก่อนลงใหม่) — คีย์จริงเป็น L3
 
 ## คำถาม L3
 - ยังเปิดอยู่: สิทธิ์อ่าน Figma; ไฟล์ Unity เดิม (+ เดโม HTML / `ui_design_prompt.md`); ติดตั้ง Android Studio; ฟีเจอร์ที่เลื่อนไว้ (รายการซื้อของ, แจ้งเตือน, ปิดวันตอนค่ำ); เปิดครั้งแรกเริ่มจากตู้ว่างไหม
