@@ -19,10 +19,27 @@ abstract final class S {
   static const randomTitle = 'สุ่มเมนู';
   static const dashboardTitle = 'สมุดค่ากิน';
 
-  // Placeholders until each tab is built (Phase 2)
-  static const scanComingSoon = 'กล้องสำหรับวัตถุดิบ บาร์โค้ด และใบเสร็จ';
   static const underConstruction = 'กำลังทำ';
-  static const scanNotYet = 'ยังสแกนไม่ได้';
+
+  // Barcode scan (ADR-014)
+  static const scanHint = 'เล็งบาร์โค้ดบนห่อให้อยู่ในกรอบ';
+  static const scanLooking = 'กำลังหาชื่อสินค้า';
+  static const scanNoName = 'พบบาร์โค้ด แต่ไม่มีชื่อสินค้า';
+  static const scanNotFound = 'ไม่พบสินค้านี้ในฐานข้อมูล';
+  static const scanOffline = 'ค้นชื่อสินค้าไม่ได้ตอนนี้';
+  static const scanPickHint = 'เลือกว่าเป็นของอะไร ครั้งหน้าแอปจะจำได้';
+  static const scanKnown = 'เคยสแกนแล้ว';
+  static String scanAddKnown(String name) => 'เพิ่ม$nameลงตะกร้า';
+  static const scanPickOther = 'ไม่ใช่ เลือกใหม่';
+  static String scanAdded(String name) =>
+      'เพิ่ม$nameลงตะกร้าแล้ว จัดเข้าชั้นได้ที่แท็บตู้เย็น';
+  static String scanBarcode(String code) => 'บาร์โค้ด $code';
+  static const scanNoBarcode = 'ไม่มีบาร์โค้ด เพิ่มของเอง';
+  static const scanCameraDenied = 'แอปยังไม่ได้รับสิทธิ์ใช้กล้อง';
+  static const scanCameraDeniedHint =
+      'เปิดสิทธิ์กล้องให้ Recipix ในการตั้งค่าเครื่อง หรือเพิ่มของเองไปก่อน';
+  static const scanCameraUnavailable = 'เครื่องนี้เปิดกล้องไม่ได้';
+  static const scanCameraUnavailableHint = 'เพิ่มของเองได้จากปุ่มด้านล่าง';
 
   // Badges (ids from recipix_core BadgeIds)
   static const badgeNames = {

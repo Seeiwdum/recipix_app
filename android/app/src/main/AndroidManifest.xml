@@ -1,4 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Barcode product lookup (ADR-014). The camera permission comes from mobile_scanner. -->
+    <uses-permission android:name="android.permission.INTERNET" />
     <application
         android:label="Recipix"
         android:name="${applicationName}"

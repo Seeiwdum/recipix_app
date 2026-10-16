@@ -8,6 +8,14 @@ status: active
 
 # Changelog
 
+## 0.11.0 — 2026-10-17 (barcode scan, ADR-014)
+- feat(scan): camera tab reads retail barcodes (mobile_scanner 7.4.2), looks the product up on Open Food Facts v3 (barcode number only), and lets the user pick the ingredient; the choice is remembered on the device (`recipix.barcodes.v1`), so repeat scans need no network.
+- feat(scan): camera runs only while the tab is visible and nothing is being handled; denied permission / no camera explain themselves; "add by hand" is always one tap away.
+- feat(dashboard): the first barcode scan feeds the first-scan badge.
+- refactor(fridge): `CatalogGrid` shared by the add sheet and the scan result.
+- chore: INTERNET permission (release builds), iOS camera usage text; removed unused windows/ and linux/ targets (plugin symlinks need Developer Mode on Windows).
+- test: scan_test.dart (parsing, controller, page) and goldens scan_390 / scan_result_390.
+
 ## 0.10.0 — 2026-10-17 (add items by hand, ADR-013)
 - feat(fridge): "add" button on the basket opens a catalog sheet; each tap puts one fresh item in the basket, with take-back.
 - feat(home): empty-fridge state links to the fridge tab.

@@ -41,10 +41,11 @@ class MemoryStore implements KeyValueStore {
 /// Data found on the device at startup. Null sections mean "nothing saved
 /// yet" (or unreadable — see [AppStore.load]).
 final class SavedData {
-  const SavedData({this.fridge, this.budget});
+  const SavedData({this.fridge, this.budget, this.barcodes});
 
   final SavedFridge? fridge;
   final SavedBudget? budget;
+  final SavedBarcodes? barcodes;
 }
 
 /// Loads saved sections once at startup and writes them back on change,
@@ -55,6 +56,7 @@ final class AppStore {
 
   static const fridgeKey = 'recipix.fridge.v1';
   static const budgetKey = 'recipix.budget.v1';
+  static const barcodesKey = 'recipix.barcodes.v1';
 
   final KeyValueStore _kv;
   final DateTime Function() _clock;
@@ -64,6 +66,7 @@ final class AppStore {
   Future<SavedData> load() async => SavedData(
     fridge: await _section(fridgeKey, SavedFridge.fromJson),
     budget: await _section(budgetKey, SavedBudget.fromJson),
+    barcodes: await _section(barcodesKey, SavedBarcodes.fromJson),
   );
 
   /// Unreadable data is never silently overwritten: the raw text is copied
@@ -85,6 +88,8 @@ final class AppStore {
   void saveFridge(SavedFridge data) => _queue(fridgeKey, data.toJson());
 
   void saveBudget(SavedBudget data) => _queue(budgetKey, data.toJson());
+
+  void saveBarcodes(SavedBarcodes data) => _queue(barcodesKey, data.toJson());
 
   void _queue(String key, Map<String, Object?> json) {
     _pending[key] = jsonEncode(json);
