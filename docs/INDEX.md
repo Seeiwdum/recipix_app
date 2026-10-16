@@ -1,0 +1,29 @@
+---
+title: Docs Index
+owner: แพรว
+last_updated: 2026-10-16
+version: 1.0
+status: active
+---
+
+# สารบัญเอกสาร
+
+| ไฟล์ | ใช้ทำอะไร | สถานะ |
+|---|---|---|
+| [handover_notes.md](handover_notes.md) | สถานะล่าสุด / ขั้นต่อไป — **อ่านก่อนเริ่มงานทุกครั้ง** | active |
+| [MASTER_PROMPT.md](MASTER_PROMPT.md) | สเปกภาพรวมจากผู้ก่อตั้ง (v2.0) | active |
+| ui_design_prompt.md | สเปก UI ฉบับเต็ม — **ยังไม่มีไฟล์** รอผู้ก่อตั้ง | missing |
+| [PROJECT_OVERVIEW.md](PROJECT_OVERVIEW.md) | สรุปความเข้าใจ 10 บรรทัด | active |
+| [COMPANY_RULES.md](COMPANY_RULES.md) | กฎบริษัท (ธนากร) | active |
+| [CHANGELOG.md](CHANGELOG.md) | ประวัติการเปลี่ยนแปลง | active |
+| [ui_critique.md](ui_critique.md) | ผลตรวจ UI ตามเช็กลิสต์ 5.5 | active |
+| [decisions/ADR-001_move-to-flutter.md](decisions/ADR-001_move-to-flutter.md) | ย้ายไป Flutter (L3, ปิดแล้ว) | accepted |
+| [decisions/ADR-002_budget-deficit.md](decisions/ADR-002_budget-deficit.md) | สูตร BudgetDeficit + วันเงินเข้า | accepted |
+| [decisions/ADR-003_core-domain-model.md](decisions/ADR-003_core-domain-model.md) | โมเดลโดเมน: วันที่/เงิน/ปริมาณ/badge | accepted |
+| [engineering/architecture.md](engineering/architecture.md) | ชั้นสถาปัตยกรรม | active |
+| [engineering/coding_standards.md](engineering/coding_standards.md) | มาตรฐานโค้ด | active |
+| [engineering/tooling_setup.md](engineering/tooling_setup.md) | สภาพเครื่อง เวอร์ชัน ปัญหาที่เจอ | active |
+| [product/roadmap.md](product/roadmap.md) | Phase 0-3 + สถานะ | active |
+| [qa/test_plan.md](qa/test_plan.md) | แผนทดสอบ + ความครอบคลุม | active |
+
+ทีม: `.claude/agents/` (9 บทบาท) · skills: `.claude/skills/` (6 ตัว) · กติกาหลัก: `CLAUDE.md`

@@ -1,0 +1,10 @@
+name: recipix_core
+description: Pure Dart business logic for Recipix (entities, SurvivalEngine, slot machine, badges). No Flutter imports.
+version: 0.1.0
+publish_to: none
+
+environment:
+  sdk: ^3.13.0
+dev_dependencies:
+  lints: ^6.1.0
+  test: ^1.33.0
