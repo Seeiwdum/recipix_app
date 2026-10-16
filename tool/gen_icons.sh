@@ -14,11 +14,13 @@ icon() {
 }
 
 # Tabs
-icon home      '<rect x="5" y="3.5" width="14" height="17" rx="2.5"/><path d="M8.5 8h7M8.5 12h7M8.5 16h4"/>'
+# Home tab: spoon and fork — today's food, not a generic document (critique: ธนากร).
+icon home      '<path d="M7.5 3v5.5a2 2 0 0 0 4 0V3M9.5 10.5V21M16.5 21v-9.5"/><path d="M16.5 3c-1.7 0-3 2-3 4.5s1.3 4 3 4 3-1.5 3-4S18.2 3 16.5 3z"/>'
 icon fridge    '<rect x="5.5" y="2.5" width="13" height="19" rx="2.5"/><path d="M5.5 10h13M8.5 6v1.5M8.5 13v3"/>'
 icon scan      '<path d="M4 8V6a2 2 0 0 1 2-2h2M16 4h2a2 2 0 0 1 2 2v2M20 16v2a2 2 0 0 1-2 2h-2M8 20H6a2 2 0 0 1-2-2v-2M8 12h8"/>'
 icon random    '<rect x="3" y="5" width="5" height="14" rx="2"/><rect x="9.5" y="5" width="5" height="14" rx="2"/><rect x="16" y="5" width="5" height="14" rx="2"/><path d="M4.75 12h1.5M11.25 12h1.5M17.75 12h1.5"/>'
-icon dashboard '<path d="M4 20h16M7 16v-4M12 16V7M17 16v-6"/>'
+# Dashboard tab: a kitchen account book, not a bar chart.
+icon dashboard '<path d="M5 18.5V5a2 2 0 0 1 2-2h12v15.5H7a2 2 0 0 0-2 2 2 2 0 0 0 2 2h12"/><path d="M9 7.5h6M9 11h6M9 14.5h3.5"/>'
 
 # Actions
 icon plus      '<path d="M12 5v14M5 12h14"/>'
@@ -39,7 +41,9 @@ icon leaf      '<path d="M5 19c0-8 5-13 14-14 0 9-5 14-13 14zM5 19l7-7"/>'
 icon clock     '<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>'
 # Badges
 icon pan       '<circle cx="10" cy="13" r="6.5"/><path d="M16.5 13H21.5M7.5 12.5a2.5 2.5 0 0 1 2.5-2.5"/>'
-icon coin      '<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/>'
+icon wallet    '<rect x="3.5" y="6" width="17" height="13" rx="2.5"/><path d="M3.5 10h17M15 14.5h2.5"/>'
+icon tag       '<path d="M3.5 12.5V5.5a2 2 0 0 1 2-2h7l8 8-9 9z"/><path d="M8 8.5h3.5"/>'
+icon bowl      '<path d="M3.5 11h17a8.5 8.5 0 0 1-17 0zM8.5 21h7"/>'
 icon basket    '<path d="M3.5 10h17l-1.6 8.2a2 2 0 0 1-2 1.8H7.1a2 2 0 0 1-2-1.8zM8 10l3-5.5M16 10l-3-5.5M9.5 13.5v3M14.5 13.5v3"/>'
 
 echo "icons: $(ls *.svg | wc -l)"

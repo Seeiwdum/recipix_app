@@ -26,7 +26,7 @@ class RecipixPage extends StatelessWidget {
             sliver: SliverToBoxAdapter(
               child: Semantics(
                 header: true,
-                child: Text(title, style: t.title.copyWith(fontSize: 24)),
+                child: Text(title, style: t.pageTitle),
               ),
             ),
           ),
@@ -52,21 +52,15 @@ class ComingSoonNote extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final t = context.tokens;
-    return Container(
-      padding: const EdgeInsets.all(RecipixTokens.space3),
-      decoration: BoxDecoration(
-        color: t.surface,
-        border: Border.all(color: t.line, width: RecipixTokens.lineWidth),
-        borderRadius: BorderRadius.circular(RecipixTokens.radiusMd),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(status, style: t.caption),
-          const SizedBox(height: RecipixTokens.space1),
-          Text(text, style: t.body),
-        ],
-      ),
+    // Plain text, no card: an unfinished screen should say so honestly,
+    // not dress it up (critique: ธนากร).
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(status, style: t.title),
+        const SizedBox(height: RecipixTokens.space1),
+        Text(text, style: t.bodyMuted),
+      ],
     );
   }
 }

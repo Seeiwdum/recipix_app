@@ -33,9 +33,10 @@ ThemeData buildRecipixTheme([RecipixTokens t = RecipixTokens.light]) {
     textTheme: TextTheme(
       displayLarge: t.display,
       titleLarge: t.title,
-      titleMedium: t.title.copyWith(fontSize: 17),
+      headlineSmall: t.pageTitle,
+      titleMedium: t.title,
       bodyLarge: t.body,
-      bodyMedium: t.body.copyWith(fontSize: 15),
+      bodyMedium: t.body,
       labelLarge: t.label,
       bodySmall: t.caption,
       labelSmall: t.caption,

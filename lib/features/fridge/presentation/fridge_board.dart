@@ -219,7 +219,7 @@ class _FridgeBoardState extends ConsumerState<FridgeBoard>
     // is pulled out below the cabinet, still visible and tappable.
     final frontHeight = _drawerOpen
         ? RecipixTokens.space3 + 2
-        : crisper.height * 0.42;
+        : crisper.height * 0.3; // low enough that each item stays readable
     final frontTop = _drawerOpen
         ? crisper.bottom + 2
         : crisper.bottom - frontHeight;
@@ -259,15 +259,7 @@ class _FridgeBoardState extends ConsumerState<FridgeBoard>
                 rect: g.compartmentRect(c.id),
                 child: Semantics(
                   label: S.compartmentNames[c.id.name],
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      color: t.bg,
-                      border: Border.all(color: t.line),
-                      borderRadius: BorderRadius.circular(
-                        RecipixTokens.radiusSm,
-                      ),
-                    ),
-                  ),
+                  child: _Compartment(id: c.id),
                 ),
               ),
 
@@ -344,9 +336,12 @@ class _FridgeBoardState extends ConsumerState<FridgeBoard>
                   style: t.label,
                   children: [
                     TextSpan(
-                      text:
-                          '  ${basket.isEmpty ? S.basketEmpty : S.basketHint}',
-                      style: t.caption,
+                      text: '  ${_basketLine(state, drag)}',
+                      style: t.caption.copyWith(
+                        color: dragging && drag.target != null && !drag.valid
+                            ? t.warnText
+                            : t.ink2,
+                      ),
                     ),
                   ],
                 ),
@@ -387,17 +382,35 @@ class _FridgeBoardState extends ConsumerState<FridgeBoard>
             Positioned.fromRect(
               rect: drag.rect,
               child: IgnorePointer(
-                child: FridgeItemView(
-                  item: dragged,
-                  today: today,
-                  size: drag.rect.size,
-                  lifted: true,
+                // Lifted 5% while in hand, back to size as it settles.
+                child: Transform.scale(
+                  scale: drag.settling
+                      ? 1 + 0.05 * (1 - _settle.value.clamp(0.0, 1.0))
+                      : 1.05,
+                  child: FridgeItemView(
+                    item: dragged,
+                    today: today,
+                    size: drag.rect.size,
+                    lifted: true,
+                  ),
                 ),
               ),
             ),
         ],
       ),
     );
+  }
+
+  /// The basket's one line: why a drop will not work while dragging over
+  /// a bad spot (critique: ดล — refusals had no reason), otherwise a
+  /// hint or the truthful empty message.
+  String _basketLine(FridgeState state, _Drag? drag) {
+    if (drag != null && !drag.settling && drag.target != null && !drag.valid) {
+      final c = FridgeLayout.of(drag.target!.compartment);
+      return drag.width > c.cols ? S.dropTooWide : S.dropTaken;
+    }
+    if (state.items.isEmpty) return S.basketFridgeEmpty;
+    return state.basket.isEmpty ? S.basketEmpty : S.basketHint;
   }
 
   /// The item being dragged stays mounted (so its pan gesture survives)
@@ -551,6 +564,54 @@ class _DrawerFront extends StatelessWidget {
                     const SizedBox(width: RecipixTokens.space3),
                   ],
                 ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Each zone gets its material from lines, not colour (critique: ดล):
+/// shelves have a heavier front lip, the freezer a double frame like a
+/// door seal; the crisper keeps its sliding front.
+class _Compartment extends StatelessWidget {
+  const _Compartment({required this.id});
+
+  final CompartmentId id;
+
+  @override
+  Widget build(BuildContext context) {
+    final t = context.tokens;
+    final radius = BorderRadius.circular(RecipixTokens.radiusSm);
+    if (id == CompartmentId.freezer) {
+      return DecoratedBox(
+        decoration: BoxDecoration(
+          color: t.bg,
+          border: Border.all(color: t.line),
+          borderRadius: radius,
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(RecipixTokens.space1 - 1),
+          child: DecoratedBox(
+            decoration: BoxDecoration(
+              border: Border.all(color: t.line),
+              borderRadius: radius,
+            ),
+          ),
+        ),
+      );
+    }
+    final shelf = id != CompartmentId.crisper;
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: t.bg,
+        border: Border(
+          left: BorderSide(color: t.line),
+          right: BorderSide(color: t.line),
+          top: BorderSide(color: t.line),
+          bottom: BorderSide(
+            color: t.line,
+            width: shelf ? RecipixTokens.space1 - 1 : RecipixTokens.lineWidth,
+          ),
         ),
       ),
     );

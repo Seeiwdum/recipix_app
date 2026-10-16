@@ -58,3 +58,12 @@ Widget testApp({String initialLocation = '/home'}) => ProviderScope(
   ],
   child: RecipixApp(initialLocation: initialLocation),
 );
+
+/// The random tab waits a beat with all reels in view before the result
+/// sheet opens. That pause is a plain timer, which pumpAndSettle does not
+/// wait for, so step past it explicitly.
+Future<void> settleSpin(WidgetTester tester) async {
+  await tester.pumpAndSettle();
+  await tester.pump(const Duration(milliseconds: 400));
+  await tester.pumpAndSettle();
+}

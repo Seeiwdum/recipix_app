@@ -90,13 +90,28 @@ void main() {
     await openHome(tester);
     final r = containerOf(tester).read(survivalReportProvider);
 
-    expect(find.text(formatDays(r.survivalDays)), findsOneWidget);
+    final plan = containerOf(tester).read(mealPlanProvider);
+
+    // The headline is meals cooked from the fridge before payday (same
+    // number as the plan page). Amount is Text.rich: text includes unit.
+    expect(
+      find.descendant(
+        of: find.byKey(const ValueKey('home-meals')),
+        matching: find.text('${plan.homeMeals} ${S.mealsUnit}'),
+      ),
+      findsOneWidget,
+    );
+    expect(find.text(S.planOfTotal(plan.meals.length)), findsOneWidget);
     expect(find.text(formatThaiDateLong(testToday)), findsOneWidget);
     expect(
-      find.text(
-        r.isCovered
-            ? S.budgetCovered
-            : S.deficit(formatBahtWhole(r.budgetDeficit, roundUp: true)),
+      find.descendant(
+        of: find.byKey(const ValueKey('shortfall-eat-out')),
+        matching: find.text(
+          r.budgetDeficit.isZero
+              ? S.enough
+              : '${formatBahtWhole(r.budgetDeficit, roundUp: true)} '
+                    '${S.bahtUnit}',
+        ),
       ),
       findsOneWidget,
     );
@@ -142,7 +157,7 @@ void main() {
     expect(find.text(S.toastDiscarded(pork.name)), findsOneWidget);
   });
 
-  testWidgets('using the headline item updates the number', (tester) async {
+  testWidgets('using an item updates the headline', (tester) async {
     await openHome(tester);
     final before = containerOf(tester).read(survivalReportProvider);
     final pork = containerOf(tester)
@@ -152,7 +167,14 @@ void main() {
     await tester.pumpAndSettle();
     final after = containerOf(tester).read(survivalReportProvider);
     expect(after.survivalDays, lessThan(before.survivalDays));
-    expect(find.text(formatDays(after.survivalDays)), findsOneWidget);
+    final plan = containerOf(tester).read(mealPlanProvider);
+    expect(
+      find.descendant(
+        of: find.byKey(const ValueKey('home-meals')),
+        matching: find.text('${plan.homeMeals} ${S.mealsUnit}'),
+      ),
+      findsOneWidget,
+    );
   });
 
   testWidgets('tap a row opens the item sheet', (tester) async {

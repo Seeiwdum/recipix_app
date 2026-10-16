@@ -84,7 +84,7 @@ void main() {
       matchesGoldenFile('goldens/random_390.png'),
     );
     await tester.tap(find.byKey(const ValueKey('spin')));
-    await tester.pumpAndSettle();
+    await settleSpin(tester);
     await expectLater(
       find.byType(RecipixApp),
       matchesGoldenFile('goldens/random_result_390.png'),

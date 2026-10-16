@@ -36,7 +36,11 @@ final menuSuggestionProvider = Provider<RecipeMatch?>((ref) {
   };
   const matcher = RecipeMatcher();
   final ranked = matcher.rank(recipes, available, focusKeys: urgent);
-  if (ranked.isNotEmpty) return ranked.first;
+  // Never suggest a dish with nothing on hand (it showed "0%" on an empty
+  // fridge — critique: ฎา, ธนากร).
+  if (ranked.isNotEmpty && ranked.first.haveKeys.isNotEmpty) {
+    return ranked.first;
+  }
   final any = matcher.rank(recipes, available);
   return any.isEmpty || any.first.haveKeys.isEmpty ? null : any.first;
 });

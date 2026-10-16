@@ -8,10 +8,11 @@ import '../../../app/strings.dart';
 import '../../../app/theme/recipix_tokens.dart';
 import '../../../shared/icons/recipix_icon.dart';
 import '../../../shared/utils/format.dart';
+import '../../../shared/widgets/dashed_rrect.dart';
+import '../../../shared/widgets/ledger.dart';
 import '../../../shared/widgets/pressable.dart';
 import '../../../shared/widgets/value_stepper.dart';
 import '../../budget/domain/budget_controller.dart';
-import '../../home/domain/home_providers.dart';
 import '../domain/dashboard_providers.dart';
 
 /// Budget you can edit, the pay period at a glance, what the money left
@@ -29,10 +30,7 @@ class DashboardPage extends StatelessWidget {
         children: [
           Semantics(
             header: true,
-            child: Text(
-              S.dashboardTitle,
-              style: t.title.copyWith(fontSize: 24),
-            ),
+            child: Text(S.dashboardTitle, style: t.pageTitle),
           ),
           const SizedBox(height: RecipixTokens.space3),
           const _BudgetSheet(),
@@ -70,8 +68,10 @@ class _SectionTitle extends StatelessWidget {
   );
 }
 
-/// Big editable budget, then the plain consequence, then the two settings
-/// that drive every number in the app.
+/// The account-book page for this pay period (ADR-012): the one big number
+/// is what is **left** (critique: ฎา — the total budget used to be the big
+/// number), then the three settings as plain ruled rows with steppers.
+/// The shortfall lives on the home page only, so it is not repeated here.
 class _BudgetSheet extends ConsumerWidget {
   const _BudgetSheet();
 
@@ -83,63 +83,57 @@ class _BudgetSheet extends ConsumerWidget {
     final t = context.tokens;
     final budget = ref.watch(budgetProvider);
     final ledger = ref.watch(ledgerProvider);
-    final report = ref.watch(survivalReportProvider);
     final ctrl = ref.read(budgetProvider.notifier);
     final payday = budget.paydayDayOfMonth;
+    final over = ledger.remaining.isNegative;
 
-    return Container(
-      padding: const EdgeInsets.all(RecipixTokens.space3),
+    Widget ruled(Widget child) => Container(
+      padding: const EdgeInsets.symmetric(vertical: RecipixTokens.space2),
       decoration: BoxDecoration(
-        color: t.surface,
-        border: Border.all(color: t.line),
-        borderRadius: BorderRadius.circular(RecipixTokens.radiusLg),
+        border: Border(bottom: BorderSide(color: t.line)),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
+      child: child,
+    );
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          over ? S.overspentLabel : S.remainingLabel,
+          style: t.label.copyWith(color: t.ink2),
+        ),
+        Amount(
+          formatBahtWhole(
+            over ? Money.zero - ledger.remaining : ledger.remaining,
+            roundUp: over,
+          ),
+          unit: S.bahtUnit,
+          size: AmountSize.display,
+          color: over ? t.warnText : null,
+        ),
+        Text(
+          S.spentOfBudget(
+            formatBahtWhole(ledger.spentInPeriod, roundUp: true),
+            formatBahtWhole(budget.periodBudget, roundUp: false),
+          ),
+          style: t.caption,
+        ),
+        const SizedBox(height: RecipixTokens.space3),
+        Divider(height: 1, color: t.line),
+        ruled(
           ValueStepper(
             key: const ValueKey('budget-stepper'),
             label: S.periodBudgetLabel,
             value: formatBaht(budget.periodBudget),
             unit: S.bahtUnit,
-            large: true,
             decreaseLabel: S.decrease(S.periodBudgetLabel),
             increaseLabel: S.increase(S.periodBudgetLabel),
             canDecrease: budget.periodBudget > Money.zero,
             onStep: (n) =>
                 ctrl.setPeriodBudget(budget.periodBudget + _budgetStep * n),
           ),
-          const SizedBox(height: RecipixTokens.space1),
-          Text(
-            ledger.remaining.isNegative
-                ? S.budgetOverspent(
-                    formatBahtWhole(
-                      Money.zero - ledger.remaining,
-                      roundUp: true,
-                    ),
-                  )
-                : S.budgetUsed(
-                    formatBahtWhole(ledger.spentInPeriod, roundUp: true),
-                    formatBahtWhole(ledger.remaining, roundUp: false),
-                  ),
-            style: t.caption.copyWith(
-              color: ledger.remaining.isNegative ? t.urgent : t.ink2,
-            ),
-          ),
-          const SizedBox(height: RecipixTokens.space2),
-          Text(
-            report.isCovered
-                ? S.budgetCovered
-                : S.deficit(
-                    formatBahtWhole(report.budgetDeficit, roundUp: true),
-                  ),
-            style: t.label.copyWith(
-              color: report.isCovered ? t.accent : t.urgent,
-            ),
-          ),
-          const SizedBox(height: RecipixTokens.space3),
-          Divider(height: 1, color: t.line),
-          const SizedBox(height: RecipixTokens.space3),
+        ),
+        ruled(
           ValueStepper(
             key: const ValueKey('payday-stepper'),
             label: S.paydaySetting,
@@ -155,7 +149,8 @@ class _BudgetSheet extends ConsumerWidget {
               ctrl.setPayday(next == 0 ? null : next);
             },
           ),
-          const SizedBox(height: RecipixTokens.space3),
+        ),
+        ruled(
           ValueStepper(
             key: const ValueKey('meal-price-stepper'),
             label: S.mealPriceSetting,
@@ -168,8 +163,8 @@ class _BudgetSheet extends ConsumerWidget {
               budget.prices.mealOutPrice + _priceStep * n,
             ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
@@ -187,7 +182,9 @@ class _Timeline extends ConsumerWidget {
 
     Color fill(DayMark m) => switch (m) {
       DayMark.within => t.accent,
-      DayMark.over => t.urgent,
+      // Over budget is amber, not red: a day of overspending is not an
+      // emergency (critique: 5/5 — red read as scolding).
+      DayMark.over => t.warn,
       DayMark.noRecord => t.surfaceSunken,
       DayMark.today => t.surface,
       DayMark.future => t.surfaceSunken,
@@ -242,7 +239,7 @@ class _Timeline extends ConsumerWidget {
           spacing: RecipixTokens.space3,
           children: [
             _Legend(color: t.accent, label: S.markWithin),
-            _Legend(color: t.urgent, label: S.markOver),
+            _Legend(color: t.warn, label: S.markOver),
             _Legend(color: t.surfaceSunken, label: S.markNoRecord),
           ],
         ),
@@ -285,7 +282,6 @@ class _BuysTable extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final t = context.tokens;
     final ledger = ref.watch(ledgerProvider);
     final prices = ref.watch(budgetProvider).prices;
     final left = Money.max(Money.zero, ledger.remaining);
@@ -293,27 +289,25 @@ class _BuysTable extends ConsumerWidget {
     final perDay = prices.dailyEatOutCost.satang;
     final days = perDay == 0 ? 0.0 : left.satang / perDay;
 
-    Widget row(String label, String value) => Container(
-      padding: const EdgeInsets.symmetric(vertical: RecipixTokens.space2),
-      decoration: BoxDecoration(
-        border: Border(bottom: BorderSide(color: t.line)),
-      ),
-      child: Row(
-        children: [
-          Expanded(child: Text(label, style: t.body)),
-          Text(value, style: t.number.copyWith(fontSize: 16)),
-        ],
-      ),
-    );
-
     return Column(
       children: [
-        row(S.buysMeals(formatBaht(prices.mealOutPrice)), S.countMeals(meals)),
-        row(S.buysDays(prices.mealsPerDay), S.countDays(formatDays(days))),
-        row(
-          S.buysAllowance,
-          '${formatBahtWhole(ledger.allowanceToday, roundUp: false)} '
-          '${S.bahtUnit}',
+        LedgerRow(
+          label: S.buysMeals(formatBaht(prices.mealOutPrice)),
+          value: Amount('$meals', unit: S.mealsUnit),
+          ruled: true,
+        ),
+        LedgerRow(
+          label: S.buysDays(prices.mealsPerDay),
+          value: Amount(formatDays(days), unit: S.daysUnit),
+          ruled: true,
+        ),
+        LedgerRow(
+          label: S.buysAllowance,
+          value: Amount(
+            formatBahtWhole(ledger.allowanceToday, roundUp: false),
+            unit: S.bahtUnit,
+          ),
+          ruled: true,
         ),
       ],
     );
@@ -321,15 +315,17 @@ class _BuysTable extends ConsumerWidget {
 }
 
 const _badgeIcons = {
-  'clear_expiring': RecipixIcons.clock,
-  'budget_saver': RecipixIcons.coin,
+  'clear_expiring': RecipixIcons.tag,
+  'budget_saver': RecipixIcons.wallet,
   'home_cook': RecipixIcons.pan,
-  'zero_waste_week': RecipixIcons.leaf,
-  'first_scan': RecipixIcons.scan,
+  'zero_waste_week': RecipixIcons.bowl,
+  'first_scan': RecipixIcons.barcode,
 };
 
-/// Three columns. Unlocked: accent outline and icon. Locked: grey outline
-/// with a thin progress bar. Tap for the rule.
+/// Three columns of stamps (badge concept kept from the old app). Not yet
+/// earned: a dashed outline in pencil grey with the distance as numbers
+/// ("2/5"). Earned: inked in the accent with the date. No card around
+/// them (critique: ดล, ธนากร — identical cards with empty bars).
 class _BadgeGrid extends ConsumerWidget {
   const _BadgeGrid();
 
@@ -340,9 +336,9 @@ class _BadgeGrid extends ConsumerWidget {
       crossAxisCount: 3,
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      mainAxisSpacing: RecipixTokens.space2,
+      mainAxisSpacing: RecipixTokens.space3,
       crossAxisSpacing: RecipixTokens.space2,
-      childAspectRatio: 0.82,
+      childAspectRatio: 0.78,
       children: [for (final b in badges) _BadgeTile(progress: b)],
     );
   }
@@ -353,51 +349,62 @@ class _BadgeTile extends StatelessWidget {
 
   final BadgeProgress progress;
 
+  static const double _stamp = RecipixTokens.space6 + RecipixTokens.space3;
+
   @override
   Widget build(BuildContext context) {
     final t = context.tokens;
     final on = progress.isUnlocked;
     final name = S.badgeNames[progress.badgeId] ?? progress.badgeId;
+    final icon = RecipixIcon(
+      _badgeIcons[progress.badgeId] ?? RecipixIcons.leaf,
+      color: on ? t.accent : t.ink2,
+      size: RecipixTokens.space5,
+    );
     return Pressable(
       key: ValueKey('badge-${progress.badgeId}'),
       semanticLabel: '$name ${on ? '' : S.badgeLocked}',
       onTap: () => _showBadge(context, progress),
-      child: Container(
-        padding: const EdgeInsets.all(RecipixTokens.space2),
-        decoration: BoxDecoration(
-          color: t.surface,
-          border: Border.all(
-            color: on ? t.accent : t.line,
-            width: on ? RecipixTokens.statusLineWidth : RecipixTokens.lineWidth,
+      child: Column(
+        children: [
+          SizedBox.square(
+            dimension: _stamp,
+            child: on
+                ? DecoratedBox(
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: t.accent,
+                        width: RecipixTokens.statusLineWidth,
+                      ),
+                      borderRadius: BorderRadius.circular(
+                        RecipixTokens.radiusLg,
+                      ),
+                    ),
+                    child: Center(child: icon),
+                  )
+                : CustomPaint(
+                    painter: DashedRRectPainter(
+                      color: t.ink2,
+                      radius: RecipixTokens.radiusLg,
+                    ),
+                    child: Center(child: icon),
+                  ),
           ),
-          borderRadius: BorderRadius.circular(RecipixTokens.radiusMd),
-        ),
-        child: Column(
-          children: [
-            const Spacer(),
-            RecipixIcon(
-              _badgeIcons[progress.badgeId] ?? RecipixIcons.leaf,
-              color: on ? t.accent : t.ink2,
-              size: RecipixTokens.space5,
-            ),
-            const Spacer(),
-            Text(
-              name,
-              textAlign: TextAlign.center,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: t.caption.copyWith(
-                color: on ? t.ink : t.ink2,
-                height: 1.4,
-              ),
-            ),
-            const SizedBox(height: RecipixTokens.space1),
-            if (!on)
-              _MiniBar(fraction: progress.fraction)
-            else
-              const SizedBox(height: RecipixTokens.space1),
-          ],
-        ),
+          const SizedBox(height: RecipixTokens.space1),
+          Text(
+            name,
+            textAlign: TextAlign.center,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: t.caption.copyWith(color: on ? t.ink : t.ink2),
+          ),
+          Text(
+            on
+                ? formatThaiDate(progress.unlockedOn!)
+                : S.badgeProgress(progress.current, progress.target),
+            style: t.micro.copyWith(color: on ? t.accent : t.ink2),
+          ),
+        ],
       ),
     );
   }

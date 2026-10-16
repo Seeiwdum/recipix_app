@@ -1,8 +1,8 @@
 ---
 title: Docs Index
 owner: แพรว
-last_updated: 2026-10-16
-version: 1.7
+last_updated: 2026-10-17
+version: 1.8
 status: active
 ---
 
@@ -17,6 +17,13 @@ status: active
 | [COMPANY_RULES.md](COMPANY_RULES.md) | กฎบริษัท (ธนากร) | active |
 | [CHANGELOG.md](CHANGELOG.md) | ประวัติการเปลี่ยนแปลง | active |
 | [ui_critique.md](ui_critique.md) | ผลตรวจ UI ตามเช็กลิสต์ 5.5 | active |
+| [ui_refinement_sprint.md](ui_refinement_sprint.md) | brief PHASE 1.5 UI Refinement Sprint จากผู้ก่อตั้ง (ขั้น A–F) | active |
+| [design/audit.md](design/audit.md) | สภาพ UI ก่อนปรับ (ข้อเท็จจริง) + ภาพ before | active |
+| [design/critique/_synthesis.md](design/critique/_synthesis.md) | สรุป 5 ความเห็นวิจารณ์: UI ขาดอะไร (ไฟล์ต้นทางอยู่ใน `design/critique/`) | active |
+| [design/references.md](design/references.md) | 16 reference: หลักการที่เอามา / สิ่งที่ห้ามเอามา | active |
+| [design/direction_v2.md](design/direction_v2.md) | 3 ทิศทาง UI + คะแนน + ตรวจ slop | active |
+| [design/changelog_ui.md](design/changelog_ui.md) | ทุกการเปลี่ยน UI ใน PHASE 1.5 อ้างประเด็น synthesis + R# | active |
+| design/shots/{before,after}/ | ภาพหน้าจอ 16 สถานะ × 360/390/430 (48 ภาพต่อชุด) | active |
 | [decisions/ADR-001_move-to-flutter.md](decisions/ADR-001_move-to-flutter.md) | ย้ายไป Flutter (L3, ปิดแล้ว) | accepted |
 | [decisions/ADR-002_budget-deficit.md](decisions/ADR-002_budget-deficit.md) | สูตร BudgetDeficit + วันเงินเข้า | accepted |
 | [decisions/ADR-003_core-domain-model.md](decisions/ADR-003_core-domain-model.md) | โมเดลโดเมน: วันที่/เงิน/ปริมาณ/badge | accepted |
@@ -28,6 +35,7 @@ status: active
 | [decisions/ADR-009_on-device-persistence.md](decisions/ADR-009_on-device-persistence.md) | บันทึกข้อมูลในเครื่อง (shared_preferences + JSON) | accepted |
 | [decisions/ADR-010_dashboard-and-badges.md](decisions/ADR-010_dashboard-and-badges.md) | แดชบอร์ด, แก้งบ, เหรียญจากประวัติ | accepted |
 | [decisions/ADR-011_random-menu.md](decisions/ADR-011_random-menu.md) | แท็บสุ่มเมนู (สล็อต 3 แกน + สั่งข้างนอก) | accepted |
+| [decisions/ADR-012_ui_direction_v2.md](decisions/ADR-012_ui_direction_v2.md) | ทิศ UI v2: A "Kitchen Ledger" (สำรอง B "ป้ายตลาด") | accepted |
 | [engineering/architecture.md](engineering/architecture.md) | ชั้นสถาปัตยกรรม | active |
 | [engineering/coding_standards.md](engineering/coding_standards.md) | มาตรฐานโค้ด | active |
 | [engineering/tooling_setup.md](engineering/tooling_setup.md) | สภาพเครื่อง เวอร์ชัน ปัญหาที่เจอ | active |
@@ -35,5 +43,6 @@ status: active
 | [product/ingredient_data_spec.md](product/ingredient_data_spec.md) | สเปก ingredients.json (ค่ายังเป็นประมาณการ) | draft |
 | [product/design_references.md](product/design_references.md) | Figma Cookmate: อะไรใช้/ไม่ใช้ | active |
 | [qa/test_plan.md](qa/test_plan.md) | แผนทดสอบ + ความครอบคลุม | active |
+| [qa/five_second_test.md](qa/five_second_test.md) | 5-second test ผู้ใช้ใหม่ (ภาพ 390) ก่อน/หลัง PHASE 1.5 | active |
 
 ทีม: `.claude/agents/` (9 บทบาท) · skills: `.claude/skills/` (6 ตัว) · กติกาหลัก: `CLAUDE.md`

@@ -7,6 +7,7 @@ import '../../../app/strings.dart';
 import '../../../app/theme/recipix_tokens.dart';
 import '../../../shared/icons/recipix_icon.dart';
 import '../../../shared/utils/format.dart';
+import '../../../shared/widgets/ledger.dart';
 import '../../../shared/widgets/pressable.dart';
 import '../../../shared/widgets/toast.dart';
 import '../domain/budget_controller.dart';
@@ -204,15 +205,12 @@ class _SpendingSheetState extends ConsumerState<_SpendingSheet> {
                   ),
                   child: Row(
                     children: [
+                      // A receipt line, like every other read value (ADR-012).
                       Expanded(
-                        child: Text(
-                          S.spendCategories[e.category.name]!,
-                          style: t.body,
+                        child: LedgerRow(
+                          label: S.spendCategories[e.category.name]!,
+                          value: Amount(formatBaht(e.amount), unit: S.bahtUnit),
                         ),
-                      ),
-                      Text(
-                        '${formatBaht(e.amount)} ${S.bahtUnit}',
-                        style: t.number,
                       ),
                       IconButton(
                         tooltip: S.spendRemove,

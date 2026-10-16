@@ -105,18 +105,34 @@ class RecipixTokens extends ThemeExtension<RecipixTokens> {
     FontFeature.tabularFigures(),
   ];
 
+  // Type scale (ADR-012): five clearly different steps — 44 / 24 / 18 /
+  // 16 / 13 — plus 10 for labels printed on items. Sizes in between
+  // (12, 14, 15, 20) were too close to tell apart (critique: มี่).
+
+  /// The one big number on a screen. Numbers only.
   TextStyle get display => TextStyle(
     fontFamily: fontFamily,
-    fontSize: 40,
+    fontSize: 44,
     fontWeight: FontWeight.w600,
-    height: 1.2,
+    height: 1.15,
+    letterSpacing: -0.5,
     color: ink,
     fontFeatures: tabularFigures,
   );
 
+  /// Page titles.
+  TextStyle get pageTitle => TextStyle(
+    fontFamily: fontFamily,
+    fontSize: 24,
+    fontWeight: FontWeight.w600,
+    height: thaiLineHeight,
+    color: ink,
+  );
+
+  /// Section headings, sheet titles, dish names.
   TextStyle get title => TextStyle(
     fontFamily: fontFamily,
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: FontWeight.w600,
     height: thaiLineHeight,
     color: ink,
@@ -132,18 +148,20 @@ class RecipixTokens extends ThemeExtension<RecipixTokens> {
 
   TextStyle get bodyMuted => body.copyWith(color: ink2);
 
+  /// Small but emphasised: field labels, statuses, buttons.
   TextStyle get label => TextStyle(
     fontFamily: fontFamily,
-    fontSize: 14,
-    fontWeight: FontWeight.w500,
+    fontSize: 13,
+    fontWeight: FontWeight.w600,
     height: thaiLineHeight,
     color: ink,
   );
 
+  /// Small supporting text.
   TextStyle get caption => TextStyle(
     fontFamily: fontFamily,
-    fontSize: 12,
-    fontWeight: FontWeight.w500,
+    fontSize: 13,
+    fontWeight: FontWeight.w400,
     height: thaiLineHeight,
     color: ink2,
   );
@@ -156,7 +174,16 @@ class RecipixTokens extends ThemeExtension<RecipixTokens> {
   );
 
   /// Numbers inside running text and tables.
-  TextStyle get number => label.copyWith(fontFeatures: tabularFigures);
+  TextStyle get number =>
+      body.copyWith(fontWeight: FontWeight.w600, fontFeatures: tabularFigures);
+
+  /// A unit next to a number is about half its size, in the secondary ink
+  /// (ADR-012 number grammar).
+  static const double unitScale = 0.55;
+
+  /// Dot leader between a label and its value (ADR-012 signature).
+  static const double leaderDot = 1.2;
+  static const double leaderGap = 4;
 
   @override
   RecipixTokens copyWith({

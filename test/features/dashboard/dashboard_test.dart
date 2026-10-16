@@ -201,7 +201,14 @@ void main() {
     await tester.tap(find.byKey(const ValueKey('badge-home_cook')));
     await tester.pumpAndSettle();
     expect(find.text(S.badgeRules['home_cook']!), findsOneWidget);
-    expect(find.text(S.badgeProgress(0, 10)), findsOneWidget);
+    // The stamp also shows x/y, so look inside the sheet only.
+    expect(
+      find.descendant(
+        of: find.byType(BottomSheet),
+        matching: find.text(S.badgeProgress(0, 10)),
+      ),
+      findsOneWidget,
+    );
   });
 
   for (final width in [360.0, 430.0]) {

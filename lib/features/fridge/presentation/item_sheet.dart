@@ -6,6 +6,7 @@ import '../../../app/providers.dart';
 import '../../../app/strings.dart';
 import '../../../app/theme/recipix_tokens.dart';
 import '../../../shared/utils/format.dart';
+import '../../../shared/utils/freshness_color.dart';
 import '../../../shared/widgets/toast.dart';
 import '../../../shared/widgets/ingredient_tile.dart';
 import '../domain/fridge_controller.dart';
@@ -74,11 +75,8 @@ class _ItemSheet extends ConsumerWidget {
       );
     }
 
-    final expiryColor = days < 0
-        ? t.urgent
-        : days <= urgentWindowDays
-        ? t.urgent
-        : t.ink;
+    // Same scale as every other screen (ADR-012): red only expired/today.
+    final expiryColor = freshnessColor(t, days) ?? t.ink;
 
     return SafeArea(
       child: Padding(

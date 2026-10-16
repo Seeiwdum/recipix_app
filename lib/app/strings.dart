@@ -10,22 +10,25 @@ abstract final class S {
   static const tabFridge = 'ตู้เย็น';
   static const tabScan = 'สแกน';
   static const tabRandom = 'สุ่มเมนู';
-  static const tabDashboard = 'แดชบอร์ด';
+  static const tabDashboard = 'สมุดค่ากิน';
 
   // Page headers
   static const homeTitle = 'วันนี้';
   static const fridgeTitle = 'ตู้เย็น';
   static const scanTitle = 'สแกนของเข้าตู้';
   static const randomTitle = 'สุ่มเมนู';
-  static const dashboardTitle = 'แดชบอร์ด';
+  static const dashboardTitle = 'สมุดค่ากิน';
 
   // Placeholders until each tab is built (Phase 2)
   static const scanComingSoon = 'กล้องสำหรับวัตถุดิบ บาร์โค้ด และใบเสร็จ';
   static const underConstruction = 'กำลังทำ';
+  static const scanNotYet = 'ยังสแกนไม่ได้';
 
   // Badges (ids from recipix_core BadgeIds)
   static const badgeNames = {
-    'clear_expiring': 'เคลียร์ของใกล้หมดอายุ',
+    // Short enough for one line on the stamp (the longer name broke
+    // "หมดอายุ" in two).
+    'clear_expiring': 'เคลียร์ของใกล้หมด',
     'budget_saver': 'ประหยัดงบสำเร็จ',
     'home_cook': 'ทำกินเองบ่อย',
     'zero_waste_week': 'ไม่ทิ้งของ 7 วัน',
@@ -48,12 +51,21 @@ abstract final class S {
   static const survivalLead = 'อยู่ได้อีก';
   static const daysUnit = 'วัน';
   static const bahtUnit = 'บาท';
+  static const kcalUnit = 'kcal';
+  static const fridgeEmptyHeadline = 'ยังนับไม่ได้ ตู้ยังว่าง';
+  static const fridgeEmptyHint =
+      'มีของในตู้เมื่อไหร่ จะนับให้ว่าทำกินได้กี่มื้อ';
   static String survivalBasis(String kcal, String need) =>
       'จากของที่มี $kcal kcal · ใช้วันละ $need kcal';
   static String survivalEstimate(String days) =>
       'ถ้านับของที่ยังไม่รู้ชนิดด้วย อาจได้ถึง $days วัน';
   static String coverage(String days, int payday) =>
       'ของในตู้พอ $days จาก $payday วันถึงเงินเข้า';
+  static const paydayRow = 'เงินเข้าอีก';
+  static const fridgeEnergyRow = 'พลังงานในตู้';
+  static const shortfallEatOut = 'ยอดขาดถ้าซื้อกินทุกมื้อ';
+  static const shortfallPlan = 'ยอดขาดถ้าทำเองตามแผน';
+  static const enough = 'พอ';
   static const allowanceLabel = 'งบวันนี้';
   static const paydayLabel = 'เงินเข้าใน';
   static String deficit(String baht) => 'ขาดอีก $baht บาทถึงวันเงินเข้า';
@@ -70,6 +82,8 @@ abstract final class S {
   static const menuFull = 'ครบทุกอย่าง';
   static String menuMissing(String names) => 'ขาด $names';
   static String matchPercent(int p) => 'เข้ากัน $p%';
+  static String matchPlain(int have, int total, int percent) =>
+      'มีของ $have จาก $total · $percent%';
   static String minutes(int m) => '$m นาที';
 
   // Spending log
@@ -98,11 +112,13 @@ abstract final class S {
   static const back = 'กลับ';
   static String planHomeSummary(int home, int total) =>
       'ทำเองได้อีก $home มื้อ จาก $total มื้อถึงเงินเข้า';
-  static const planHomeLead = 'ทำเองจากของในตู้';
+  static const planHomeLead = 'ทำกินเองจากของในตู้ได้อีก';
   static const mealsUnit = 'มื้อ';
   static String planOfTotal(int total) => 'จาก $total มื้อถึงวันเงินเข้า';
   static String planEatOut(int meals, String baht) =>
       'ซื้อกิน $meals มื้อ ประมาณ $baht บาท';
+  static String planEatOutRow(int meals) => 'ซื้อกิน $meals มื้อ ประมาณ';
+  static const planBudgetRow = 'งบที่เหลือ';
   static String planBudgetLeft(String baht) => 'งบเหลือ $baht บาท';
   static String planShortfall(String baht) => 'ตามแผนนี้ ขาด $baht บาท';
   static const planCovered = 'ตามแผนนี้ งบพอ';
@@ -124,6 +140,10 @@ abstract final class S {
   static String budgetUsed(String spent, String left) =>
       'ใช้ไปแล้ว $spent บาท · เหลือ $left บาท';
   static String budgetOverspent(String over) => 'ใช้เกินงบรอบนี้ $over บาท';
+  static const remainingLabel = 'เหลือรอบนี้';
+  static const overspentLabel = 'ใช้เกินงบรอบนี้';
+  static String spentOfBudget(String spent, String budget) =>
+      'ใช้ไป $spent จากงบ $budget บาท';
   static const settingsSection = 'ตั้งค่า';
   static const paydaySetting = 'วันเงินเข้า';
   static const paydayEndOfMonth = 'ใช้ถึงสิ้นเดือน';
@@ -169,6 +189,9 @@ abstract final class S {
   static const emptyReel = 'ยังไม่ได้หมุน';
   static const reelSpinning = 'กำลังหมุน';
   static const noMatch = 'ยังไม่มีเมนูที่ใช้ของชุดนี้ ลองหมุนใหม่หรือปลดล็อก';
+  static const randomFridgeEmpty = 'ตู้ยังว่าง ยังไม่มีวัตถุดิบให้หมุน';
+  static const tryEatOut = 'สุ่มเมนูสั่งข้างนอกแทน';
+  static const fullNow = 'ทำได้ครบเลย';
   static const haveTitle = 'ของที่มี';
   static const missingTitle = 'ของที่ขาด';
   static const cookThis = 'ทำเมนูนี้';
@@ -176,6 +199,9 @@ abstract final class S {
   static String priceBaht(String p) => '$p บาท';
   static String leftAfter(String baht) => 'เหลืองบวันนี้ $baht บาทหลังมื้อนี้';
   static String overAfter(String baht) => 'เกินงบวันนี้ $baht บาท';
+  static const priceRow = 'ราคา';
+  static const leftAfterRow = 'เหลืองบวันนี้หลังมื้อนี้';
+  static const overTodayRow = 'เกินงบวันนี้';
   static const nothingFits =
       'ไม่มีเมนูในงบที่เหลือวันนี้ นี่คือเมนูที่ถูกที่สุด';
   static String eatThis(String baht) => 'กินมื้อนี้ · บันทึก $baht บาท';
@@ -191,6 +217,9 @@ abstract final class S {
   static const basketTitle = 'ตะกร้า';
   static const basketHint = 'ลากขึ้นไปวางบนชั้น';
   static const basketEmpty = 'จัดของเข้าตู้ครบแล้ว';
+  static const basketFridgeEmpty = 'ตู้ยังว่าง ของที่ซื้อมาจะมารอที่ตะกร้านี้';
+  static const dropTooWide = 'ของชิ้นนี้กว้าง 2 ช่อง ใส่ชั้นประตูไม่ได้';
+  static const dropTaken = 'ช่องนี้มีของอยู่แล้ว';
   static String basketMore(int n) => '+$n';
   static const drawerLabel = 'ลิ้นชักผัก';
   static const compartmentNames = {

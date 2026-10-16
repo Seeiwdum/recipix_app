@@ -39,6 +39,7 @@ class IngredientTile extends StatelessWidget {
     this.size = 48,
     this.width,
     this.faded = false,
+    this.framed = true,
   });
 
   final String? ingredientKey;
@@ -53,6 +54,10 @@ class IngredientTile extends StatelessWidget {
   /// Items close to or past expiry are drawn slightly washed out so
   /// freshness reads at a glance.
   final bool faded;
+
+  /// Draw the beige tile behind the art. Off when the item stands on a
+  /// fridge shelf or in a reel window, so it is not a box inside a box.
+  final bool framed;
 
   @override
   Widget build(BuildContext context) {
@@ -99,10 +104,12 @@ class IngredientTile extends StatelessWidget {
         child: Container(
           width: w,
           height: size,
-          decoration: BoxDecoration(
-            color: t.surfaceSunken,
-            borderRadius: BorderRadius.circular(RecipixTokens.radiusSm),
-          ),
+          decoration: framed
+              ? BoxDecoration(
+                  color: t.surfaceSunken,
+                  borderRadius: BorderRadius.circular(RecipixTokens.radiusSm),
+                )
+              : null,
           child: content,
         ),
       ),

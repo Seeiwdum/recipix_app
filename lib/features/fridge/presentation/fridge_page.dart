@@ -38,10 +38,7 @@ class FridgePage extends ConsumerWidget {
               children: [
                 Semantics(
                   header: true,
-                  child: Text(
-                    S.fridgeTitle,
-                    style: t.title.copyWith(fontSize: 24),
-                  ),
+                  child: Text(S.fridgeTitle, style: t.pageTitle),
                 ),
                 const SizedBox(width: RecipixTokens.space3),
                 Expanded(

@@ -1,12 +1,25 @@
 ---
 title: Changelog
 owner: แพรว
-last_updated: 2026-10-16
-version: 0.8.0
+last_updated: 2026-10-17
+version: 0.9.0
 status: active
 ---
 
 # Changelog
+
+## 0.9.0 — 2026-10-17 (PHASE 1.5 UI refinement, direction A "Kitchen Ledger")
+- feat(ui): new type scale 44/24/18/16/13 (+10 micro), `pageTitle` on every tab, tabular `number`, `unitScale`/`leaderDot`/`leaderGap` tokens (ADR-012)
+- feat(ui): shared `Amount`, `LedgerRow` and `DotLeader` (lib/shared/widgets/ledger.dart) replace template cards; one big number per screen
+- feat(ui): `freshnessColor()` single source for freshness colour (red = expired/today, amber = 1-5 days); overspent days amber instead of red
+- feat(fridge): held item lifts (scale 1.05, hard offset shadow), zones drawn with material lines, basket says why a drop is refused, honest empty state; crisper drawer front closed height 42% -> 30% of the row
+- feat(home): report as ledger lines; plan shortfall shown first, eat-out shortfall quieter in ink2 and hidden when it duplicates (empty fridge); headline in meals (pending founder, L3)
+- feat(random): reels in one window, 350ms pause before results, sheet max 58% height, full matches grouped first, empty fridge links to eat-out; eat-out as an order slip
+- feat(dashboard): tab renamed "สมุดค่ากิน" (pending founder, L3); big number is money left; badges as stamps with progress or date; badge 'clear_expiring' renamed "เคลียร์ของใกล้หมด" (no mid-word break)
+- feat(icons): home = spoon and fork, dashboard = ledger book, new wallet/tag/bowl; coin removed
+- fix(home): menu suggestions never offer a dish with none of its ingredients in the fridge
+- test: app 128 pass (48 design shot tests skipped without SHOTS define), core 65 pass, 14 goldens regenerated; before/after shots in docs/design/shots/
+- docs: ADR-012, ui_refinement_sprint, design/{audit,references,direction_v2,changelog_ui}, design/critique/*, qa/five_second_test (before 8/16 -> after 11/16), UI critique, handover
 
 ## 0.8.0 — 2026-10-16 (random menu tab)
 - feat(random): 3-reel ingredient slot (result decided first, reels stop one by one with a 6% settle, labels hidden until each reel stops), tap to lock, expiring-first toggle, result sheet with match/have/missing/other dishes, cook a full match with undo

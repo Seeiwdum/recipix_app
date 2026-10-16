@@ -12,7 +12,10 @@ import '../../../app/theme/recipix_tokens.dart';
 import '../../../shared/icons/recipix_icon.dart';
 import '../../../shared/motion/entrance.dart';
 import '../../../shared/utils/format.dart';
+import '../../../shared/motion/motion.dart';
+import '../../../shared/utils/freshness_color.dart';
 import '../../../shared/widgets/ingredient_tile.dart';
+import '../../../shared/widgets/ledger.dart';
 import '../../../shared/widgets/pressable.dart';
 import '../../../shared/widgets/toast.dart';
 import '../../budget/domain/budget_controller.dart';
@@ -52,10 +55,7 @@ class HomePage extends ConsumerWidget {
                 Text(formatThaiDateLong(today), style: t.caption),
                 Semantics(
                   header: true,
-                  child: Text(
-                    S.homeTitle,
-                    style: t.title.copyWith(fontSize: 24),
-                  ),
+                  child: Text(S.homeTitle, style: t.pageTitle),
                 ),
                 const SizedBox(height: RecipixTokens.space3),
                 const _ReportSheet(),
@@ -95,13 +95,7 @@ class HomePage extends ConsumerWidget {
             sliver: SliverList.list(
               children: [
                 if (next != null) ...[
-                  _SectionHeader(
-                    title: S.nextMealTitle,
-                    trailing: S.planHomeSummary(
-                      plan.homeMeals,
-                      plan.meals.length,
-                    ),
-                  ),
+                  const _SectionHeader(title: S.nextMealTitle),
                   _NextMealRow(meal: next),
                 ] else if (menu != null) ...[
                   const _SectionHeader(title: S.menuTitle),
@@ -122,6 +116,10 @@ class HomePage extends ConsumerWidget {
   }
 }
 
+/// The daily report, laid out like a page in a kitchen account book
+/// (ADR-012): one big number, no surrounding box, then read-out lines with
+/// dot leaders. Both shortfalls are labelled with where they come from, so
+/// "781" and "620" no longer look like a contradiction (critique: ฎา, วุฒิ).
 class _ReportSheet extends ConsumerWidget {
   const _ReportSheet();
 
@@ -129,148 +127,130 @@ class _ReportSheet extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final t = context.tokens;
     final r = ref.watch(survivalReportProvider);
-    final profile = ref.watch(budgetProfileProvider);
     final ledger = ref.watch(ledgerProvider);
-    final coverage = r.daysUntilPayday == 0
+    final plan = ref.watch(mealPlanProvider);
+    final empty = ref.watch(fridgeProvider.select((s) => s.items.isEmpty));
+    final reduce = reduceMotionOf(context);
+    // Headline in meals, the same unit as the meal plan (founder decision
+    // on L3 #2): the number is "meals I can cook from the fridge before
+    // payday", so home and plan never disagree.
+    final totalMeals = plan.meals.length;
+    final coverage = totalMeals == 0
         ? 1.0
-        : math.min(1.0, r.survivalDays / r.daysUntilPayday);
+        : math.min(1.0, plan.homeMeals / totalMeals);
 
-    return Container(
-      padding: const EdgeInsets.all(RecipixTokens.space3),
-      decoration: BoxDecoration(
-        color: t.surface,
-        border: Border.all(color: t.line),
-        borderRadius: BorderRadius.circular(RecipixTokens.radiusLg),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(S.survivalLead, style: t.label.copyWith(color: t.ink2)),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.baseline,
-            textBaseline: TextBaseline.alphabetic,
-            children: [
-              CountUp(
-                key: const ValueKey('survival-days'),
-                value: r.survivalDays,
-                format: formatDays,
-                style: t.display,
-              ),
-              const SizedBox(width: RecipixTokens.space2),
-              Text(S.daysUnit, style: t.title),
-            ],
-          ),
-          Text(
-            S.survivalBasis(
-              formatInt(r.confirmedKcal.round()),
-              formatInt(profile.dailyKcalNeed.round()),
-            ),
-            style: t.caption,
-          ),
-          if (r.estimatedKcal > 0)
-            Text(
-              S.survivalEstimate(formatDays(r.survivalDaysWithEstimate)),
-              style: t.caption,
-            ),
-          const SizedBox(height: RecipixTokens.space3),
-          _ThinBar(fraction: coverage),
-          const SizedBox(height: RecipixTokens.space1),
-          Text(
-            S.coverage(formatDays(r.survivalDays), r.daysUntilPayday),
-            style: t.caption,
-          ),
-          const SizedBox(height: RecipixTokens.space3),
-          Divider(height: 1, thickness: RecipixTokens.lineWidth, color: t.line),
-          const SizedBox(height: RecipixTokens.space3),
-          Row(
-            children: [
-              Expanded(
-                child: _Figure(
-                  label: S.allowanceLabel,
-                  value: formatBahtWhole(ledger.allowanceToday, roundUp: false),
-                  unit: S.bahtUnit,
-                ),
-              ),
-              Expanded(
-                child: _Figure(
-                  label: S.paydayLabel,
-                  value: '${r.daysUntilPayday}',
-                  unit: S.daysUnit,
-                ),
-              ),
-            ],
-          ),
-          if (!ledger.spentToday.isZero)
-            Padding(
-              padding: const EdgeInsets.only(top: RecipixTokens.space1),
-              child: Text(
-                ledger.overToday
-                    ? S.overToday(
-                        formatBahtWhole(
-                          Money.zero - ledger.leftToday,
-                          roundUp: true,
-                        ),
-                      )
-                    : S.spentToday(
-                        formatBahtWhole(ledger.spentToday, roundUp: true),
-                        formatBahtWhole(ledger.leftToday, roundUp: false),
-                      ),
-                style: t.caption.copyWith(
-                  color: ledger.overToday ? t.urgent : t.ink2,
-                ),
-              ),
-            ),
-          const SizedBox(height: RecipixTokens.space2),
-          Text(
-            r.isCovered
-                ? S.budgetCovered
-                : S.deficit(formatBahtWhole(r.budgetDeficit, roundUp: true)),
-            style: t.label.copyWith(color: r.isCovered ? t.accent : t.urgent),
-          ),
-          const SizedBox(height: RecipixTokens.space3),
-          SizedBox(
-            width: double.infinity,
-            height: RecipixTokens.tapTarget,
-            child: OutlinedButton.icon(
-              key: const ValueKey('log-spending'),
-              style: OutlinedButton.styleFrom(
-                foregroundColor: t.ink,
-                side: BorderSide(color: t.line),
-                textStyle: t.label,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(RecipixTokens.radiusMd),
-                ),
-              ),
-              onPressed: () => showSpendingSheet(context),
-              icon: RecipixIcon(RecipixIcons.plus, color: t.ink),
-              label: const Text(S.logSpending),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
+    Widget baht(Money m, {required bool roundUp}) =>
+        Amount(formatBahtWhole(m, roundUp: roundUp), unit: S.bahtUnit);
 
-class _Figure extends StatelessWidget {
-  const _Figure({required this.label, required this.value, required this.unit});
+    Widget shortfall(Money m) => m.isZero
+        ? Text(S.enough, style: t.number.copyWith(color: t.accent))
+        : baht(m, roundUp: true);
 
-  final String label;
-  final String value;
-  final String unit;
-
-  @override
-  Widget build(BuildContext context) {
-    final t = context.tokens;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label, style: t.caption),
-        Text.rich(
-          TextSpan(
-            text: value,
-            style: t.title.copyWith(fontFeatures: RecipixTokens.tabularFigures),
-            children: [TextSpan(text: ' $unit', style: t.bodyMuted)],
+        Text(S.planHomeLead, style: t.label.copyWith(color: t.ink2)),
+        if (empty) ...[
+          Text(S.fridgeEmptyHeadline, style: t.title),
+          Text(S.fridgeEmptyHint, style: t.bodyMuted),
+        ] else ...[
+          TweenAnimationBuilder<double>(
+            key: const ValueKey('home-meals'),
+            tween: Tween(begin: 0, end: plan.homeMeals.toDouble()),
+            duration: reduce ? Duration.zero : RecipixTokens.countUp,
+            curve: RecipixTokens.enter,
+            builder: (context, v, _) => Semantics(
+              label: '${plan.homeMeals} ${S.mealsUnit}',
+              excludeSemantics: true,
+              child: Amount(
+                '${v.round()}',
+                unit: S.mealsUnit,
+                size: AmountSize.display,
+              ),
+            ),
+          ),
+          const SizedBox(height: RecipixTokens.space1),
+          _ThinBar(fraction: coverage),
+          const SizedBox(height: RecipixTokens.space1),
+          Text(S.planOfTotal(totalMeals), style: t.caption),
+        ],
+        const SizedBox(height: RecipixTokens.space3),
+        LedgerRow(
+          label: S.allowanceLabel,
+          value: baht(ledger.allowanceToday, roundUp: false),
+          ruled: true,
+        ),
+        if (!ledger.spentToday.isZero)
+          Padding(
+            padding: const EdgeInsets.only(top: RecipixTokens.space1),
+            child: Text(
+              ledger.overToday
+                  ? S.overToday(
+                      formatBahtWhole(
+                        Money.zero - ledger.leftToday,
+                        roundUp: true,
+                      ),
+                    )
+                  : S.spentToday(
+                      formatBahtWhole(ledger.spentToday, roundUp: true),
+                      formatBahtWhole(ledger.leftToday, roundUp: false),
+                    ),
+              style: t.caption.copyWith(
+                color: ledger.overToday ? t.warnText : t.ink2,
+              ),
+            ),
+          ),
+        LedgerRow(
+          label: S.paydayRow,
+          value: Amount('${r.daysUntilPayday}', unit: S.daysUnit),
+          ruled: true,
+        ),
+        LedgerRow(
+          label: S.fridgeEnergyRow,
+          value: Amount(formatInt(r.confirmedKcal.round()), unit: S.kcalUnit),
+          ruled: true,
+        ),
+        // The plan shortfall is the one to act on; buying every meal is the
+        // comparison, so it reads quieter. With an empty fridge they are the
+        // same number, so only one is shown.
+        if (!empty)
+          LedgerRow(
+            key: const ValueKey('shortfall-plan'),
+            label: S.shortfallPlan,
+            labelStyle: t.label,
+            value: shortfall(plan.shortfall),
+            ruled: true,
+          ),
+        LedgerRow(
+          key: const ValueKey('shortfall-eat-out'),
+          label: S.shortfallEatOut,
+          labelStyle: t.caption,
+          value: r.budgetDeficit.isZero
+              ? shortfall(r.budgetDeficit)
+              : Amount(
+                  formatBahtWhole(r.budgetDeficit, roundUp: true),
+                  unit: S.bahtUnit,
+                  color: t.ink2,
+                ),
+          ruled: true,
+        ),
+        const SizedBox(height: RecipixTokens.space3),
+        SizedBox(
+          width: double.infinity,
+          height: RecipixTokens.tapTarget,
+          child: OutlinedButton.icon(
+            key: const ValueKey('log-spending'),
+            style: OutlinedButton.styleFrom(
+              foregroundColor: t.ink,
+              side: BorderSide(color: t.line),
+              textStyle: t.label,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(RecipixTokens.radiusMd),
+              ),
+            ),
+            onPressed: () => showSpendingSheet(context),
+            icon: RecipixIcon(RecipixIcons.plus, color: t.ink),
+            label: const Text(S.logSpending),
           ),
         ),
       ],
@@ -306,6 +286,8 @@ class _ThinBar extends StatelessWidget {
   }
 }
 
+/// Section title with an optional hint on the line below (it used to sit
+/// right-aligned and compete with the title — critique: มี่).
 class _SectionHeader extends StatelessWidget {
   const _SectionHeader({required this.title, this.trailing});
 
@@ -317,21 +299,11 @@ class _SectionHeader extends StatelessWidget {
     final t = context.tokens;
     return Padding(
       padding: const EdgeInsets.only(bottom: RecipixTokens.space2),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.end,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Semantics(header: true, child: Text(title, style: t.title)),
-          const SizedBox(width: RecipixTokens.space2),
-          if (trailing != null)
-            Expanded(
-              child: Text(
-                trailing!,
-                textAlign: TextAlign.end,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: t.caption,
-              ),
-            ),
+          if (trailing != null) Text(trailing!, style: t.caption),
         ],
       ),
     );
@@ -407,24 +379,46 @@ class _UseFirstRow extends ConsumerWidget {
               ),
               const SizedBox(width: RecipixTokens.space3),
               Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Text(item.name, style: t.body),
-                    Text(
-                      place == null
-                          ? S.inBasket
-                          : S.compartmentNames[place.slot.compartment.name]!,
-                      style: t.caption,
+                    Flexible(
+                      flex: 0,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            place == null
+                                ? S.inBasket
+                                : S.compartmentNames[place
+                                      .slot
+                                      .compartment
+                                      .name]!,
+                            style: t.caption,
+                          ),
+                          Text(
+                            item.name,
+                            style: t.body,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      ),
                     ),
+                    const Expanded(child: DotLeader()),
                   ],
                 ),
               ),
-              Text(
-                S.daysLeftLong(days),
-                style: t.label.copyWith(
-                  color: days <= 0 ? t.urgent : t.warnText,
-                  fontFeatures: RecipixTokens.tabularFigures,
+              Padding(
+                padding: const EdgeInsets.only(
+                  bottom: RecipixTokens.space1 / 2,
+                ),
+                child: Text(
+                  S.daysLeftLong(days),
+                  style: t.label.copyWith(
+                    color: freshnessColor(t, days) ?? t.ink2,
+                    fontFeatures: RecipixTokens.tabularFigures,
+                  ),
                 ),
               ),
             ],
@@ -489,11 +483,13 @@ class _MenuRow extends ConsumerWidget {
         .join(', ');
 
     return Container(
-      padding: const EdgeInsets.all(RecipixTokens.space3),
+      padding: const EdgeInsets.symmetric(vertical: RecipixTokens.space3),
+      // A dish is a line in the day, not a card (ADR-012).
       decoration: BoxDecoration(
-        color: t.surface,
-        border: Border.all(color: t.line),
-        borderRadius: BorderRadius.circular(RecipixTokens.radiusMd),
+        border: Border(
+          top: BorderSide(color: t.line),
+          bottom: BorderSide(color: t.line),
+        ),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -527,7 +523,11 @@ class _MenuRow extends ConsumerWidget {
             child: Text(
               match.isJackpot
                   ? S.menuFull
-                  : S.matchPercent(match.matchPercentage),
+                  : S.matchPlain(
+                      match.haveKeys.length,
+                      match.haveKeys.length + match.missingKeys.length,
+                      match.matchPercentage,
+                    ),
               style: t.label.copyWith(
                 color: match.isJackpot ? t.accent : t.ink2,
                 fontFeatures: RecipixTokens.tabularFigures,
@@ -563,11 +563,12 @@ class _NextMealRow extends ConsumerWidget {
       semanticLabel: '${S.nextMealTitle} ${recipe.name}',
       onTap: () => showCookSheet(context, meal),
       child: Container(
-        padding: const EdgeInsets.all(RecipixTokens.space3),
+        padding: const EdgeInsets.symmetric(vertical: RecipixTokens.space3),
         decoration: BoxDecoration(
-          color: t.surface,
-          border: Border.all(color: t.line),
-          borderRadius: BorderRadius.circular(RecipixTokens.radiusMd),
+          border: Border(
+            top: BorderSide(color: t.line),
+            bottom: BorderSide(color: t.line),
+          ),
         ),
         child: Row(
           children: [

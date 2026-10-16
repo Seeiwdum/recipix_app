@@ -17,7 +17,7 @@ void main() {
     for (final tab in appTabs) {
       expect(find.bySemanticsLabel(tab.label), findsOneWidget);
     }
-    expect(find.byKey(const ValueKey('survival-days')), findsOneWidget);
+    expect(find.byKey(const ValueKey('home-meals')), findsOneWidget);
   });
 
   testWidgets('tapping a tab switches page and keeps the bar', (tester) async {
@@ -28,7 +28,7 @@ void main() {
     await tester.tap(find.bySemanticsLabel(S.tabRandom));
     await tester.pumpAndSettle();
     expect(find.byKey(const ValueKey('spin')), findsOneWidget);
-    expect(find.byKey(const ValueKey('survival-days')), findsNothing);
+    expect(find.byKey(const ValueKey('home-meals')), findsNothing);
 
     await tester.tap(find.bySemanticsLabel(S.tabDashboard));
     await tester.pumpAndSettle();
@@ -45,11 +45,11 @@ void main() {
     await tester.pump();
     await tester.pump(const Duration(milliseconds: 60));
     // Mid-transition: both old and new tab are on stage.
-    expect(find.byKey(const ValueKey('survival-days')), findsOneWidget);
+    expect(find.byKey(const ValueKey('home-meals')), findsOneWidget);
     expect(find.byType(FridgeBoard), findsOneWidget);
 
     await tester.pump(const Duration(milliseconds: 200));
-    expect(find.byKey(const ValueKey('survival-days')), findsNothing);
+    expect(find.byKey(const ValueKey('home-meals')), findsNothing);
     expect(tester.hasRunningAnimations, isFalse);
   });
 

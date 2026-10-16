@@ -146,7 +146,7 @@ void main() {
     );
     expect(spinButton.onPressed, isNull); // no double spin
 
-    await tester.pumpAndSettle();
+    await settleSpin(tester);
     expect(find.byType(BottomSheet), findsOneWidget);
   });
 
@@ -155,7 +155,7 @@ void main() {
   ) async {
     await openRandom(tester);
     await tester.tap(find.byKey(const ValueKey('spin')));
-    await tester.pumpAndSettle();
+    await settleSpin(tester);
     await tester.tapAt(const Offset(10, 10)); // close sheet
     await tester.pumpAndSettle();
 
@@ -166,7 +166,7 @@ void main() {
     final kept = c.read(randomProvider).reels[2]!.id;
 
     await tester.tap(find.byKey(const ValueKey('spin')));
-    await tester.pumpAndSettle();
+    await settleSpin(tester);
     expect(c.read(randomProvider).reels[2]!.id, kept);
   });
 
@@ -212,7 +212,7 @@ void main() {
     );
     showCookResultSheet(tester.element(find.byType(RandomPage)), result);
     await tester.pumpAndSettle();
-    expect(find.text(S.matchPercent(80)), findsOneWidget);
+    expect(find.text(S.matchPlain(4, 5, 80)), findsOneWidget);
     expect(find.text('กระเทียม'), findsOneWidget);
     expect(find.text(S.cookThis), findsNothing);
   });
@@ -222,7 +222,7 @@ void main() {
     await tester.tap(find.bySemanticsLabel(S.modeEatOut));
     await tester.pump();
     await tester.tap(find.byKey(const ValueKey('spin')));
-    await tester.pumpAndSettle();
+    await settleSpin(tester);
 
     final c = containerOf(tester);
     final dish = c.read(randomProvider).dish!;
@@ -251,7 +251,7 @@ void main() {
     testWidgets('random tab fits at ${width.toInt()}', (tester) async {
       await openRandom(tester, width: width);
       await tester.tap(find.byKey(const ValueKey('spin')));
-      await tester.pumpAndSettle();
+      await settleSpin(tester);
       expect(tester.takeException(), isNull);
     });
   }

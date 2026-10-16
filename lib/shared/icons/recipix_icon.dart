@@ -25,7 +25,9 @@ enum RecipixIcons {
   leaf,
   clock,
   pan,
-  coin,
+  wallet,
+  tag,
+  bowl,
   basket;
 
   String get asset {

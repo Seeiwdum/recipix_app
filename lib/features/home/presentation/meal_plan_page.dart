@@ -9,6 +9,7 @@ import '../../../app/theme/recipix_tokens.dart';
 import '../../../shared/icons/recipix_icon.dart';
 import '../../../shared/motion/entrance.dart';
 import '../../../shared/utils/format.dart';
+import '../../../shared/widgets/ledger.dart';
 import '../../../shared/widgets/pressable.dart';
 import '../domain/home_providers.dart';
 import 'cook_sheet.dart';
@@ -99,66 +100,60 @@ class _PlanSummary extends StatelessWidget {
   Widget build(BuildContext context) {
     final t = context.tokens;
     final spoil = plan.willSpoil.map((i) => i.name).toSet().join(', ');
-    return Container(
-      padding: const EdgeInsets.all(RecipixTokens.space3),
-      decoration: BoxDecoration(
-        color: t.surface,
-        border: Border.all(color: t.line),
-        borderRadius: BorderRadius.circular(RecipixTokens.radiusLg),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(S.planHomeLead, style: t.label.copyWith(color: t.ink2)),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.baseline,
-            textBaseline: TextBaseline.alphabetic,
-            children: [
-              CountUp(
-                key: const ValueKey('plan-home-meals'),
-                value: plan.homeMeals.toDouble(),
-                format: (v) => v.round().toString(),
-                style: t.display,
-              ),
-              const SizedBox(width: RecipixTokens.space2),
-              Text(S.mealsUnit, style: t.title),
-            ],
-          ),
-          Text(S.planOfTotal(plan.meals.length), style: t.caption),
-          const SizedBox(height: RecipixTokens.space3),
-          Divider(height: 1, color: t.line),
-          const SizedBox(height: RecipixTokens.space3),
-          Text(
-            S.planEatOut(
-              plan.eatOutMeals,
-              formatBahtWhole(plan.eatOutCost, roundUp: true),
-            ),
-            style: t.body,
-          ),
-          Text(
-            S.planBudgetLeft(formatBahtWhole(plan.budget, roundUp: false)),
-            style: t.body,
-          ),
-          const SizedBox(height: RecipixTokens.space2),
-          Text(
-            plan.shortfall.isZero
-                ? S.planCovered
-                : S.planShortfall(
-                    formatBahtWhole(plan.shortfall, roundUp: true),
-                  ),
-            style: t.label.copyWith(
-              color: plan.shortfall.isZero ? t.accent : t.urgent,
-            ),
-          ),
-          if (spoil.isNotEmpty) ...[
-            const SizedBox(height: RecipixTokens.space1),
-            Text(
-              S.planWillSpoil(spoil),
-              style: t.caption.copyWith(color: t.warnText),
+    // Unboxed (ADR-012): the meal count is the one number; money reads as
+    // ledger lines.
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(S.planHomeLead, style: t.label.copyWith(color: t.ink2)),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.baseline,
+          textBaseline: TextBaseline.alphabetic,
+          children: [
+            Amount(
+              key: const ValueKey('plan-home-meals'),
+              '${plan.homeMeals}',
+              unit: S.mealsUnit,
+              size: AmountSize.display,
             ),
           ],
+        ),
+        Text(S.planOfTotal(plan.meals.length), style: t.caption),
+        const SizedBox(height: RecipixTokens.space3),
+        LedgerRow(
+          label: S.planEatOutRow(plan.eatOutMeals),
+          value: Amount(
+            formatBahtWhole(plan.eatOutCost, roundUp: true),
+            unit: S.bahtUnit,
+          ),
+          ruled: true,
+        ),
+        LedgerRow(
+          label: S.planBudgetRow,
+          value: Amount(
+            formatBahtWhole(plan.budget, roundUp: false),
+            unit: S.bahtUnit,
+          ),
+          ruled: true,
+        ),
+        LedgerRow(
+          label: S.shortfallPlan,
+          value: plan.shortfall.isZero
+              ? Text(S.enough, style: t.number.copyWith(color: t.accent))
+              : Amount(
+                  formatBahtWhole(plan.shortfall, roundUp: true),
+                  unit: S.bahtUnit,
+                ),
+          ruled: true,
+        ),
+        if (spoil.isNotEmpty) ...[
+          const SizedBox(height: RecipixTokens.space1),
+          Text(
+            S.planWillSpoil(spoil),
+            style: t.caption.copyWith(color: t.warnText),
+          ),
         ],
-      ),
+      ],
     );
   }
 }

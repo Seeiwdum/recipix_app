@@ -10,8 +10,6 @@ class ScanPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) => const RecipixPage(
     title: S.scanTitle,
-    children: [
-      ComingSoonNote(status: S.underConstruction, text: S.scanComingSoon),
-    ],
+    children: [ComingSoonNote(status: S.scanNotYet, text: S.scanComingSoon)],
   );
 }

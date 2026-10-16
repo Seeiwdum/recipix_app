@@ -6,6 +6,9 @@ import '../../../app/providers.dart';
 import '../../../app/strings.dart';
 import '../../../app/theme/recipix_tokens.dart';
 import '../../../shared/icons/recipix_icon.dart';
+import '../../../shared/motion/motion.dart';
+import '../../../shared/utils/format.dart';
+import '../../../shared/widgets/ledger.dart';
 import '../../../shared/widgets/ingredient_tile.dart';
 import '../../../shared/widgets/pressable.dart';
 import '../../fridge/domain/fridge_controller.dart';
@@ -48,14 +51,22 @@ class _RandomPageState extends ConsumerState<RandomPage> {
     if (!_spinning) return;
     setState(() => _pending = {..._pending}..remove(reel));
     if (_pending.isNotEmpty) return;
-    setState(() => _spinning = false);
-    final s = ref.read(randomProvider);
-    if (s.mode == RandomMode.cook) {
-      showCookResultSheet(context, s.result!);
-    } else {
-      showEatOutResultSheet(context, s.dish!, overBudget: s.overBudget);
-    }
+    // A short still moment with all reels in view before the result
+    // (critique: ดล — the sheet used to cover the reels as they landed).
+    final pause = reduceMotionOf(context) ? Duration.zero : _resultPause;
+    Future.delayed(pause, () {
+      if (!mounted) return;
+      setState(() => _spinning = false);
+      final s = ref.read(randomProvider);
+      if (s.mode == RandomMode.cook) {
+        showCookResultSheet(context, s.result!);
+      } else {
+        showEatOutResultSheet(context, s.dish!, overBudget: s.overBudget);
+      }
+    });
   }
+
+  static const _resultPause = Duration(milliseconds: 350);
 
   @override
   Widget build(BuildContext context) {
@@ -63,6 +74,12 @@ class _RandomPageState extends ConsumerState<RandomPage> {
     final s = ref.watch(randomProvider);
     final ctrl = ref.read(randomProvider.notifier);
     final cook = s.mode == RandomMode.cook;
+    final nothingToSpin =
+        cook &&
+        IngredientSlotMachine.usablePool(
+          ref.watch(fridgeProvider).items,
+          ref.watch(todayProvider),
+        ).isEmpty;
 
     return SafeArea(
       bottom: false,
@@ -71,7 +88,7 @@ class _RandomPageState extends ConsumerState<RandomPage> {
         children: [
           Semantics(
             header: true,
-            child: Text(S.randomTitle, style: t.title.copyWith(fontSize: 24)),
+            child: Text(S.randomTitle, style: t.pageTitle),
           ),
           const SizedBox(height: RecipixTokens.space3),
           _ModePicker(
@@ -79,7 +96,10 @@ class _RandomPageState extends ConsumerState<RandomPage> {
             onChanged: _spinning ? null : ctrl.setMode,
           ),
           const SizedBox(height: RecipixTokens.space3),
-          Text(cook ? S.spinHintCook : S.spinHintEatOut, style: t.bodyMuted),
+          if (nothingToSpin)
+            _EmptyFridgeNote(onEatOut: () => ctrl.setMode(RandomMode.eatOut))
+          else
+            Text(cook ? S.spinHintCook : S.spinHintEatOut, style: t.bodyMuted),
           const SizedBox(height: RecipixTokens.space3),
           if (cook)
             _IngredientReels(
@@ -91,7 +111,8 @@ class _RandomPageState extends ConsumerState<RandomPage> {
             _DishReel(state: s, onStopped: () => _onReelStopped(0)),
           const SizedBox(height: RecipixTokens.space3),
           if (cook) ...[
-            Text(S.lockHint, style: t.caption, textAlign: TextAlign.center),
+            if (s.reels.any((r) => r != null))
+              Text(S.lockHint, style: t.caption, textAlign: TextAlign.center),
             const SizedBox(height: RecipixTokens.space2),
             _CheckRow(
               label: S.preferExpiring,
@@ -114,7 +135,7 @@ class _RandomPageState extends ConsumerState<RandomPage> {
                   borderRadius: BorderRadius.circular(RecipixTokens.radiusMd),
                 ),
               ),
-              onPressed: _spinning ? null : _spin,
+              onPressed: _spinning || nothingToSpin ? null : _spin,
               child: const Text(S.spin),
             ),
           ),
@@ -124,6 +145,10 @@ class _RandomPageState extends ConsumerState<RandomPage> {
   }
 }
 
+/// Three reels behind one window, separated by hairlines — one object, not
+/// three cards with tiles inside (critique: ธนากร, 5.1 rule 6). Tapping a
+/// reel locks its ingredient; the locked reel gets an accent rule and a
+/// lock under it.
 class _IngredientReels extends ConsumerWidget {
   const _IngredientReels({
     required this.state,
@@ -137,6 +162,7 @@ class _IngredientReels extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final t = context.tokens;
     final today = ref.watch(todayProvider);
     final pool = IngredientSlotMachine.usablePool(
       ref.watch(fridgeProvider).items,
@@ -146,51 +172,92 @@ class _IngredientReels extends ConsumerWidget {
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        const gap = RecipixTokens.space2;
-        final w = (constraints.maxWidth - gap * (reelCount - 1)) / reelCount;
-        final tile = w - RecipixTokens.space2 * 2;
-        return Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        final w = constraints.maxWidth / reelCount;
+        final tile = w - RecipixTokens.space4;
+        return Column(
           children: [
-            for (var i = 0; i < reelCount; i++) ...[
-              if (i > 0) const SizedBox(width: gap),
-              SizedBox(
-                width: w,
-                child: _ReelFrame(
-                  index: i,
-                  locked: state.locked.contains(i),
-                  name: hidden.contains(i) && !state.locked.contains(i)
-                      ? S.reelSpinning
-                      : state.reels[i]?.name,
-                  onTap: state.reels[i] == null
-                      ? null
-                      : () => ctrl.toggleLock(i),
-                  child: SlotReel<IngredientItem>(
-                    key: ValueKey('reel-$i'),
-                    target: state.reels[i],
-                    fillers: pool,
-                    spinToken: state.spins,
-                    index: i,
-                    locked: state.locked.contains(i),
-                    tileHeight: tile,
-                    onStopped: () => onStopped(i),
-                    builder: (context, item) => Center(
-                      child: item == null
-                          ? IngredientTile(
-                              ingredientKey: null,
-                              name: S.emptyReel,
-                              size: tile,
-                            )
-                          : IngredientTile(
-                              ingredientKey: item.key,
-                              name: item.name,
-                              size: tile,
+            Container(
+              decoration: BoxDecoration(
+                color: t.surface,
+                border: Border.all(color: t.line),
+                borderRadius: BorderRadius.circular(RecipixTokens.radiusMd),
+              ),
+              child: Row(
+                children: [
+                  for (var i = 0; i < reelCount; i++)
+                    Expanded(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          border: Border(
+                            left: i == 0
+                                ? BorderSide.none
+                                : BorderSide(color: t.line),
+                            bottom: BorderSide(
+                              color: state.locked.contains(i)
+                                  ? t.accent
+                                  : Colors.transparent,
+                              width: RecipixTokens.space1 - 1,
                             ),
+                          ),
+                        ),
+                        padding: const EdgeInsets.symmetric(
+                          vertical: RecipixTokens.space2,
+                        ),
+                        child: Pressable(
+                          key: ValueKey('reel-frame-$i'),
+                          selected: state.locked.contains(i),
+                          semanticLabel: S.reelLabel(
+                            i,
+                            state.reels[i]?.name ?? S.emptyReel,
+                          ),
+                          onTap: state.reels[i] == null
+                              ? null
+                              : () => ctrl.toggleLock(i),
+                          child: SlotReel<IngredientItem>(
+                            key: ValueKey('reel-$i'),
+                            target: state.reels[i],
+                            fillers: pool,
+                            spinToken: state.spins,
+                            index: i,
+                            locked: state.locked.contains(i),
+                            tileHeight: tile,
+                            onStopped: () => onStopped(i),
+                            builder: (context, item) => Center(
+                              child: item == null
+                                  ? Text(
+                                      '?',
+                                      style: t.pageTitle.copyWith(
+                                        color: t.line,
+                                      ),
+                                    )
+                                  : IngredientTile(
+                                      ingredientKey: item.key,
+                                      name: item.name,
+                                      size: tile,
+                                      framed: false,
+                                    ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+            const SizedBox(height: RecipixTokens.space1),
+            Row(
+              children: [
+                for (var i = 0; i < reelCount; i++)
+                  Expanded(
+                    child: _ReelLabel(
+                      name: hidden.contains(i) && !state.locked.contains(i)
+                          ? S.reelSpinning
+                          : state.reels[i]?.name,
+                      locked: state.locked.contains(i),
                     ),
                   ),
-                ),
-              ),
-            ],
+              ],
+            ),
           ],
         );
       },
@@ -198,77 +265,76 @@ class _IngredientReels extends ConsumerWidget {
   }
 }
 
-class _ReelFrame extends StatelessWidget {
-  const _ReelFrame({
-    required this.index,
-    required this.locked,
-    required this.name,
-    required this.onTap,
-    required this.child,
-  });
+class _ReelLabel extends StatelessWidget {
+  const _ReelLabel({required this.name, required this.locked});
 
-  final int index;
-  final bool locked;
   final String? name;
-  final VoidCallback? onTap;
-  final Widget child;
+  final bool locked;
 
   @override
   Widget build(BuildContext context) {
     final t = context.tokens;
-    final label = name ?? S.emptyReel;
-    return Pressable(
-      key: ValueKey('reel-frame-$index'),
-      selected: locked,
-      semanticLabel:
-          '${S.reelLabel(index, label)}${locked ? ' ${S.locked}' : ''}',
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.all(RecipixTokens.space2),
-        decoration: BoxDecoration(
-          color: t.surface,
-          border: Border.all(
-            color: locked ? t.accent : t.line,
-            width: locked
-                ? RecipixTokens.statusLineWidth
-                : RecipixTokens.lineWidth,
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        if (locked) ...[
+          RecipixIcon(
+            RecipixIcons.lock,
+            color: t.accent,
+            size: RecipixTokens.space3,
           ),
-          borderRadius: BorderRadius.circular(RecipixTokens.radiusMd),
+          const SizedBox(width: RecipixTokens.space1),
+        ],
+        Flexible(
+          child: Text(
+            name ?? S.emptyReel,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: t.caption.copyWith(color: locked ? t.accent : t.ink2),
+          ),
         ),
-        child: Column(
-          children: [
-            child,
-            const SizedBox(height: RecipixTokens.space2),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                if (locked) ...[
-                  RecipixIcon(
-                    RecipixIcons.lock,
-                    color: t.accent,
-                    size: RecipixTokens.space3,
-                  ),
-                  const SizedBox(width: RecipixTokens.space1),
-                ],
-                Flexible(
-                  child: Text(
-                    label,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: t.caption.copyWith(
-                      color: locked ? t.accent : t.ink2,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
+      ],
     );
   }
 }
 
+/// Cook mode with nothing usable in the fridge: say so before a spin, and
+/// offer the mode that works (critique: ฎา — it used to spin to "?" and
+/// suggest unlocking).
+class _EmptyFridgeNote extends StatelessWidget {
+  const _EmptyFridgeNote({required this.onEatOut});
+
+  final VoidCallback onEatOut;
+
+  @override
+  Widget build(BuildContext context) {
+    final t = context.tokens;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(S.randomFridgeEmpty, style: t.body),
+        Pressable(
+          key: const ValueKey('try-eat-out'),
+          semanticLabel: S.tryEatOut,
+          onTap: onEatOut,
+          child: SizedBox(
+            height: RecipixTokens.tapTarget,
+            child: Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                S.tryEatOut,
+                style: t.label.copyWith(color: t.accent),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/// Eat-out reel: one line like an order slip — dish left, price right —
+/// rather than a centred promo card (critique: ธนากร ad test).
 class _DishReel extends ConsumerWidget {
   const _DishReel({required this.state, required this.onStopped});
 
@@ -279,7 +345,7 @@ class _DishReel extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final t = context.tokens;
     final dishes = ref.watch(eatOutMenuProvider).dishes;
-    const height = RecipixTokens.space6 * 2;
+    const height = RecipixTokens.space6 + RecipixTokens.space2;
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: RecipixTokens.space3),
       decoration: BoxDecoration(
@@ -295,25 +361,25 @@ class _DishReel extends ConsumerWidget {
         index: 0,
         tileHeight: height,
         onStopped: onStopped,
-        builder: (context, dish) => Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                dish?.name ?? S.emptyReel,
-                textAlign: TextAlign.center,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: t.title.copyWith(color: dish == null ? t.ink2 : t.ink),
+        builder: (context, dish) => dish == null
+            ? Align(
+                alignment: Alignment.centerLeft,
+                child: Text(S.emptyReel, style: t.bodyMuted),
+              )
+            : Row(
+                children: [
+                  Expanded(
+                    child: Text(
+                      dish.name,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: t.title,
+                    ),
+                  ),
+                  const SizedBox(width: RecipixTokens.space2),
+                  Amount(formatBaht(dish.price), unit: S.bahtUnit),
+                ],
               ),
-              if (dish != null)
-                Text(
-                  S.priceBaht(dish.price.baht.toStringAsFixed(0)),
-                  style: t.number.copyWith(color: t.ink2),
-                ),
-            ],
-          ),
-        ),
       ),
     );
   }

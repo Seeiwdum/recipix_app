@@ -8,6 +8,7 @@ import '../../../app/strings.dart';
 import '../../../app/theme/recipix_tokens.dart';
 import '../../../shared/utils/format.dart';
 import '../../../shared/widgets/ingredient_tile.dart';
+import '../../../shared/widgets/ledger.dart';
 import '../../../shared/widgets/pressable.dart';
 import '../../../shared/widgets/toast.dart';
 import '../../budget/domain/budget_controller.dart';
@@ -19,6 +20,10 @@ Future<void> _sheet(BuildContext context, WidgetBuilder builder) {
   return showModalBottomSheet<void>(
     context: context,
     isScrollControlled: true,
+    // Leave the reels in view above the sheet (critique: ดล).
+    constraints: BoxConstraints(
+      maxHeight: MediaQuery.sizeOf(context).height * 0.58,
+    ),
     backgroundColor: t.surface,
     elevation: 0,
     showDragHandle: true,
@@ -81,6 +86,12 @@ class _CookResultState extends ConsumerState<_CookResult> {
       ?widget.result.bestMatch,
       ...widget.result.alternatives,
     ].where((m) => !identical(m, match)).toList();
+    // When the top pick is partial, dishes you can make right now go in
+    // their own group first (critique: ฎา — "why not suggest the full one?").
+    final full = match != null && !match.isJackpot
+        ? others.where((m) => m.isJackpot).toList()
+        : const <RecipeMatch>[];
+    final rest = others.where((m) => !full.contains(m)).toList();
 
     String name(String key) => catalog[key]?.name ?? key;
 
@@ -163,34 +174,35 @@ class _CookResultState extends ConsumerState<_CookResult> {
                       child: _primary(context, S.cookThis, cook),
                     ),
                   ],
-                  if (others.isNotEmpty) ...[
-                    const SizedBox(height: RecipixTokens.space3),
-                    Text(
-                      S.otherMatches,
-                      style: t.label.copyWith(color: t.ink2),
-                    ),
-                    for (final m in others)
-                      Pressable(
-                        semanticLabel: m.recipe.name,
-                        onTap: () => setState(() => _match = m),
-                        child: Container(
-                          constraints: const BoxConstraints(
-                            minHeight: RecipixTokens.tapTarget,
-                          ),
-                          decoration: BoxDecoration(
-                            border: Border(bottom: BorderSide(color: t.line)),
-                          ),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Text(m.recipe.name, style: t.body),
-                              ),
-                              _MatchLabel(match: m),
-                            ],
+                  for (final (title, group) in [
+                    (S.fullNow, full),
+                    (S.otherMatches, rest),
+                  ])
+                    if (group.isNotEmpty) ...[
+                      const SizedBox(height: RecipixTokens.space3),
+                      Text(title, style: t.label.copyWith(color: t.ink2)),
+                      for (final m in group)
+                        Pressable(
+                          semanticLabel: m.recipe.name,
+                          onTap: () => setState(() => _match = m),
+                          child: Container(
+                            constraints: const BoxConstraints(
+                              minHeight: RecipixTokens.tapTarget,
+                            ),
+                            decoration: BoxDecoration(
+                              border: Border(bottom: BorderSide(color: t.line)),
+                            ),
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: Text(m.recipe.name, style: t.body),
+                                ),
+                                _MatchLabel(match: m),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
-                  ],
+                    ],
                 ],
               ),
       ),
@@ -214,7 +226,13 @@ class _MatchLabel extends StatelessWidget {
         borderRadius: BorderRadius.circular(RecipixTokens.radiusSm),
       ),
       child: Text(
-        full ? S.menuFull : S.matchPercent(match.matchPercentage),
+        full
+            ? S.menuFull
+            : S.matchPlain(
+                match.haveKeys.length,
+                match.haveKeys.length + match.missingKeys.length,
+                match.matchPercentage,
+              ),
         style: t.label.copyWith(
           color: full ? t.accent : t.ink2,
           fontFeatures: RecipixTokens.tabularFigures,
@@ -277,19 +295,26 @@ class _EatOutResult extends ConsumerWidget {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             Text(dish.name, style: t.title),
-            Text(S.priceBaht(price), style: t.number.copyWith(fontSize: 16)),
-            const SizedBox(height: RecipixTokens.space2),
             if (overBudget)
               Text(S.nothingFits, style: t.caption.copyWith(color: t.warnText)),
-            Text(
-              left.isNegative
-                  ? S.overAfter(
-                      formatBahtWhole(Money.zero - left, roundUp: true),
-                    )
-                  : S.leftAfter(formatBahtWhole(left, roundUp: false)),
-              style: t.label.copyWith(
-                color: left.isNegative ? t.urgent : t.ink2,
+            const SizedBox(height: RecipixTokens.space2),
+            // An order slip, not a promo (critique: ธนากร ad test).
+            LedgerRow(
+              label: S.priceRow,
+              value: Amount(price, unit: S.bahtUnit),
+              ruled: true,
+            ),
+            LedgerRow(
+              label: left.isNegative ? S.overTodayRow : S.leftAfterRow,
+              value: Amount(
+                formatBahtWhole(
+                  left.isNegative ? Money.zero - left : left,
+                  roundUp: left.isNegative,
+                ),
+                unit: S.bahtUnit,
+                color: left.isNegative ? t.warnText : null,
               ),
+              ruled: true,
             ),
             const SizedBox(height: RecipixTokens.space3),
             SizedBox(
