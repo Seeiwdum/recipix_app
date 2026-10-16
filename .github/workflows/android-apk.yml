@@ -29,8 +29,12 @@ jobs:
           channel: stable
           cache: true
 
+      # The core package has its own pubspec; analyze reads its tests too,
+      # so its packages (package:test) must be resolved as well.
       - name: Get packages
-        run: flutter pub get
+        run: |
+          flutter pub get
+          cd packages/recipix_core && dart pub get
 
       - name: Analyze
         run: flutter analyze
