@@ -1,0 +1,69 @@
+# Builds an installable test APK in the cloud (this machine has no Android
+# SDK) and publishes it as a GitHub release with a QR code to the download.
+# Founder rule: there should always be a build to try on a phone.
+name: Android APK
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  apk:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 3.47.7
+          channel: stable
+          cache: true
+
+      - name: Get packages
+        run: flutter pub get
+
+      - name: Analyze
+        run: flutter analyze
+
+      - name: Core unit tests
+        working-directory: packages/recipix_core
+        run: dart test
+
+      # Release build signed with the runner's debug key: fine for testing
+      # by hand, not for the Store (that needs a real key, L3).
+      - name: Build APK
+        run: flutter build apk --release --build-number=${{ github.run_number }}
+
+      - name: Rename APK
+        run: cp build/app/outputs/flutter-apk/app-release.apk recipix.apk
+
+      - name: QR code to the latest APK
+        run: |
+          sudo apt-get install -y qrencode
+          qrencode -s 8 -m 2 -o recipix-qr.png \
+            "https://github.com/${{ github.repository }}/releases/latest/download/recipix.apk"
+
+      - name: Publish release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: build-${{ github.run_number }}
+          name: Recipix test build ${{ github.run_number }}
+          make_latest: true
+          body: |
+            Test build from `${{ github.sha }}` on `main`.
+            Download recipix.apk on the phone (or scan recipix-qr.png, which
+            always points at the newest build) and allow installing from this
+            source. Not for the Play Store.
+          files: |
+            recipix.apk
+            recipix-qr.png
