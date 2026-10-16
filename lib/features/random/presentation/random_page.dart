@@ -10,6 +10,7 @@ import '../../../shared/motion/motion.dart';
 import '../../../shared/utils/format.dart';
 import '../../../shared/widgets/ledger.dart';
 import '../../../shared/widgets/ingredient_tile.dart';
+import '../../../shared/widgets/mode_picker.dart';
 import '../../../shared/widgets/pressable.dart';
 import '../../fridge/domain/fridge_controller.dart';
 import '../domain/random_controller.dart';
@@ -91,7 +92,11 @@ class _RandomPageState extends ConsumerState<RandomPage> {
             child: Text(S.randomTitle, style: t.pageTitle),
           ),
           const SizedBox(height: RecipixTokens.space3),
-          _ModePicker(
+          ModePicker(
+            labels: const {
+              RandomMode.cook: S.modeCook,
+              RandomMode.eatOut: S.modeEatOut,
+            },
             value: s.mode,
             onChanged: _spinning ? null : ctrl.setMode,
           ),
@@ -380,55 +385,6 @@ class _DishReel extends ConsumerWidget {
                   Amount(formatBaht(dish.price), unit: S.bahtUnit),
                 ],
               ),
-      ),
-    );
-  }
-}
-
-class _ModePicker extends StatelessWidget {
-  const _ModePicker({required this.value, required this.onChanged});
-
-  final RandomMode value;
-  final ValueChanged<RandomMode>? onChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    final t = context.tokens;
-    const labels = {
-      RandomMode.cook: S.modeCook,
-      RandomMode.eatOut: S.modeEatOut,
-    };
-    return Container(
-      padding: const EdgeInsets.all(RecipixTokens.space1),
-      decoration: BoxDecoration(
-        color: t.surfaceSunken,
-        borderRadius: BorderRadius.circular(RecipixTokens.radiusMd),
-      ),
-      child: Row(
-        children: [
-          for (final m in RandomMode.values)
-            Expanded(
-              child: Pressable(
-                selected: m == value,
-                semanticLabel: labels[m],
-                onTap: onChanged == null ? null : () => onChanged!(m),
-                child: AnimatedContainer(
-                  duration: RecipixTokens.fast,
-                  height: RecipixTokens.tapTarget - RecipixTokens.space2,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    color: m == value ? t.surface : null,
-                    border: m == value ? Border.all(color: t.line) : null,
-                    borderRadius: BorderRadius.circular(RecipixTokens.radiusSm),
-                  ),
-                  child: Text(
-                    labels[m]!,
-                    style: t.label.copyWith(color: m == value ? t.ink : t.ink2),
-                  ),
-                ),
-              ),
-            ),
-        ],
       ),
     );
   }

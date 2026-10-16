@@ -54,6 +54,34 @@ void main() {
     );
   });
 
+  testWidgets('photo mode with boxes at 390', (tester) async {
+    setPhoneSize(tester, 390, height: 844);
+    await tester.pumpWidget(
+      testApp(
+        initialLocation: '/scan',
+        finder: FakeFinder(const [
+          Rect.fromLTRB(0.05, 0.1, 0.45, 0.45),
+          Rect.fromLTRB(0.5, 0.4, 0.95, 0.85),
+        ]),
+      ),
+    );
+    await tester.pumpAndSettle();
+    await tester.tap(find.bySemanticsLabel('ถ่ายของ'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('shutter')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('photo-box-0')));
+    await tester.pumpAndSettle();
+    await tester.tap(find.byKey(const ValueKey('add-cabbage')));
+    await tester.pumpAndSettle();
+    // Let the toast finish entering.
+    await tester.pump(const Duration(seconds: 1));
+    await expectLater(
+      find.byType(RecipixApp),
+      matchesGoldenFile('goldens/photo_boxes_390.png'),
+    );
+  });
+
   testWidgets('recipe page at 390', (tester) async {
     setPhoneSize(tester, 390, height: 1100);
     await tester.pumpWidget(

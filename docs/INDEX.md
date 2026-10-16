@@ -39,6 +39,7 @@ status: active
 | [decisions/ADR-013_founder-decisions-2026-10-17.md](decisions/ADR-013_founder-decisions-2026-10-17.md) | คำตัดสินหลัง CP2: หัวข้อเป็นมื้อ, แท็บ "สมุดค่ากิน", เพิ่มของเข้าตู้เอง | accepted |
 | [decisions/ADR-014_phase3-scan-and-reminders.md](decisions/ADR-014_phase3-scan-and-reminders.md) | Phase 3: สแกนบาร์โค้ด (Open Food Facts + จำในเครื่อง), แจ้งเตือนวันละครั้ง; ยังไม่ทำใบเสร็จ/ถ่ายรูปวัตถุดิบ | accepted |
 | [decisions/ADR-015_menu-suggestions-and-recipe-page.md](decisions/ADR-015_menu-suggestions-and-recipe-page.md) | Phase 4: เมนูแนะนำ 3 เมนูหน้าหลัก + หน้าสูตร (วัตถุดิบ วิธีทำ ระดับ เหรียญที่ได้) | accepted |
+| [decisions/ADR-016_photo-outline-and-pick.md](decisions/ADR-016_photo-outline-and-pick.md) | โหมดถ่ายของ: ML Kit ในเครื่องตีกรอบ แตะกรอบเลือกชนิด (ภาพนิ่ง ไม่ส่งภาพออก) | accepted |
 | [engineering/architecture.md](engineering/architecture.md) | ชั้นสถาปัตยกรรม | active |
 | [engineering/coding_standards.md](engineering/coding_standards.md) | มาตรฐานโค้ด | active |
 | [engineering/tooling_setup.md](engineering/tooling_setup.md) | สภาพเครื่อง เวอร์ชัน ปัญหาที่เจอ | active |
