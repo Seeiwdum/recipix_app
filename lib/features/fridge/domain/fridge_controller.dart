@@ -3,6 +3,8 @@ import 'package:recipix_core/recipix_core.dart';
 
 import '../../../app/providers.dart';
 import '../../../app/strings.dart';
+import '../../../shared/persistence/app_store.dart';
+import '../../../shared/persistence/codecs.dart';
 import '../data/sample_fridge.dart';
 import 'fridge_layout.dart';
 import 'freshness.dart';
@@ -35,14 +37,16 @@ final class CookRecord {
   const CookRecord({
     required this.recipe,
     required this.date,
-    required this.before,
-    required this.after,
+    this.before,
+    this.after,
   });
 
   final Recipe recipe;
   final LocalDate date;
-  final FridgeState before;
-  final FridgeState after;
+
+  /// Undo snapshots; null for history restored from storage.
+  final FridgeState? before;
+  final FridgeState? after;
 }
 
 final class FridgeState {
@@ -101,15 +105,49 @@ final fridgeProvider = NotifierProvider<FridgeController, FridgeState>(
 
 /// Presenter for the fridge tab (replaces the Unity MVP presenter).
 class FridgeController extends Notifier<FridgeState> {
+  /// Restores what was saved on the device, or seeds sample contents on
+  /// first launch (ADR-009). Every later change is written back.
   @override
   FridgeState build() {
+    final store = ref.watch(appStoreProvider);
+    if (store != null) {
+      listenSelf((_, next) => store.saveFridge(_toSaved(next)));
+    }
+
+    final saved = ref.watch(savedDataProvider).fridge;
+    if (saved != null) {
+      final recipes = {
+        for (final r in ref.watch(recipeBookProvider).recipes) r.id: r,
+      };
+      return FridgeState(
+        items: saved.items,
+        arrangement: saved.arrangement,
+        cooked: [
+          for (final c in saved.cooked)
+            if (recipes[c.recipeId] case final recipe?)
+              CookRecord(recipe: recipe, date: c.date),
+        ],
+      );
+    }
     final seed = sampleFridge(
       ref.watch(catalogProvider),
       ref.watch(todayProvider),
       mysteryName: S.mysteryItem,
     );
-    return FridgeState(items: seed.items, arrangement: seed.arrangement);
+    final initial = FridgeState(
+      items: seed.items,
+      arrangement: seed.arrangement,
+    );
+    // Save the seed right away so its dates stay fixed on the next launch.
+    store?.saveFridge(_toSaved(initial));
+    return initial;
   }
+
+  static SavedFridge _toSaved(FridgeState s) => SavedFridge(
+    items: s.items,
+    arrangement: s.arrangement,
+    cooked: [for (final c in s.cooked) (recipeId: c.recipe.id, date: c.date)],
+  );
 
   int widthOf(IngredientItem item) => ref.read(catalogProvider).widthOf(item);
 
@@ -244,8 +282,11 @@ class FridgeController extends Notifier<FridgeState> {
   void undoCook() {
     if (state.cooked.isEmpty) return;
     final last = state.cooked.last;
-    if (!_sameItems(state.items, last.after.items)) return;
-    state = last.before.copyWith(
+    final before = last.before;
+    final after = last.after;
+    if (before == null || after == null) return;
+    if (!_sameItems(state.items, after.items)) return;
+    state = before.copyWith(
       filter: state.filter,
       cooked: state.cooked.sublist(0, state.cooked.length - 1),
     );

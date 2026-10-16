@@ -2,6 +2,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:recipix_core/recipix_core.dart';
 
 import '../../../app/providers.dart';
+import '../../../shared/persistence/app_store.dart';
+import '../../../shared/persistence/codecs.dart';
 
 /// Pay-period budget, editable prices and the spending log.
 final class BudgetState {
@@ -47,10 +49,26 @@ final budgetProvider = NotifierProvider<BudgetController, BudgetState>(
 );
 
 class BudgetController extends Notifier<BudgetState> {
-  /// Sample until persistence lands: one eat-out entry per past day of the
-  /// period, and a period budget that leaves 1,600 baht today.
+  /// Restores the saved budget and spending log, or on first launch seeds a
+  /// sample: one eat-out entry per past day of the period and a period
+  /// budget that leaves 1,600 baht today (ADR-009).
   @override
   BudgetState build() {
+    final store = ref.watch(appStoreProvider);
+    if (store != null) {
+      listenSelf((_, next) => store.saveBudget(_toSaved(next)));
+    }
+    final saved = ref.watch(savedDataProvider).budget;
+    if (saved != null) {
+      return BudgetState(
+        periodBudget: saved.periodBudget,
+        paydayDayOfMonth: saved.paydayDayOfMonth,
+        prices: saved.prices,
+        quickAmounts: saved.quickAmounts,
+        entries: saved.entries,
+      );
+    }
+
     final today = ref.watch(todayProvider);
     final start = const BudgetLedger().periodStart(null, today);
     final entries = <SpendingEntry>[
@@ -62,12 +80,22 @@ class BudgetController extends Notifier<BudgetState> {
         ),
     ];
     final spent = entries.fold(Money.zero, (s, e) => s + e.amount);
-    return BudgetState(
+    final initial = BudgetState(
       periodBudget: spent + Money.baht(1600),
       entries: entries,
       quickAmounts: [Money.baht(40), Money.baht(60), Money.baht(100)],
     );
+    store?.saveBudget(_toSaved(initial));
+    return initial;
   }
+
+  static SavedBudget _toSaved(BudgetState s) => SavedBudget(
+    periodBudget: s.periodBudget,
+    paydayDayOfMonth: s.paydayDayOfMonth,
+    prices: s.prices,
+    quickAmounts: s.quickAmounts,
+    entries: s.entries,
+  );
 
   var _seq = 0;
 

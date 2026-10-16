@@ -59,3 +59,7 @@ status: active
 3. ในเทอร์มินัล: `flutter doctor --android-licenses` แล้วอ่านและยอมรับ
 ส่วนที่ทีมทำต่อได้: สร้าง emulator (Device Manager), เปิด hardware graphics, รัน `flutter doctor`, `flutter emulators`, `flutter devices`
 - หลัง `preview_stop` ทันที บางครั้ง `preview_start` แจ้งว่า port "reserved by the OS" แต่ไม่ได้อยู่ใน excluded range จริง (ตรวจด้วย `netsh interface ipv4 show excludedportrange protocol=tcp`) → รอสักครู่แล้วสั่งใหม่ ไม่ต้องเปลี่ยน port
+
+## Windows Developer Mode (เพิ่ม 2026-10-16)
+- `flutter pub add` แพ็กเกจที่มีปลั๊กอิน (เช่น shared_preferences) บน Windows ขึ้นข้อความให้เปิด Developer Mode เพื่อสร้าง symlink — จำเป็นเฉพาะ build Windows/Linux desktop; เว็บและ Android ใช้ได้ (ตรวจแล้ว: `pub get` ผ่าน, web build ผ่าน)
+- ถ้าจะ build บน Windows desktop หรือเครื่องมืออื่นต้องการ: ผู้ก่อตั้งเปิดเองที่ `start ms-settings:developers` (เป็นการตั้งค่าระบบ ทีมไม่แตะ)

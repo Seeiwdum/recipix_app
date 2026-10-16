@@ -2,11 +2,18 @@
 title: Changelog
 owner: แพรว
 last_updated: 2026-10-16
-version: 0.5.0
+version: 0.6.0
 status: active
 ---
 
 # Changelog
+
+## 0.6.0 — 2026-10-16 (on-device saving)
+- feat(persistence): fridge contents, shelf positions, cooked meals and the budget/spending log are saved on the device (shared_preferences 2.5.6; localStorage on web) and restored before the first frame
+- feat(persistence): writes coalesced per microtask, flushed when the app is paused/hidden; first-launch sample data saved immediately so its dates stay fixed
+- feat(persistence): unreadable or unknown-version data is copied to <key>.corrupt.<timestamp> before starting fresh (never silently overwritten)
+- test: codec round-trips, relaunch on a later day, corrupt backup, write coalescing (app 95, core 63)
+- docs: ADR-009
 
 ## 0.5.0 — 2026-10-16 (spending log + meal plan)
 - feat(core): BudgetLedger (pay period, remaining, start-of-day allowance, eat-out meals today) and MealPlanner (greedy plan to payday cooking from the fridge first, shortfall, will-spoil list)
