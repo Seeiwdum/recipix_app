@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+  <!-- Recipix mark. Same geometry as lib/shared/widgets/recipix_logo.dart.
+       Accent #2F6B4F, paper #F7F3EC (RecipixTokens.light). -->
+  <rect width="1024" height="1024" fill="#2F6B4F"/>
+  <path d="M600 250C592 170 644 110 746 96C756 192 704 250 600 250Z" fill="#F7F3EC"/>
+  <line x1="634" y1="218" x2="714" y2="132" stroke="#2F6B4F" stroke-width="16" stroke-linecap="round"/>
+  <rect x="320" y="248" width="384" height="600" rx="64" fill="#F7F3EC"/>
+  <rect x="320" y="446" width="384" height="24" fill="#2F6B4F"/>
+  <rect x="380" y="318" width="30" height="88" rx="15" fill="#2F6B4F"/>
+  <rect x="380" y="518" width="30" height="150" rx="15" fill="#2F6B4F"/>
+</svg>

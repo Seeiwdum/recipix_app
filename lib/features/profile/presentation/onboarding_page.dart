@@ -8,6 +8,7 @@ import '../../../app/strings.dart';
 import '../../../app/theme/recipix_tokens.dart';
 import '../../../shared/icons/recipix_icon.dart';
 import '../../../shared/widgets/pressable.dart';
+import '../../../shared/widgets/recipix_logo.dart';
 import '../../../shared/widgets/value_stepper.dart';
 import '../domain/profile_controller.dart';
 
@@ -185,6 +186,8 @@ class _NameStep extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SizedBox(height: RecipixTokens.space4),
+        const RecipixLogo(size: 64),
+        const SizedBox(height: RecipixTokens.space3),
         Semantics(
           header: true,
           child: Text(S.onboardWelcome, style: t.pageTitle),

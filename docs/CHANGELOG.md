@@ -8,6 +8,11 @@ status: active
 
 # Changelog
 
+## 0.15.0 — 2026-10-17 (app icon and logo)
+- feat(brand): Recipix mark — cream two-door fridge with a leaf on the brand green; `RecipixLogo` widget (also on the welcome step) and `assets/brand/logo.svg`.
+- chore: launcher icons for Android (incl. adaptive), iOS and web from `assets/brand/*.png` via flutter_launcher_icons 0.14.4 (`flutter_launcher_icons.yaml`); PNGs rendered by `test/tool/render_app_icon_test.dart` (`--dart-define=RENDER_ICON=true`).
+- docs: design/app_icon.md (how to change the logo).
+
 ## 0.14.0 — 2026-10-17 (first-launch questions and web app, ADR-017)
 - feat(profile): first launch asks name, favourite dishes and money (left until payday, usual monthly food spend, payday); the router keeps a new user on `/welcome` until done.
 - feat(profile): answers set the budget so "left" matches, payday, and a meal price from the monthly spend; a brand-new install starts with an empty fridge and no spending (existing data is kept).
