@@ -13,6 +13,34 @@ import '../helpers.dart';
 void main() {
   setUpAll(loadAppFonts);
 
+  testWidgets('meal plan at 390', (tester) async {
+    setPhoneSize(tester, 390, height: 844);
+    await tester.pumpWidget(testApp(initialLocation: '/home/plan'));
+    await tester.pumpAndSettle();
+    await expectLater(
+      find.byType(RecipixApp),
+      matchesGoldenFile('goldens/plan_390.png'),
+    );
+  });
+
+  testWidgets('spending sheet at 390', (tester) async {
+    setPhoneSize(tester, 390, height: 844);
+    await tester.pumpWidget(testApp());
+    await tester.pumpAndSettle();
+    await tester.scrollUntilVisible(
+      find.byKey(const ValueKey('log-spending')),
+      100,
+    );
+    await tester.tap(find.byKey(const ValueKey('log-spending')));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byKey(const ValueKey('spend-amount')), '60');
+    await tester.pumpAndSettle();
+    await expectLater(
+      find.byType(RecipixApp),
+      matchesGoldenFile('goldens/spending_sheet_390.png'),
+    );
+  });
+
   testWidgets('fridge item sheet at 390', (tester) async {
     setPhoneSize(tester, 390, height: 844);
     await tester.pumpWidget(testApp(initialLocation: '/fridge'));

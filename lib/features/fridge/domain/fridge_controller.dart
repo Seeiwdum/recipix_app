@@ -29,18 +29,41 @@ final class Removal {
   final FridgeArrangement? after;
 }
 
+/// A dish cooked from the fridge, kept for undo and for the plan's
+/// "meals already eaten today".
+final class CookRecord {
+  const CookRecord({
+    required this.recipe,
+    required this.date,
+    required this.before,
+    required this.after,
+  });
+
+  final Recipe recipe;
+  final LocalDate date;
+  final FridgeState before;
+  final FridgeState after;
+}
+
 final class FridgeState {
   FridgeState({
     required List<IngredientItem> items,
     required this.arrangement,
     this.filter = FridgeFilter.all,
     this.lastRemoval,
-  }) : items = List.unmodifiable(items);
+    List<CookRecord> cooked = const [],
+  }) : items = List.unmodifiable(items),
+       cooked = List.unmodifiable(cooked);
 
   final List<IngredientItem> items;
   final FridgeArrangement arrangement;
   final FridgeFilter filter;
   final Removal? lastRemoval;
+
+  /// Dishes cooked, oldest first.
+  final List<CookRecord> cooked;
+
+  int cookedOn(LocalDate day) => cooked.where((c) => c.date == day).length;
 
   List<IngredientItem> get placed =>
       items.where((i) => arrangement.contains(i.id)).toList();
@@ -62,11 +85,13 @@ final class FridgeState {
     FridgeFilter? filter,
     Removal? lastRemoval,
     bool clearRemoval = false,
+    List<CookRecord>? cooked,
   }) => FridgeState(
     items: items ?? this.items,
     arrangement: arrangement ?? this.arrangement,
     filter: filter ?? this.filter,
     lastRemoval: clearRemoval ? null : (lastRemoval ?? this.lastRemoval),
+    cooked: cooked ?? this.cooked,
   );
 }
 
@@ -171,6 +196,58 @@ class FridgeController extends Notifier<FridgeState> {
       items: [...state.items, item],
       arrangement: next,
       clearRemoval: true,
+    );
+  }
+
+  /// Cooks one batch of [recipe] now: amounts come off the fridge by
+  /// quantity, first-expiring first (recipix_core `InventoryService`).
+  /// Items used up leave their shelf. Returns null and changes nothing
+  /// when something required is missing.
+  CookResult? cook(Recipe recipe) {
+    final today = ref.read(todayProvider);
+    final result = const InventoryService().cook(
+      state.items,
+      recipe,
+      today: today,
+    );
+    if (!result.isComplete) return null;
+    final left = {for (final i in result.remaining) i.id};
+    var arrangement = state.arrangement;
+    for (final id in arrangement.placements.keys) {
+      if (!left.contains(id)) arrangement = arrangement.remove(id);
+    }
+    final before = state;
+    final after = state.copyWith(
+      items: result.remaining,
+      arrangement: arrangement,
+    );
+    state = after.copyWith(
+      cooked: [
+        ...after.cooked,
+        CookRecord(recipe: recipe, date: today, before: before, after: after),
+      ],
+    );
+    return result;
+  }
+
+  /// Item lists are re-wrapped on every copy, so compare the items
+  /// themselves (immutable, replaced on any change) one by one.
+  static bool _sameItems(List<IngredientItem> a, List<IngredientItem> b) {
+    if (a.length != b.length) return false;
+    for (var i = 0; i < a.length; i++) {
+      if (!identical(a[i], b[i])) return false;
+    }
+    return true;
+  }
+
+  /// Undoes the last cook if nothing changed since.
+  void undoCook() {
+    if (state.cooked.isEmpty) return;
+    final last = state.cooked.last;
+    if (!_sameItems(state.items, last.after.items)) return;
+    state = last.before.copyWith(
+      filter: state.filter,
+      cooked: state.cooked.sublist(0, state.cooked.length - 1),
     );
   }
 

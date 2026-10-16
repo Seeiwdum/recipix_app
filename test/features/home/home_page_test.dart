@@ -100,7 +100,7 @@ void main() {
       ),
       findsOneWidget,
     );
-    expect(find.text(S.menuFull), findsOneWidget);
+    expect(find.byKey(const ValueKey('next-meal')), findsOneWidget);
   });
 
   testWidgets('swipe right marks used; undo brings it back', (tester) async {

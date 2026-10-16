@@ -40,3 +40,12 @@ String formatBahtWhole(Money money, {required bool roundUp}) {
   final whole = roundUp ? (s + 99) ~/ 100 : s ~/ 100;
   return formatInt(whole);
 }
+
+/// "300 ก." / "1.5 ล." / "2 ชิ้น".
+String formatQuantity(Quantity q) {
+  final a = q.amount;
+  final text = a == a.roundToDouble()
+      ? a.toInt().toString()
+      : a.toStringAsFixed(1);
+  return '$text ${S.units[q.unit.name]}';
+}

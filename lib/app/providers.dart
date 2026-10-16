@@ -19,18 +19,3 @@ final catalogProvider = Provider<IngredientCatalog>(
 final recipeBookProvider = Provider<RecipeBook>(
   (ref) => throw UnimplementedError('recipeBookProvider must be overridden'),
 );
-
-/// The user's food budget. Starts with sample values until the dashboard
-/// lets the user edit them and persistence lands (Phase 3).
-final budgetProvider = NotifierProvider<BudgetController, UserBudgetProfile>(
-  BudgetController.new,
-);
-
-class BudgetController extends Notifier<UserBudgetProfile> {
-  static final sample = UserBudgetProfile(foodBudget: Money.baht(1600));
-
-  @override
-  UserBudgetProfile build() => sample;
-
-  void update(UserBudgetProfile profile) => state = profile;
-}

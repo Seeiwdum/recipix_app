@@ -15,6 +15,7 @@ enum RecipixIcons {
   check,
   close,
   chevronRight,
+  chevronLeft,
   trash,
   lock,
   unlock,

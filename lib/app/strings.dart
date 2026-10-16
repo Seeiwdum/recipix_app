@@ -76,6 +76,52 @@ abstract final class S {
   static String matchPercent(int p) => 'เข้ากัน $p%';
   static String minutes(int m) => '$m นาที';
 
+  // Spending log
+  static String spentToday(String spent, String left) =>
+      'ใช้ไป $spent · เหลือ $left บาท';
+  static String overToday(String over) => 'เกินงบวันนี้ $over บาท';
+  static const logSpending = 'บันทึกค่ากิน';
+  static const spendTitle = 'บันทึกค่ากิน';
+  static const spendAmountHint = '0';
+  static const spendCategories = {
+    'eatOut': 'กินข้างนอก',
+    'groceries': 'ซื้อของเข้าบ้าน',
+    'other': 'อื่นๆ',
+  };
+  static const spendSave = 'บันทึก';
+  static const spendTodayTitle = 'วันนี้';
+  static const spendNoneToday = 'วันนี้ยังไม่ได้บันทึก';
+  static String spendSaved(String baht) => 'บันทึก $baht บาทแล้ว';
+  static const spendRemove = 'ลบรายการ';
+  static const eatOutCountsAsMeal = 'นับเป็น 1 มื้อในแผน';
+
+  // Meal plan
+  static const nextMealTitle = 'มื้อถัดไป';
+  static const seePlan = 'ดูแผน';
+  static const planTitle = 'แผนกินถึงวันเงินเข้า';
+  static const back = 'กลับ';
+  static String planHomeSummary(int home, int total) =>
+      'ทำเองได้อีก $home มื้อ จาก $total มื้อถึงเงินเข้า';
+  static const planHomeLead = 'ทำเองจากของในตู้';
+  static const mealsUnit = 'มื้อ';
+  static String planOfTotal(int total) => 'จาก $total มื้อถึงวันเงินเข้า';
+  static String planEatOut(int meals, String baht) =>
+      'ซื้อกิน $meals มื้อ ประมาณ $baht บาท';
+  static String planBudgetLeft(String baht) => 'งบเหลือ $baht บาท';
+  static String planShortfall(String baht) => 'ตามแผนนี้ ขาด $baht บาท';
+  static const planCovered = 'ตามแผนนี้ งบพอ';
+  static String planWillSpoil(String names) => 'จะเสียก่อนได้ใช้: $names';
+  static const mealNames = ['มื้อเช้า', 'มื้อกลางวัน', 'มื้อเย็น'];
+  static String mealName(int slot) =>
+      slot < mealNames.length ? mealNames[slot] : 'มื้อที่ ${slot + 1}';
+  static const eatOutMeal = 'ซื้อกิน';
+  static const tomorrow = 'พรุ่งนี้';
+  static String usesLine(String names) => 'ใช้ $names';
+  static const cookUses = 'จะใช้ของในตู้';
+  static const cookDone = 'ทำแล้ว';
+  static const cookMissing = 'ของในตู้ไม่พอแล้ว';
+  static String toastCooked(String name) => 'ทำ$nameแล้ว';
+
   // Fridge tab
   static String fridgeCapacity(int used, int total) =>
       'ใช้ไป $used จาก $total ช่อง';

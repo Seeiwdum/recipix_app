@@ -6,39 +6,9 @@ import '../../../app/providers.dart';
 import '../../../app/strings.dart';
 import '../../../app/theme/recipix_tokens.dart';
 import '../../../shared/utils/format.dart';
+import '../../../shared/widgets/toast.dart';
 import '../../../shared/widgets/ingredient_tile.dart';
 import '../domain/fridge_controller.dart';
-
-String formatQuantity(Quantity q) {
-  final a = q.amount;
-  final text = a == a.roundToDouble()
-      ? a.toInt().toString()
-      : a.toStringAsFixed(1);
-  return '$text ${S.units[q.unit.name]}';
-}
-
-void showFridgeToast(BuildContext context, String message, VoidCallback undo) {
-  final t = context.tokens;
-  ScaffoldMessenger.of(context)
-    ..hideCurrentSnackBar()
-    ..showSnackBar(
-      SnackBar(
-        content: Text(message, style: t.body.copyWith(color: t.surface)),
-        backgroundColor: t.ink,
-        behavior: SnackBarBehavior.floating,
-        duration: const Duration(seconds: 5),
-        elevation: 0,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(RecipixTokens.radiusMd),
-        ),
-        action: SnackBarAction(
-          label: S.undo,
-          textColor: t.surface,
-          onPressed: undo,
-        ),
-      ),
-    );
-}
 
 /// Detail sheet for one item. One primary action: "used" for items on a
 /// shelf, "put it away for me" for items still in the basket.
@@ -95,12 +65,12 @@ class _ItemSheet extends ConsumerWidget {
       } else {
         ctrl.discard(item.id);
       }
-      showFridgeToast(
+      showUndoToast(
         hostContext,
         kind == RemovalKind.used
             ? S.toastUsed(item.name)
             : S.toastDiscarded(item.name),
-        ctrl.undo,
+        onUndo: ctrl.undo,
       );
     }
 
@@ -174,16 +144,7 @@ class _ItemSheet extends ConsumerWidget {
                     : () {
                         close();
                         if (ctrl.autoPlace(item.id) == null) {
-                          ScaffoldMessenger.of(hostContext).showSnackBar(
-                            SnackBar(
-                              content: Text(
-                                S.fridgeFull,
-                                style: t.body.copyWith(color: t.surface),
-                              ),
-                              backgroundColor: t.ink,
-                              behavior: SnackBarBehavior.floating,
-                            ),
-                          );
+                          showUndoToast(hostContext, S.fridgeFull);
                         }
                       },
                 child: Text(

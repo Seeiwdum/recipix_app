@@ -2,11 +2,19 @@
 title: Changelog
 owner: แพรว
 last_updated: 2026-10-16
-version: 0.4.0
+version: 0.5.0
 status: active
 ---
 
 # Changelog
+
+## 0.5.0 — 2026-10-16 (spending log + meal plan)
+- feat(core): BudgetLedger (pay period, remaining, start-of-day allowance, eat-out meals today) and MealPlanner (greedy plan to payday cooking from the fridge first, shortfall, will-spoil list)
+- feat(budget): spending log sheet on home: amount, quick amounts from settings, category, today's entries with remove, undo toast; report shows spent/left today and over-allowance
+- feat(plan): meal plan page (/home/plan) with summary and day-by-day meals; next-meal row on home; cook sheet deducts the dish from the fridge with undo
+- fix(ui): undo toasts now close after 5s (Flutter 3.47 keeps snack bars with actions by default)
+- test: 63 core, 87 app (incl. goldens for plan and spending sheet)
+- docs: ADR-008, UI critique
 
 ## 0.4.0 — 2026-10-16 (Phase 2: home tab)
 - feat(home): daily report: headline days-left number (count-up), mystery estimate line, coverage-to-payday bar, daily allowance, days to payday, plain deficit line

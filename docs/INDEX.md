@@ -2,7 +2,7 @@
 title: Docs Index
 owner: แพรว
 last_updated: 2026-10-16
-version: 1.3
+version: 1.4
 status: active
 ---
 
@@ -24,6 +24,7 @@ status: active
 | [decisions/ADR-005_fridge-grid-and-drag.md](decisions/ADR-005_fridge-grid-and-drag.md) | กริดตู้เย็น + ระบบลาก-วาง | accepted |
 | [decisions/ADR-006_daily-report-rules.md](decisions/ADR-006_daily-report-rules.md) | กติกาใบรายงานประจำวัน (หน้าหลัก) | accepted |
 | [decisions/ADR-007_founder-decisions-2026-10-16.md](decisions/ADR-007_founder-decisions-2026-10-16.md) | ผู้ก่อตั้งตัดสิน: Android, เก็บข้อมูลในเครื่อง, ML Kit, ไฟล์เดิม | accepted |
+| [decisions/ADR-008_spending-log-and-meal-plan.md](decisions/ADR-008_spending-log-and-meal-plan.md) | บันทึกค่ากิน + แผนกินถึงวันเงินเข้า | accepted |
 | [engineering/architecture.md](engineering/architecture.md) | ชั้นสถาปัตยกรรม | active |
 | [engineering/coding_standards.md](engineering/coding_standards.md) | มาตรฐานโค้ด | active |
 | [engineering/tooling_setup.md](engineering/tooling_setup.md) | สภาพเครื่อง เวอร์ชัน ปัญหาที่เจอ | active |
