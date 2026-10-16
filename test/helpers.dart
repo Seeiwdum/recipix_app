@@ -7,6 +7,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:recipix_app/app/app.dart';
 import 'package:recipix_app/app/providers.dart';
 import 'package:recipix_app/features/fridge/data/ingredient_catalog.dart';
+import 'package:recipix_app/shared/data/recipe_book.dart';
 import 'package:recipix_core/recipix_core.dart';
 
 /// Fixed day so freshness labels and goldens never drift.
@@ -14,6 +15,10 @@ final testToday = LocalDate(2026, 10, 16);
 
 final testCatalog = IngredientCatalog.fromJsonString(
   File(IngredientCatalog.assetPath).readAsStringSync(),
+);
+
+final testRecipes = RecipeBook.fromJsonString(
+  File(RecipeBook.assetPath).readAsStringSync(),
 );
 
 /// Loads the bundled Thai font so goldens show real glyphs instead of the
@@ -39,6 +44,7 @@ void setPhoneSize(WidgetTester tester, double width, {double height = 800}) {
 Widget testApp({String initialLocation = '/home'}) => ProviderScope(
   overrides: [
     catalogProvider.overrideWithValue(testCatalog),
+    recipeBookProvider.overrideWithValue(testRecipes),
     todayProvider.overrideWithValue(testToday),
   ],
   child: RecipixApp(initialLocation: initialLocation),

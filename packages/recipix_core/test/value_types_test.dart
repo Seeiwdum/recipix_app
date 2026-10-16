@@ -11,6 +11,11 @@ void main() {
       expect(LocalDate(2028, 2, 1).daysInMonth, 29);
     });
 
+    test('weekday is ISO (Mon = 1)', () {
+      expect(today.weekday, DateTime.friday);
+      expect(LocalDate(2026, 10, 18).weekday, DateTime.sunday);
+    });
+
     test('parses ISO dates', () {
       expect(LocalDate.parse('2026-10-16'), today);
       expect(today.toString(), '2026-10-16');

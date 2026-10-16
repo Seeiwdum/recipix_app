@@ -36,3 +36,7 @@ status: active
 - `test/features/fridge/fridge_controller_test.dart`: catalog (ไฟล์ + asset bundle), วาง/ปฏิเสธ, ใช้แล้ว+undo คืนเพื่อนบ้าน, undo หลังย้าย → ตะกร้า, ตัวกรอง/ความสด
 - `test/features/fridge/fridge_page_test.dart`: ลากจากตะกร้าเข้าชั้น, เด้งกลับ (ประตู/ช่องเต็ม), ลากกลับตะกร้า, sheet → ใช้แล้ว → toast → เลิกทำ, จัดเข้าตู้ให้, ตัวกรองหรี่, ลิ้นชัก, ไม่ล้นที่ 360/430
 - golden: `fridge_{360,390,430}`, `fridge_sheet_390`, `fridge_drag_390`
+
+## แท็บหน้าหลัก (Phase 2) — app รวม 73 เทสต์ผ่าน, core 48
+- `test/features/home/home_page_test.dart`: format (เลข/บาท/วัน/วันที่ไทย/ปัดบาทเต็ม), สูตรอ้างคีย์ใน catalog ครบ, ลำดับต้องใช้ก่อน, เมนูแนะนำ, รายงานนับตะกร้า/แยกของปริศนา, แสดงตัวเลข/ยอดขาด, ปัดขวา+เลิกทำ, ปัดซ้าย, ใช้ของแล้วตัวเลขลด, แตะเปิด sheet, ไม่ล้น 360/430
+- golden: `home_{360,390,430}`

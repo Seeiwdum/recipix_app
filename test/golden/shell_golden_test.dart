@@ -49,7 +49,7 @@ void main() {
 
   for (final width in [360.0, 390.0, 430.0]) {
     testWidgets('home shell at ${width.toInt()}', (tester) async {
-      setPhoneSize(tester, width);
+      setPhoneSize(tester, width, height: 844);
       await tester.pumpWidget(testApp());
       await tester.pumpAndSettle();
       await expectLater(

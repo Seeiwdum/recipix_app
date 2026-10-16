@@ -21,7 +21,7 @@ flutter analyze                      # ทั้งรีโป รวม packag
 flutter test                         # widget/golden test ของแอป
 cd packages/recipix_core; dart test  # unit test ของ logic ธุรกิจ
 flutter run -d chrome                # เป้าหมายรันหลักตอนนี้ (ยังไม่มี Android SDK)
-# Claude preview: .claude/launch.json "recipix-web" (web-server --release, port 8080)
+# Claude preview: .claude/launch.json "recipix-web" (web-server --release, port 8765)
 dart format .
 flutter test --update-goldens test/golden   # only when a visual change is intended
 ```

@@ -2,11 +2,20 @@
 title: Changelog
 owner: แพรว
 last_updated: 2026-10-16
-version: 0.3.0
+version: 0.4.0
 status: active
 ---
 
 # Changelog
+
+## 0.4.0 — 2026-10-16 (Phase 2: home tab)
+- feat(home): daily report: headline days-left number (count-up), mystery estimate line, coverage-to-payday bar, daily allowance, days to payday, plain deficit line
+- feat(home): use-first list (expired then 0-2 days) with swipe right = used, left = discard, tap = item sheet, undo toast, staggered entrance
+- feat(home): one suggested dish using something urgent, match % or "ครบทุกอย่าง", minutes and kcal
+- feat(data): 10 everyday Thai recipes in assets/data/recipes.json; shared RecipeBook; budgetProvider
+- feat(core): LocalDate.weekday
+- chore: preview port 8765 (8080 became OS-reserved)
+- docs: ADR-006, design references from the team Figma, UI critique
 
 ## 0.3.0 — 2026-10-16 (Phase 2: fridge tab)
 - feat(fridge): cross-section fridge mini-game: freezer, 3 shelves, crisper drawer, door bins; 1x1/2x1 items; drag from basket with spring snap, refused drops spring back, drawer auto-opens on hover

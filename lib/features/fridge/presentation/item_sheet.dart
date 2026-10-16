@@ -5,10 +5,9 @@ import 'package:recipix_core/recipix_core.dart';
 import '../../../app/providers.dart';
 import '../../../app/strings.dart';
 import '../../../app/theme/recipix_tokens.dart';
+import '../../../shared/utils/format.dart';
 import '../../../shared/widgets/ingredient_tile.dart';
 import '../domain/fridge_controller.dart';
-
-String formatThaiDate(LocalDate d) => '${d.day} ${S.monthsShort[d.month - 1]}';
 
 String formatQuantity(Quantity q) {
   final a = q.amount;

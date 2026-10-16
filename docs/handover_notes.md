@@ -2,39 +2,38 @@
 title: Handover Notes
 owner: แพรว
 last_updated: 2026-10-16
-version: 1.2
+version: 1.3
 status: active
 ---
 
 # Handover
 
 ## สถานะล่าสุด
-แท็บตู้เย็น (minigame จัดตู้เย็น) เสร็จบน branch `dev` และรันจริงบน Chrome แล้ว อีก 4 แท็บยังเป็น placeholder
-เทสต์: แอป 61 ผ่าน (รวม golden 11 ภาพ), core 47 ผ่าน, analyze สะอาด
+แท็บตู้เย็นและแท็บหน้าหลักเสร็จบน branch `dev` และรันจริงบน Chrome แล้ว; สแกน / สุ่มเมนู / แดชบอร์ดยังเป็น placeholder
+เทสต์: แอป 73 ผ่าน (golden 11 ภาพ), core 48 ผ่าน, analyze สะอาด
 
-## ทำแล้ว (Phase 2 — ตู้เย็น)
-- ผังตู้ 25 ช่อง: ช่องแช่แข็ง / ชั้นบน-กลาง-ล่าง / ลิ้นชักผัก (มีหน้าลิ้นชักเลื่อนเปิด, เปิดเองเมื่อลากผ่าน) / ชั้นประตู 4 ช่อง
-- ลาก-วางเขียนเอง (ADR-005): จับของจากตะกร้าหรือชั้น → กรอบเขียวบอกช่องที่วางได้ / แดงถ้าวางไม่ได้ → spring snap หรือเด้งกลับ; ลากลงตะกร้าได้
-- ความสด 3 ทาง: ป้ายวัน, กรอบสี, ภาพซีด; ตัวกรอง 5 แบบหรี่ของที่ไม่ตรง; แถบความจุ
-- Sheet รายละเอียด: วันหมดอายุไทย, พลังงาน (ของปริศนาแสดง "ประมาณ"), ที่เก็บ; ใช้แล้ว / ทิ้ง / ย้ายไปตะกร้า / จัดเข้าตู้ให้; toast "เลิกทำ" 5 วินาที คืนตำแหน่งเพื่อนบ้านได้ด้วย
-- `assets/data/ingredients.json` 18 รายการ + ภาพวัตถุดิบครบ 18 ชิ้น; precache SVG ตอนเปิดแอป
-- `todayProvider`, `catalogProvider` (inject ใน `main()` และใน test)
+## ทำแล้ว (หน้าหลัก)
+- ใบรายงานประจำวัน: "อยู่ได้อีก x.x วัน" (นับขึ้น), บรรทัดประมาณการของปริศนา, เส้นความคืบหน้าถึงวันเงินเข้า, งบวันนี้, วันถึงเงินเข้า, ยอดขาด/งบพอ (ADR-006)
+- ต้องใช้ก่อน: ปัดขวา ใช้แล้ว / ปัดซ้าย ทิ้ง / แตะเปิด sheet + toast เลิกทำ; ใช้ state เดียวกับตู้เย็น (ใช้ของในแท็บหนึ่ง อีกแท็บเปลี่ยนตาม)
+- เมนูแนะนำ 1 แถวจาก `assets/data/recipes.json` (10 เมนูไทย)
+- อ้างอิง Figma "Cookmate" ของทีม: ใช้ วันที่บนหัว, % เข้ากัน, kcal/เวลา; ไม่ใช้ ภาพอาหาร, อีโมจิ, ช่องค้นหา, สีส้มอิฐ (`product/design_references.md`)
 
 ## ค้างอยู่ / ปัญหา
-- ค่าแคลอรี่/อายุใน catalog เป็นประมาณการ → วุฒิต้องตรวจแหล่งอ้างอิง (`product/ingredient_data_spec.md`)
-- ข้อมูลยังอยู่ในหน่วยความจำ ปิดแอปแล้วหาย (persistence = Phase 3)
-- ยังไม่ได้ทดสอบบนมือถือจริง: แฮปติก, ลากด้วยนิ้ว, 60 FPS; ด้ามลิ้นชักตอนเปิดสูงแค่ 18px
-- ไฟล์ต้นฉบับ (ui_design_prompt / Unity / เดโม HTML) ยังไม่มี
-- `.mcp.json` (Dart MCP) ยังไม่ได้ยืนยัน Connected
+- ค่าแคลอรี่/อายุ/สูตรเป็นประมาณการ → วุฒิตรวจ
+- ไม่มี persistence (ปิดแอปแล้วข้อมูลกลับเป็นตัวอย่าง)
+- ยังไม่ทดสอบบนมือถือจริง (ปัด/ลากด้วยนิ้ว, แฮปติก)
+- Figma connector เข้าไฟล์ทีมไม่ได้ (ต้องให้สิทธิ์ editor ถ้าจะดึงค่าอัตโนมัติ)
+- port 8080 ถูก Windows จองไว้ → preview ใช้ 8765
+- แถวเมนูแนะนำยังแตะไม่ได้ (รอแท็บสุ่มเมนู/หน้ารายละเอียดเมนู)
 
 ## ขั้นต่อไป
-1. แท็บหน้าหลัก "ใบรายงานประจำวัน": `SurvivalEngine` จากของในตู้ (provider ร่วมกับ fridgeProvider), ตัวเลขหลัก "อยู่ได้อีก x วัน" นับขึ้น 400ms, รายการต้องใช้ก่อนปัดเพื่อ ใช้แล้ว/ทิ้ง, ข้อเสนอเมนู 1 แถว (ต้องมีข้อมูลสูตร `assets/data/recipes.json`)
-2. ต่อด้วย สแกน → สุ่มเมนู → แดชบอร์ด
-3. ย้าย fridge state ไปเป็น "คลังกลาง" ที่ทุกแท็บใช้ร่วม (ตอนนี้อยู่ใน feature fridge)
+1. แท็บสแกน: กล้องเต็มจอ, โหมด วัตถุดิบ/บาร์โค้ด/ใบเสร็จ, ผลเป็น sheet เช็กลิสต์, "เพิ่มเข้าตู้เย็น (n)" → ลงตะกร้าในตู้ — ต้องเลือกแพ็กเกจกล้อง/บาร์โค้ด/OCR (ADR) และบนเว็บอาจทำได้แค่บางโหมด
+2. สุ่มเมนู → แดชบอร์ด
+3. ย้าย fridge state ไปเป็นคลังกลาง (`lib/shared/` หรือ `lib/app/`) เพราะตอนนี้ home import จาก feature fridge
 
 ## คำถาม L3 ที่รอคำตอบ
 1. ไฟล์ต้นฉบับที่หายไป (ui_design_prompt / Unity / เดโม HTML)
-2. Android Studio: ติดตั้งเมื่อไรเพื่อทดสอบบนมือถือจริง
+2. Android Studio: ติดตั้งเมื่อไรเพื่อทดสอบบนมือถือจริง (สำคัญขึ้นสำหรับแท็บสแกน)
 
 ## ไฟล์ที่แก้ล่าสุด
-`lib/features/fridge/**`, `lib/app/{providers,strings}.dart`, `lib/app/theme/recipix_tokens.dart`, `lib/main.dart`, `lib/shared/widgets/ingredient_tile.dart`, `assets/data/ingredients.json`, `assets/ingredients/*`, `tool/gen_ingredients.sh`, `test/**`, `pubspec.yaml`, `.claude/launch.json`, `docs/**`
+`lib/features/home/**`, `lib/shared/{data/recipe_book.dart,utils/format.dart,motion/entrance.dart}`, `lib/app/{providers,strings}.dart`, `lib/main.dart`, `assets/data/recipes.json`, `packages/recipix_core/lib/src/common/local_date.dart`, `test/**`, `.claude/launch.json`, `docs/**`

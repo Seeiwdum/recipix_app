@@ -20,8 +20,6 @@ abstract final class S {
   static const dashboardTitle = 'แดชบอร์ด';
 
   // Placeholders until each tab is built (Phase 2)
-  static const homeComingSoon =
-      'ใบรายงานประจำวัน: วันที่อยู่ได้ งบวันนี้ และของที่ต้องใช้ก่อน';
   static const fridgeComingSoon =
       'หน้าตัดตู้เย็น ลากของจากตะกร้าไปวางบนชั้นได้';
   static const scanComingSoon = 'กล้องสำหรับวัตถุดิบ บาร์โค้ด และใบเสร็จ';
@@ -40,6 +38,43 @@ abstract final class S {
 
   // Ingredients
   static const mysteryItem = 'ยังไม่รู้ชนิด';
+
+  // Home tab (daily report)
+  static const weekdays = [
+    'จันทร์',
+    'อังคาร',
+    'พุธ',
+    'พฤหัสบดี',
+    'ศุกร์',
+    'เสาร์',
+    'อาทิตย์',
+  ];
+  static const survivalLead = 'อยู่ได้อีก';
+  static const daysUnit = 'วัน';
+  static const bahtUnit = 'บาท';
+  static String survivalBasis(String kcal, String need) =>
+      'จากของที่มี $kcal kcal · ใช้วันละ $need kcal';
+  static String survivalEstimate(String days) =>
+      'ถ้านับของที่ยังไม่รู้ชนิดด้วย อาจได้ถึง $days วัน';
+  static String coverage(String days, int payday) =>
+      'ของในตู้พอ $days จาก $payday วันถึงเงินเข้า';
+  static const allowanceLabel = 'งบวันนี้';
+  static const paydayLabel = 'เงินเข้าใน';
+  static String deficit(String baht) => 'ขาดอีก $baht บาทถึงวันเงินเข้า';
+  static const budgetCovered = 'งบพอถึงวันเงินเข้า';
+  static const useFirstTitle = 'ต้องใช้ก่อน';
+  static const useFirstHint = 'ปัดขวา ใช้แล้ว · ปัดซ้าย ทิ้ง';
+  static const useFirstEmpty = 'ไม่มีของที่ต้องรีบใช้';
+  static String daysLeftLong(int days) => switch (days) {
+    < 0 => 'หมดอายุแล้ว',
+    0 => 'ควรใช้วันนี้',
+    _ => 'เหลือ $days วัน',
+  };
+  static const menuTitle = 'เมนูที่ใช้ของใกล้หมด';
+  static const menuFull = 'ครบทุกอย่าง';
+  static String menuMissing(String names) => 'ขาด $names';
+  static String matchPercent(int p) => 'เข้ากัน $p%';
+  static String minutes(int m) => '$m นาที';
 
   // Fridge tab
   static String fridgeCapacity(int used, int total) =>

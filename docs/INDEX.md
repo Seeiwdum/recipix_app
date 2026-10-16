@@ -2,7 +2,7 @@
 title: Docs Index
 owner: แพรว
 last_updated: 2026-10-16
-version: 1.2
+version: 1.3
 status: active
 ---
 
@@ -22,11 +22,13 @@ status: active
 | [decisions/ADR-003_core-domain-model.md](decisions/ADR-003_core-domain-model.md) | โมเดลโดเมน: วันที่/เงิน/ปริมาณ/badge | accepted |
 | [decisions/ADR-004_app-stack.md](decisions/ADR-004_app-stack.md) | แพ็กเกจแอป: Riverpod, go_router, flutter_svg, ฟอนต์ | accepted |
 | [decisions/ADR-005_fridge-grid-and-drag.md](decisions/ADR-005_fridge-grid-and-drag.md) | กริดตู้เย็น + ระบบลาก-วาง | accepted |
+| [decisions/ADR-006_daily-report-rules.md](decisions/ADR-006_daily-report-rules.md) | กติกาใบรายงานประจำวัน (หน้าหลัก) | accepted |
 | [engineering/architecture.md](engineering/architecture.md) | ชั้นสถาปัตยกรรม | active |
 | [engineering/coding_standards.md](engineering/coding_standards.md) | มาตรฐานโค้ด | active |
 | [engineering/tooling_setup.md](engineering/tooling_setup.md) | สภาพเครื่อง เวอร์ชัน ปัญหาที่เจอ | active |
 | [product/roadmap.md](product/roadmap.md) | Phase 0-3 + สถานะ | active |
 | [product/ingredient_data_spec.md](product/ingredient_data_spec.md) | สเปก ingredients.json (ค่ายังเป็นประมาณการ) | draft |
+| [product/design_references.md](product/design_references.md) | Figma Cookmate: อะไรใช้/ไม่ใช้ | active |
 | [qa/test_plan.md](qa/test_plan.md) | แผนทดสอบ + ความครอบคลุม | active |
 
 ทีม: `.claude/agents/` (9 บทบาท) · skills: `.claude/skills/` (6 ตัว) · กติกาหลัก: `CLAUDE.md`

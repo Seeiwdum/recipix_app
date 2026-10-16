@@ -41,7 +41,7 @@ status: active
 - `main` = commit แรก (scaffold); `dev` = งานปัจจุบัน
 
 ## Preview บนเว็บ (เพิ่ม 2026-10-16)
-- `.claude/launch.json` → `flutter run -d web-server --release --web-port 8080` ใช้กับ browser pane ของ Claude
+- `.claude/launch.json` → `flutter run -d web-server --release --web-port 8765` ใช้กับ browser pane ของ Claude
 - โหมด debug ของ `web-server` ค้างหน้าขาว (รอ Dart Debug extension) → ใช้ `--release` สำหรับ preview; build ครั้งแรกประมาณ 30 วินาที
 - ถ้าเปิดหน้าก่อน build เสร็จ จะค้างหน้าเก่า → โหลดใหม่หลังเห็น "Built build\web"
 - ผู้ก่อตั้งรันเองใน VS Code: `flutter run -d chrome` (มี hot reload)

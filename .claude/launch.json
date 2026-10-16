@@ -4,8 +4,8 @@
     {
       "name": "recipix-web",
       "runtimeExecutable": "flutter",
-      "runtimeArgs": ["run", "-d", "web-server", "--release", "--web-port", "8080"],
-      "port": 8080,
+      "runtimeArgs": ["run", "-d", "web-server", "--release", "--web-port", "8765"],
+      "port": 8765,
       "autoPort": false
     }
   ]

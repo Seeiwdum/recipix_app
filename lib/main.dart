@@ -6,12 +6,16 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'app/app.dart';
 import 'app/providers.dart';
 import 'features/fridge/data/ingredient_catalog.dart';
+import 'shared/data/recipe_book.dart';
 import 'shared/widgets/ingredient_tile.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final catalog = IngredientCatalog.fromJsonString(
     await rootBundle.loadString(IngredientCatalog.assetPath),
+  );
+  final recipes = RecipeBook.fromJsonString(
+    await rootBundle.loadString(RecipeBook.assetPath),
   );
   // Parse ingredient art up front so the first fridge visit does not stall
   // the tab transition while SVGs decode.
@@ -22,7 +26,10 @@ Future<void> main() async {
 
   runApp(
     ProviderScope(
-      overrides: [catalogProvider.overrideWithValue(catalog)],
+      overrides: [
+        catalogProvider.overrideWithValue(catalog),
+        recipeBookProvider.overrideWithValue(recipes),
+      ],
       child: const RecipixApp(),
     ),
   );
