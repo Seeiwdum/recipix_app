@@ -40,6 +40,8 @@ status: active
 | [decisions/ADR-014_phase3-scan-and-reminders.md](decisions/ADR-014_phase3-scan-and-reminders.md) | Phase 3: สแกนบาร์โค้ด (Open Food Facts + จำในเครื่อง), แจ้งเตือนวันละครั้ง; ยังไม่ทำใบเสร็จ/ถ่ายรูปวัตถุดิบ | accepted |
 | [decisions/ADR-015_menu-suggestions-and-recipe-page.md](decisions/ADR-015_menu-suggestions-and-recipe-page.md) | Phase 4: เมนูแนะนำ 3 เมนูหน้าหลัก + หน้าสูตร (วัตถุดิบ วิธีทำ ระดับ เหรียญที่ได้) | accepted |
 | [decisions/ADR-016_photo-outline-and-pick.md](decisions/ADR-016_photo-outline-and-pick.md) | โหมดถ่ายของ: ML Kit ในเครื่องตีกรอบ แตะกรอบเลือกชนิด (ภาพนิ่ง ไม่ส่งภาพออก) | accepted |
+| [decisions/ADR-017_onboarding-and-web-app.md](decisions/ADR-017_onboarding-and-web-app.md) | คำถามตอนเปิดแอปครั้งแรก (ชื่อ เมนูโปรด เงิน) + เว็บแอปบน repo สาธารณะ recipix_web | accepted |
+| [how_we_built_recipix.md](how_we_built_recipix.md) | สรุปขั้นตอนสร้างแอปตั้งแต่ต้นจนจบ: Flutter + VS Code + GitHub (+ ตั้งค่าเว็บแอป) | active |
 | [engineering/architecture.md](engineering/architecture.md) | ชั้นสถาปัตยกรรม | active |
 | [engineering/coding_standards.md](engineering/coding_standards.md) | มาตรฐานโค้ด | active |
 | [engineering/tooling_setup.md](engineering/tooling_setup.md) | สภาพเครื่อง เวอร์ชัน ปัญหาที่เจอ | active |

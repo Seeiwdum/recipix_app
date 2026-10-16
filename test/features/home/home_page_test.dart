@@ -15,7 +15,7 @@ ProviderContainer containerOf(WidgetTester tester) =>
     ProviderScope.containerOf(tester.element(find.byType(HomePage)));
 
 Future<void> openHome(WidgetTester tester, {double width = 390}) async {
-  setPhoneSize(tester, width, height: 1400);
+  setPhoneSize(tester, width, height: 2000);
   await tester.pumpWidget(testApp());
   await tester.pumpAndSettle();
 }

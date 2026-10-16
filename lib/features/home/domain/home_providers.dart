@@ -4,6 +4,7 @@ import 'package:recipix_core/recipix_core.dart';
 import '../../../app/providers.dart';
 import '../../budget/domain/budget_controller.dart';
 import '../../fridge/domain/fridge_controller.dart';
+import '../../profile/domain/profile_controller.dart';
 
 /// Today's survival report over everything the user owns (shelves and the
 /// basket both count: the shopping is in the house either way).
@@ -25,6 +26,9 @@ final useFirstProvider = Provider<List<IngredientItem>>((ref) {
 enum SuggestionSource {
   /// Uses something from the fridge (urgent items first).
   fridge,
+
+  /// One of the dishes the user said they like (ADR-017).
+  favorite,
 
   /// An easy everyday dish, to fill the list when the fridge has little.
   easy,
@@ -68,13 +72,27 @@ final menuSuggestionsProvider = Provider<List<MenuSuggestion>>((ref) {
   }
 
   bool onHand(RecipeMatch m) => m.haveKeys.isNotEmpty;
-  if (urgent.isNotEmpty) {
-    take(
-      matcher.rank(recipes, available, focusKeys: urgent).where(onHand),
-      SuggestionSource.fridge,
-    );
-  }
-  take(matcher.rank(recipes, available).where(onHand), SuggestionSource.fridge);
+  final favorites = ref.watch(profileProvider).favoriteRecipeIds;
+  bool fav(RecipeMatch m) => favorites.contains(m.recipe.id);
+  final urgentRanked = urgent.isEmpty
+      ? const <RecipeMatch>[]
+      : matcher.rank(recipes, available, focusKeys: urgent).where(onHand);
+  final onHandRanked = matcher.rank(recipes, available).where(onHand);
+
+  // 1. The best dish that saves something about to expire (a favourite if
+  //    one does).
+  take(
+    [...urgentRanked.where(fav), ...urgentRanked].take(1),
+    SuggestionSource.fridge,
+  );
+  // 2. Favourites (ADR-017): on hand first, then the rest.
+  take(onHandRanked.where(fav), SuggestionSource.fridge);
+  take([
+    for (final r in recipes)
+      if (favorites.contains(r.id)) matcher.match(r, available),
+  ], SuggestionSource.favorite);
+  // 3. Other dishes from the fridge, urgent ones first.
+  take([...urgentRanked, ...onHandRanked], SuggestionSource.fridge);
   final easy =
       [
         for (final r in recipes)

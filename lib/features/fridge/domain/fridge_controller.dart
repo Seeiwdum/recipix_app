@@ -250,6 +250,14 @@ class FridgeController extends Notifier<FridgeState> {
     return slot;
   }
 
+  /// Empties the sample fridge for a new user's first setup (ADR-017).
+  void startEmpty() => state = FridgeState(
+    items: const [],
+    arrangement: FridgeArrangement(),
+    filter: state.filter,
+    trackingSince: ref.read(todayProvider),
+  );
+
   /// Adds one fresh [key] from the catalog to the basket: bought today,
   /// default amount, expiry from its shelf life (ADR-013). Returns the new
   /// item, or null for a key the catalog does not know.

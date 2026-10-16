@@ -138,6 +138,11 @@ class BudgetController extends Notifier<BudgetState> {
     ),
   );
 
+  /// Drops the sample spending log, for a new user's first setup
+  /// (ADR-017). Settings stay.
+  void startFresh() =>
+      state = state.copyWith(entries: const [], clearLastAdded: true);
+
   void remove(String id) => state = state.copyWith(
     entries: state.entries.where((e) => e.id != id).toList(),
     clearLastAdded: state.lastAdded?.id == id,

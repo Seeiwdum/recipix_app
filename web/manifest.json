@@ -1,11 +1,11 @@
 {
-    "name": "recipix_app",
-    "short_name": "recipix_app",
+    "name": "Recipix",
+    "short_name": "Recipix",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "background_color": "#F7F3EC",
+    "theme_color": "#2F6B4F",
+    "description": "ตู้เย็นและค่ากินให้รอดถึงวันเงินเดือนออก",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [

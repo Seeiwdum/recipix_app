@@ -23,6 +23,7 @@ import '../../budget/presentation/spending_sheet.dart';
 import 'cook_sheet.dart';
 import '../../fridge/domain/fridge_controller.dart';
 import '../../fridge/presentation/item_sheet.dart';
+import '../../profile/domain/profile_controller.dart';
 import '../domain/home_providers.dart';
 
 /// "Daily report": one headline number, a thin coverage line, money in
@@ -36,6 +37,7 @@ class HomePage extends ConsumerWidget {
     final today = ref.watch(todayProvider);
     final useFirst = ref.watch(useFirstProvider);
     final menus = ref.watch(menuSuggestionsProvider);
+    final name = ref.watch(profileProvider).name;
     final plan = ref.watch(mealPlanProvider);
     final next = plan.nextHomeMeal;
 
@@ -52,6 +54,12 @@ class HomePage extends ConsumerWidget {
             ),
             sliver: SliverList.list(
               children: [
+                if (name.isNotEmpty)
+                  Text(
+                    S.greeting(name),
+                    key: const ValueKey('greeting'),
+                    style: t.label,
+                  ),
                 Text(formatThaiDateLong(today), style: t.caption),
                 Semantics(
                   header: true,
@@ -504,9 +512,11 @@ class _MenuRow extends ConsumerWidget {
     final r = match.recipe;
     final missing = [for (final k in match.missingKeys) catalog[k]?.name ?? k]
         .join(', ');
-    final source = suggestion.source == SuggestionSource.fridge
-        ? S.suggestFromFridge
-        : S.suggestEasy;
+    final source = switch (suggestion.source) {
+      SuggestionSource.fridge => S.suggestFromFridge,
+      SuggestionSource.favorite => S.suggestFavorite,
+      SuggestionSource.easy => S.suggestEasy,
+    };
 
     return Pressable(
       key: ValueKey('menu-${r.id}'),

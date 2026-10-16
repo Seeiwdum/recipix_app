@@ -5,6 +5,28 @@
 abstract final class S {
   static const appName = 'Recipix';
 
+  // First launch (ADR-017)
+  static String onboardStep(int n, int of) => '$n/$of';
+  static const onboardWelcome = 'ยินดีต้อนรับสู่ Recipix';
+  static const onboardLead =
+      'ช่วยให้ค่ากินอยู่รอดถึงวันเงินเดือนออก ตอบ 3 ข้อแล้วเริ่มได้เลย';
+  static const onboardNameLabel = 'เรียกคุณว่าอะไรดี';
+  static const onboardNameHint = 'ชื่อเล่น';
+  static const onboardFoodTitle = 'ปกติชอบกินอะไร';
+  static const onboardFoodHint =
+      'เลือกได้หลายเมนู เมนูที่เลือกจะขึ้นในเมนูแนะนำก่อน';
+  static const onboardMoneyTitle = 'เรื่องเงินค่ากิน';
+  static const onboardMonthlyLabel = 'ปกติใช้ค่ากินเดือนละเท่าไหร่';
+  static const onboardMonthlyHint =
+      'ไม่ต้องเป๊ะ แอปใช้เดาราคาอาหารต่อมื้อ เว้นว่างได้';
+  static const onboardLeftLabel = 'ตอนนี้เหลือเงินไว้กินเท่าไหร่';
+  static const onboardLeftHint = 'นับถึงวันเงินเดือนออกครั้งหน้า';
+  static const onboardPrivacy = 'ข้อมูลทั้งหมดอยู่ในเครื่องนี้เท่านั้น';
+  static const onboardNext = 'ต่อไป';
+  static const onboardStart = 'เริ่มใช้ Recipix';
+  static const amountHint = '0';
+  static String greeting(String name) => 'สวัสดี $name';
+
   // Tabs
   static const tabHome = 'หน้าหลัก';
   static const tabFridge = 'ตู้เย็น';
@@ -115,6 +137,7 @@ abstract final class S {
   static const menuHint = 'แตะดูวัตถุดิบและวิธีทำ';
   static const suggestFromFridge = 'จากของในตู้';
   static const suggestEasy = 'ทำง่าย';
+  static const suggestFavorite = 'เมนูโปรด';
 
   // Recipe page (ADR-015)
   static const difficultyNames = {
